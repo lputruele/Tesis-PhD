@@ -1,0 +1,1244 @@
+\chapter{Medidas para Masking-tolerancia a fallas}
+\label{cap:maskingMeasure}
+
+Introducimos una noción de distancia de tolerancia a fallas entre sistemas de transición etiquetados. Intuitivamente, esta noción de distancia mide el grado de tolerancia a fallas exhibido por un sistema candidato.
+En la práctica, hay diferentes tipos de tolerancia a fallas, aquí nos restringimos al análisis de masking-tolerancia a fallas ya que suele ser una característica muy deseada para sistemas críticos.
+En términos generales, un sistema es masking-tolerante a fallas cuando es capaz de enmascarar las fallas completamente, sin permitir que estas fallas tengan consecuencias observables para los usuarios.
+Capturamos la masking-tolerancia a fallas mediante una relación de simulación, acompañada por una caracterización correspondiente en términos de juegos.
+Enriquecemos además estos juegos con objetivos cuantitativos para así definir la noción de distancia de masking-tolerancia a fallas.
+Además, investigamos las propiedades básicas de esta noción de distancia de masking y probamos que es una semi-métrica dirigida.
+Demostramos que, en el caso de sistemas deterministas, computar la distancia de masking se puede lograr utilizando un algoritmo de camino más corto.
+Por otro lado, para sistemas no deterministas este cómputo se realiza por medio de técnicas de punto fijo. % No se como traducir approach
+Estos algoritmos fueron implementados en una herramienta que computa de manera automática la distancia de masking entre un sistema nominal y una versión del mismo que agrega fallas (y mecanismos de tolerancia). Hemos evaluado su desempeño y efectividad sobre varios casos de estudio de diferentes complejidades.
+
+\section{Introducción} \label{sec:intro}
+
+    La tolerancia a fallas es una característica importante del software crítico, y puede ser definida como la capacidad de un sistema para lidiar con eventos inesperados, que pueden ser causados por bugs de programación, interacciones con un ambiente poco cooperativo, mal funcionamiento de hardware, etcétera.
+
+Se pueden encontrar ejemplos de sistemas tolerantes a fallas en casi cualquier parte: protocolos de comunicación, circuitos de hardware, sistemas aviónicas, cripto-monedas, etcétera.
+
+Por lo tanto, el incremento en la relevancia del software crítico en la vida cotidiana ha llevado a que se renueve el interés en la verificación automática de propiedades de tolerancia a fallas. Sin embargo, una de las dificultades principales a la hora de razonar sobre estos tipos de propiedades se da en su naturaleza cuantitativa, lo cual vale incluso en sistemas no probabilistas.
+Un ejemplo simple se da con la introducción de redundancia en sistemas críticos. Esta es, sin lugar a dudas, una de las técnicas más utilizadas en tolerancia a fallas.
+En la práctica, se sabe que al añadir más redundancia en un sistema incrementa su fiabilidad. Medir este incremento de fiabilidad es un problema central a la hora de evaluar software tolerante a fallas. Por otro lado, no hay un método \emph{de-facto} para caracterizar formalmente propiedades tolerantes a fallas, y por ello se suelen codificar utilizando mecanismos \emph{ad-hoc} como parte del diseño general.
+
+Usualmente el flujo del diseño y verificación de sistemas tolerantes a fallas consiste en definir un modelo nominal (i.e. el programa ``sin fallas'' o ``ideal'') y luego extenderlo con comportamientos defectuosos que se desvían del comportamiento normal prescrito por el modelo nominal.
+
+Este modelo extendido representa la manera en la que el sistema opera bajo la ocurrencia de fallas.
+Hay diferentes maneras de extender el modelo nominal, el enfoque típico involucra la \emph{inyección de fallas}  \cite{HsuehTI97,IyerNGK10}, es decir, la introducción automática de fallas en el modelo. Una propiedad importante que cualquier modelo extendido debería satisfacer es la preservación del comportamiento normal ante la ausencia de fallas.
+
+En \cite{DemasiCMA17} se propone un enfoque formal alternativo para tratar con el análisis de la tolerancia a fallas. Este enfoque permite un análisis totalmente automático y distingue apropiadamente comportamientos defectuosos y normales. Además, este framework es sensible a la inyección de fallas. En ese trabajo se definen tres nociones de relaciones de simulación para caracterizar diferentes tipos de tolerancia a fallas:
+tolerancia \emph{masking}, \emph{nonmasking}, y \emph{failsafe}, originalmente definidas en \cite{Gartner99}. 
+
+    Por otro lado, en los últimos años, se ha logrando un progreso significativo en pos de definir métricas o distancias apropiadas para diversos tipos de modelos cuantitativos, incluyendo sistemas de tiempo real \cite{HenzingerMP05}, modelos probabilistas \cite{DesharnaisGJP04}, y métricas para sistemas lineales y ramificados \cite{CernyHR12,AlfaroFS09,Henzinger13,LarsenFT11,ThraneFL10}. 
+
+Algunos autores han resaltado que estas métricas pueden ser útiles para razonar sobre la robustez de un sistema, un concepto relacionado con la tolerancia a fallas. Particularmente, en \cite{CernyHR12}, la noción tradicional de relación de simulación se generaliza, y se introducen tres distancias de simulación entre sistemas, concretamente \emph{correctitud}, \emph{cobertura}, y \emph{robustez}.
+A estas distancias se las define utilizando juegos cuantitativos con objetivos \emph{discounted-sum} y \emph{mean-payoff}.
+%In this article\footnote{This is a revised and expanded version of a conference paper presented at TACAS 2019 \cite{CastroDDP18b}. A detailed description of the extension is given in Section  \ref{sec:related_work}.}, 
+En \cite{CastroDDP18b} introducimos una noción de distancia de tolerancia a fallas entre LTS's. Intuitivamente, esta distancia mide el grado de tolerancia a fallas exhibido por un sistema candidato. Como fue mencionado anteriormente, existen varios niveles de tolerancia a fallas, aquí nos restringimos al análisis de \emph{masking-tolerancia a fallas} ya que usualmente se la considera como el tipo de tolerancia mas benigno y por lo tanto es una propiedad altamente deseable en cualquier sistema critico.
+%\cite{}.  %% ADD REFERENCE
+
+A grandes rasgos, un sistema es masking-tolerante a fallas cuando es capaz de enmascarar completamente las fallas, no permitiendo que las mismas tengan consecuencias observables para los usuarios. Formalmente, el sistema debe preservar tanto las propiedades de safety como las de liveness del modelo nominal \cite{Gartner99}. A diferencia de la distancia de robustez definida en \cite{CernyHR12}, la cual mide cuantos errores inesperados son tolerados por una implementación, aquí consideramos una colección especifica de fallas dadas en la implementación y medimos cuantas fallas son toleradas por la implementación de tal manera que puedan ser enmascaradas por los estados del sistema.
+
+También requerimos que el comportamiento normal de la especificación se preserve en la implementación cuando no hay fallas. %Otherwise, the distance is $1$.
+Formalmente, dado un sistema nominal $N$ y su implementación $I$ y sea $\delta$ nuestra función de distancia, tenemos que $\DeltaMask(N,I)=1$ si y solo si el modelo nominal $N$ y $I\backslash F$ no son bisimilares, donde $I\backslash F$ se comporta como la implementación $I$ cuando todas las acciones en $F$ están deshabilitadas ($\backslash$ es el operador de restricción de  Milner).
+Por lo tanto, distinguimos efectivamente entre el modelo nominal, su versión tolerante a fallas  y el conjunto de fallas para el sistema en cuestión.
+
+Para poder medir el grado de masking-tolerancia a fallas de un sistema dado, empezamos caracterizando la masking-tolerancia a fallas por medio de relaciones de simulación entre dos sistemas, como se define en \cite{DemasiCMA17}. El primero cumple el rol de especificación del comportamiento deseado (i.e el modelo nominal) y el segundo tiene el rol de implementación tolerante a fallas (i.e. el modelo extendido con fallas y mecanismos de tolerancia).
+La existencia de una relación de masking implica que la implementación enmascara las fallas. Luego, introducimos una caracterización de la simulacion de masking en términos de juegos y enriquecemos los mismos con objetivos cuantitativos para definir así la noción de \emph{distancia de masking-tolerancia a fallas}, donde los valores posibles del juego pertenecen al intervalo  $[0,1]$. La implementación tolerante a fallas es masking-tolerante a fallas si el valor del juego es $0$. Además, mientras mayor el valor, mas lejos esta la implementación de la especificación en términos de la distancia de masking-tolerancia a fallas. De esta forma, una distancia mayor decrementa notablemente el grado de tolerancia a fallas.
+
+Entonces, para un modelo nominal $N$ y dos implementaciones tolerantes a fallas diferentes $I_1$ y $I_2$, nuestra distancia asegura que  $\DeltaMask(N,I_1)<\DeltaMask(N,I_2)$ cuando $I_1$ tolera mas fallas que $I_2$.
+
+También proporcionamos una versión débil de la simulación de masking, la cual hace posible tratar con sistemas mas complejos compuestos por varios componentes que interactúan entre si. Probamos que la distancia de masking es una semi-métrica dirigida, es decir, que satisface dos propiedades básicas de cualquier distancia: reflexividad y la desigualdad triangular.
+
+Finalmente, hemos implementado nuestra técnica en una herramienta que toma como argumentos un modelo nominal y su implementación tolerante a fallas, y computa automáticamente la distancia de masking entre estos.
+Hemos utilizado esta herramienta para medir la tolerancia de masking en múltiples instancias de varios casos de estudio: una celda de memoria redundante, una variación del problema de los filósofos comensales, el protocolo de comunicación BRP (Bounded Retransmission Protocol), redundancia N-Modular, el problema de los generales bizantinos y un subproblema del protocolo de consenso Raft para lograr una replicación consistente de datos.
+
+Todos los casos de estudio mencionados son ejemplos típicos de sistemas tolerantes a fallas. Un punto interesante sobre nuestra implementación es que, para sistemas deterministas, la distancia de masking entre dos sistemas puede ser computada recurriendo a un algoritmo de camino mas corto. Mientras que en el caso de sistemas no deterministas, se aplica un algoritmo de punto fijo basado en la búsqueda a lo ancho (breadth first search), lo cual es menos eficiente, sin embargo en ambos casos el algoritmo es polinomial.
+
+
+%The remainder of the paper is structured as follows. 
+%In Section \ref{sec:background}, we introduce preliminaries notions used 
+%throughout this paper.
+%We present in Section \ref{sec:masking_dist} the definition of strong (resp. weak) masking simulation 
+%and the corresponding game characterization. 
+%In Section \ref{sec:QuantMask}, we present the formal definition 
+%of masking distance built on quantitative simulation games, the algorithms 
+%to compute it, and we also prove its basic properties. 
+%We describe in Section \ref{sec:experimental_eval} the experimental 
+%evaluation on some well-known case studies.
+%In Section \ref{sec:related_work} we discuss the related work. 
+%Finally, we discuss in Section \ref{sec:conclusions} some conclusions 
+%and directions for further work.
+%
+%Full details and proofs can be found in \cite{CastroDDP18}.
+
+
+\section{Preliminares} \label{sec:background}
+
+Vamos a introducir algunas definiciones y resultados básicos sobre teoría de juegos que serán necesarios a lo largo del articulo, el lector interesado puede ver \cite{AptG11}.
+
+Un sistema de transición etiquetado (o TS) es una tupla $A =\langle S, \Sigma, \rightarrow, \InitState \rangle$, donde $S$ es un conjunto finito de estados, $\Sigma$ es un alfabeto finito,  $\rightarrow \subseteq S \times \Sigma \times S$ es un conjunto de transiciones etiquetadas, y $s_0$ es el estado inicial. A partir de ahora, denotaremos $s \xrightarrow{e} s'$ en lugar de $(s,e,s') \in \rightarrow$ cuando creamos conveniente.
+
+Con $|S|$ y $|{\rightarrow}|$ denotamos la cantidad de estados y arcos, respectivamente. Definimos $\post(s) = \{s' \in S \mid s \xrightarrow{e} s' \}$ como el conjunto de sucesores de $s$. Similarmente,  $\pre(s') = \{s \in S \mid s \xrightarrow{e} s' \}$ denota el conjunto de predecesores de $s'$.
+Además, $\post^{*}(s)$ denota los estados alcanzables desde $s$.
+Sin perder generalidad, requerimos que todo estado $s$ tenga un sucesor, i.e., $\forall s \in S : \post(s) \neq \emptyset$. Decimos que un TS es \emph{determinista} si, para toda terna de estados  $s,t, t'$ y para toda etiqueta $e$, $s \xrightarrow{e} t$ y $s \xrightarrow{e} t'$ implica $t=t'$. 
+
+Una \emph{corrida} en un sistema de transición de estados $A$ es un camino infinito $\rho = \rho_0 \sigma_0 \rho_1 \sigma_1  \rho_2 \sigma_2 \dots \in (S \cdot \Sigma)^{w}$ 
+donde $\rho_0 = \InitState$ y para todo $i$, $\rho_i \xrightarrow{\sigma_i} \rho_{i+1}$. De ahora en mas, dada una tupla $(x_0,\dots,x_n)$, denotaremos a $x_i$ con  $\pr{i}{x_0,\dots,x_n}$.
+
+Un \emph{grafo de juego} $G$ es una tupla $G = \langle V, V_1, V_2, E, \InitVertex \rangle$ donde $V$ es un conjunto de vértices, $E\subseteq V \times V$ es un conjunto de arcos, $\InitVertex$ es el vértice inicial del juego, y $(V_1, V_2)$ es una partición de $V$. Intuitivamente, el grafo representa un juego entre dos jugadores, donde un token se coloca inicialmente en el vértice inicial, y luego sigue por rondas. Si el token esta en un vértice $v \in V_1$, entonces el jugador $1$ elige un arco $(v, w) \in E$ y mueve el token al vértice $w$. En caso de que el token este en un vértice $v \in V_2$, entonces la elección es del jugador $2$.
+
+Un \emph{grafo de juego con costos} es un grafo de juego mas una función de costo (o recompensa) $\reward^G:V \rightarrow \mathbb{R}$. Un camino maximal en el grafo de juego $G$ se denomina una \emph{jugada}. El conjunto de todas las jugadas se denota con $\Omega$. Los \emph{grafos de juego deterministas} se definen de la misma manera que en sistemas de transición de estados. Además, utilizaremos la notación $\post(v)$ para denotar los sucesores del vértice $v$, y $\pre(v)$ para denotar a los predecesores del vértice $v$.
+
+Dado un grafo de juego $G$, una \emph{estrategia} para el jugador $1$ es una función $\pi: V^{*} V_1 \rightarrow V$ tal que para todo  $\rho_0  \rho_1 \dots \rho_i \in V^{*} V_1$, tenemos que si $\pi(\rho_0  \rho_1\dots \rho_i) = \rho $, entonces $(\rho_i, \rho) \in E$. Una estrategia para el jugador $2$ se define similarmente. El conjunto de todas las estrategias para el jugador $p$ (para $p \in \{1,2\}$) se denota por $\Pi_{p}$.
+Una estrategia para el jugador $p$ se dice \emph{sin memoria} (o posicional) si puede ser definida por un mapping $f:V_p \rightarrow V$, de tal forma que si $v \in V_p$ entonces $(v, f(v)) \in E$.
+A grandes rasgos, estas estrategias no necesitan memoria del historial de movimientos. Además, una jugada $\rho_0 \rho_1 \rho_2 \dots$ se conforma a una estrategia $\pi$ del jugador $p$ si $\forall i \geq 0: (\rho_i \in V_p) \Rightarrow  \pi(\rho_0 \rho_1 \dots \rho_i) = \rho_{i+1}$. El \emph{resultado} de una estrategia $\pi_{1}$ del jugador $1$ y una estrategia $\pi_{2}$ del jugador $2$ es la jugada única, denominada $\out(\pi_1, \pi_2)$, que se conforma tanto a $\pi_1$ como a $\pi_2$.
+
+Un \emph{juego} se compone de un grafo de juego y un objetivo booleano o cuantitativo. Un \emph{objetivo booleano} es una función $\Phi: \Omega \rightarrow \{0, 1\}$ y la meta del jugador $1$ en un juego con un objetivo $\Phi$ es seleccionar una estrategia de tal forma que el resultado del juego sea $1$, independientemente de lo que haga el jugador $2$. Por el contrario, la meta del jugador $2$ es asegurarse que el resultado sea $0$. Dado un objetivo booleano $\Phi$, una jugada $\rho$ es \emph{ganadora} para el jugador $1$ (resp. jugador $2$) si  $\Phi(\rho) = 1$ (resp. $\Phi(\rho) = 0$). Una estrategia $\pi$ es una \emph{estrategia ganadora} para el jugador $p$ si toda jugada que se conforme a $\pi$ es ganadora para el jugador $p$. Decimos que un juego con objetivo booleano esta \emph{determinado} si algún jugador tiene una estrategia ganadora, y decimos que está \emph{determinado sin memoria} si esa estrategia ganadora es sin memoria. Los juegos de alcanzabilidad son aquellos juegos cuyos objetivos están definidos como $\Phi(\rho_0 \rho_1 \rho_2 \dots) = (\exists i : \rho_i \in B)$ para algún conjunto $B \subseteq V$, un resultado estándar de los juegos de alcanzabilidad es que son determinados sin memoria.
+
+Un \emph{objetivo cuantitativo} esta dado por una función de \emph{payoff} $f: \Omega \rightarrow \mathbb{R}$ y la meta del jugador $1$ es maximizar el valor $f$ de la jugada, mientras que la meta del jugador $2$ es minimizar este valor. Para un objetivo cuantitativo $f$, el valor del juego para la estrategia $\pi_1$ del jugador $1$, denotado por $v_1(\pi_1)$, se define como el ínfimo sobre todos los valores resultantes de estrategias del jugador $2$, i.e., $v_1(\pi_1) = \inf_{\pi_2 \in \Pi_2} f(\out(\pi_1, \pi_2))$. El valor del juego para el jugador $1$ se define como el supremo de los valores de todas las estrategias del jugador $1$, i.e., $\sup_{\pi_1 \in \Pi_1} v_1(\pi_1)$. Análogamente, el valor del juego para una estrategia $\pi_2$ del jugador $2$ y el valor del juego para el jugador $2$ se definen como $v_2(\pi_2) = \Sup_{\pi_1 \in \Pi_1} f(\out(\pi_1, \pi_2))$ 
+y $\inf_{\pi_2 \in \Pi_2} v_2(\pi_2)$, respectivamente.
+Una estrategia es \emph{optimal} para un jugador si el valor de la estrategia para ese jugador es igual al valor del juego para ese jugador. Decimos que un juego esta determinado si los valores del juego para ambos jugadores es igual, es decir:
+$\sup_{\pi_1 \in \Pi_1} v_1(\pi_1) = \inf_{\pi_2 \in \Pi_2} v_2(\pi_2)$. En este caso denotamos con $\val(\mathcal{G})$ al valor del juego $\mathcal{G}$.
+    El siguiente resultado de \cite{Martin98} caracteriza un conjunto grande de juegos determinados.
+    \begin{thm} Cualquier juego con una función cuantitativa $f$ que esté acotada y sea Borel-medible esta determinado.
+\end{thm}
+
+
+\section{Simulación de Masking} \label{sec:masking_dist}
+Empezamos definiendo la simulación de masking. En \cite{DemasiCMA17}, se definió una simulación basada en estados para la masking-tolerancia a fallas, aquí reutilizamos esta definición usando sistemas de transición etiquetados. Primero, vamos a introducir algunos conceptos que son necesarios para definir masking-tolerancia a fallas. Para todo vocabulario $\Sigma$, y todo conjunto de etiquetas $\Faults = \{F_0, \dots, F_n\}$ no pertenecientes a $\Sigma$, consideramos 
+$\SigmaF = \Sigma \cup \Faults$, donde $\Faults \cap \Sigma = \emptyset$. Intuitivamente, los elementos de $\Faults$ indican la ocurrencia de una falla en una implementación defectuosa. Además, a veces sera útil considerar el conjunto $\Sigma^i = \{ e^i \mid e \in \Sigma\}$, que contiene los elementos de $\Sigma$ indexados con el superíndice $i$.
+
+%, $\Sigma^i = \{\sigma^i \mid \sigma \in \Sigma\}$.
+
+\subsection{Simulación de Masking fuerte}
+\begin{defi} \label{def:masking_rel}
+  Sean $A =\langle S, \Sigma, \rightarrow, s_0\rangle$ y $A' =\langle S', \SigmaF, \rightarrow', s_0' \rangle$ dos sistemas de transición etiquetados.
+  $A'$ es \emph{fuertemente masking-tolerante a fallas} con respecto a $A$ si existe una relación 
+$\M \subseteq S \times S'$ entre $A$ y $A'$ tal que:
+
+\begin{enumerate}[(A)]
+  \item $s_0 \M s'_0$, y
+  \item para todo $s \in S, s' \in S'$ con $s \M s'$ y todo $e \in \Sigma$ vale lo siguiente:
+
+  \begin{enumerate}[(1)]
+    \item 
+    si $s \xrightarrow{e} t$ entonces
+    $\exists\; t' \in S': s' \xrightarrowprime{e} t'  \wedge t \M t'$;
+
+      \item si $s' \xrightarrowprime{e} t'$ entonces
+      $\exists \; t \in S: s \xrightarrow{e} t \wedge t \M t'$;
+
+      \item si $s' \xrightarrowprime{F} t' $ para algún $F \in \Faults$ entonces
+      $s \M t'$.
+      
+  \end{enumerate}
+\end{enumerate}
+
+Si tal relación existe decimos que $A'$ es una \emph{implementación fuertemente masking-tolerante a fallas} de $A$, denotado como $A \Masking A'$. 
+\end{defi}
+
+ Intuitivamente, la definición establece que, partiendo de $s'$, las fallas pueden ser enmascaradas de tal forma que el comportamiento exhibido es el mismo que el observado al partir de $s$ ejecutando transiciones sin fallas. 
+ En otras palabras, una relación de masking asegura que cualquier comportamiento defectuoso en la implementación puede ser simulado por la especificación. Mas específicamente, note que las condiciones (A), (B.1) y (B.2) implican que tenemos una bisimulación cuando $A$ y $A'$ no exhiben comportamientos defectuosos.
+Particularmente, la condición (B.1) dice que la ejecución normal de $A$ puede ser simulada por una ejecución de $A'$. Por otro lado, la condición (B.2) dice que la implementación no agrega mas comportamientos normales (no defectuosos). Por ultimo, la condición (B.3) establece que toda transición defectuosa ($F$) que salga de $s'$ debe ser correspondida por un movimiento en el mismo lugar desde $s$.
+
+\subsection{Simulación de Masking Débil}
+
+Para analizar sistemas no triviales se necesita una relación de simulación de masking débil. La idea principal es que una simulación de masking débil se abstrae del comportamiento interno, el cual es modelado por una acción especial $\tau$. Note que las transiciones internas son comunes en tolerancia a fallas: las acciones ejecutadas como parte de un procedimiento tolerante a fallas en un componente usualmente no son observables para el resto del sistema.
+
+Las \textit{relaciones de transición débiles} ${\Rightarrow} \subseteq S
+\times (\Sigma \cup \{\tau\} \cup \Faults) \times S$ consideran el paso \emph{silencioso} $\tau$ que se define como sigue: 
+
+\[
+\xRightarrow{e} = 
+       \begin{cases}
+            \xrightarrowstar{\tau} \circ \xrightarrow{e} \circ \xrightarrowstar{\tau} & 
+            \text{si } e \in \Sigma,  \\ 
+            \xrightarrowstar{e} & \text{si } e = \tau,  \\
+            \xrightarrow{e} & \text{si } e \in \Faults.\\
+       \end{cases}
+\]
+%
+El símbolo $\circ$ representa la composición de relaciones binarias y $\xrightarrowstar{\tau}$ es la clausura reflexo-transitiva de la relación binaria $\xrightarrow{\tau}$. 
+
+Intuitivamente, si $e \notin \{\tau\}\cup\Faults$, entonces $s\xRightarrow{e}s'$ significa que existe una secuencia de cero o mas transiciones $\tau$ empezando en $s$, seguido de una transición etiquetada por $e$, seguida luego por cero o mas transiciones $\tau$ eventualmente llegando a  $s'$.
+$s \xRightarrow{\tau} s'$ establece que $s$ puede transicionar a $s'$ por medio de cero o mas transiciones $\tau$.
+%
+En particular, $s \xRightarrow{\tau} s$ para todo $s$.
+%
+Para el caso en que $e\in\Faults$,
+$s\xRightarrow{e}s'$ es equivalente a $s\xrightarrow{e}s'$ y por lo tanto
+no se permite ningún paso $\tau$ antes o después de la transición $e$.
+
+
+\begin{defi} \label{def:weak_mask}
+  Sean $A =\langle S, \Sigma, \rightarrow, \InitState \rangle$ y $A' =\langle S',
+  \SigmaF, \rightarrow', \InitStatePrime \rangle$ dos sistemas de transición etiquetados con $\Sigma$
+  conteniendo $\tau$ posiblemente.  $A'$ es \emph{débilmente masking-tolerante a fallas}
+  con respecto a $A$ si existe una relación $\M \subseteq S
+  \times S'$ entre $A$ y $A'$ tal que:
+
+\begin{enumerate}[(A)]
+  \item $\InitState \M \InitStatePrime$
+  \item para todo $s \in S, s' \in S'$ con $s \M s'$ y todo $e \in \Sigma \cup \{\tau\}$ vale lo siguiente:
+
+  \begin{enumerate}[(1)]
+    \item si $s \xrightarrow{e} t$ entonces 
+    $\exists\; t' \in S': s' \xRightarrowprime{e} t' 
+    \wedge t \M t'$;
+
+      \item si $s' \xrightarrowprime{e} t'$ entonces  
+      $\exists \; t \in S: s \xRightarrow{e} t  
+      \wedge t \M t'$;
+
+      \item si $s' \xrightarrowprime{F} t'$ para algún $F \in \Faults$ entonces 
+      $s \M t'$.
+  \end{enumerate}
+\end{enumerate}
+
+%
+Si tal relación existe, decimos que $A'$ es una \emph{implementación débilmente masking-tolerante a fallas} de
+$A$, denotado por $A \WeakMasking A'$.
+\end{defi}
+
+El siguiente teorema conecta la simulación de masking fuerte y débil. El teorema establece que la simulación de masking débil se vuelve una simulación de masking fuerte cuando la transición $\xrightarrow{}$ es reemplazada por $\xRightarrow{}$ en la estructura original.
+
+\begin{thm} \label{thm:weak_thm}
+  Sean
+$A =\langle S, \Sigma, \rightarrow, \InitState \rangle$ y $A' =\langle S', \SigmaF, \rightarrow', \InitStatePrime \rangle$. 
+$\M \subseteq S \times S'$ entre $A$ y $A'$ es una simulación de masking débil si y solo si:
+
+\begin{enumerate}[(A)]
+  \item $\InitState \M \InitStatePrime$, y
+  \item para todo $s \in S, s' \in S'$ con $s \M s'$ y todo $e \in \Sigma \cup \{\tau\}$ vale lo siguiente:
+
+  \begin{enumerate}[(1)]
+    \item si $s \xRightarrow{e} t$ entonces $\exists\; t' \in S': s' \xRightarrowprime{\text{e}} t' 
+    \wedge t \M t'$;
+
+      \item si $s' \xRightarrowprime{e} t'$ entonces 
+      $\exists \; t \in S: s \xRightarrow{e} t \
+      \wedge t \M t')$;
+
+      \item si $s' \xRightarrowprime{F} t'$ para algún $F \in \Faults$ entonces 
+      $s \M t'$
+  \end{enumerate}
+\end{enumerate}
+
+\end{thm}
+
+\noindent
+\begin{proof}
+	Primero note que las condiciones (A), (B.1), (B.2) y (B.3) en este teorema implican las condiciones (A), (B.1), (B.2) y (B.3)
+ de la Def.~\ref{def:weak_mask}, entonces la parte ``si'' es directa. Para la otra dirección, la condición (A) es la misma en el teorema y en la definición.
+ Supongamos ahora que la condición (B.1) de la Def.~\ref{def:weak_mask} vale, i.e.,
+ $s \xRightarrow{e} t$ para $e \in \Sigma \cup \{\tau\}$ y $t \in S$. 
+Si $e \in \Sigma$, entonces, por definición de$\Rightarrow$, tenemos que existen $w$ y $v$ tal que $s \xrightarrowstar{\tau} w$, $w \xrightarrow{e} v$
+ y $v \xrightarrowstar{\tau} t$. Por lo tanto, por definición de $\Rightarrow$ y por la condición (B.2) de la Def. \ref{def:weak_mask} 
+ tenemos que existen estados $s',t',w',v' \in S'$
+ tales que $s' \xRightarrow{\tau} w'$, $w' \xRightarrow{e} v'$, y $v' \xRightarrow{\tau} t'$ y, 
+ además, $w \M w'$, $v \M v'$, y $t \M t'$ lo cual implica que$s' \xRightarrow{e} t'$. 
+ La prueba para la condición (B.2) es similar.
+ 	Supongamos ahora que $s \M s'$ y $s' \xRightarrow{F} t'$, para algún $t' \in S'$. Entonces, por Def. de 
+$\Rightarrow$, tenemos que $s' \xrightarrow{F} t'$ y por Def.~\ref{def:weak_mask}
+ tenemos $s \M t'$ . Esto concluye la prueba.
+ \qedhere 
+ \end{proof} 
+ 
+Una forma natural de verificar bisimilitud débil es por medio de \emph{saturar}
+el sistema de transición  \cite{FernandezM91,Milner89} y lucho verificar bisimilitud fuerte sobre el sistema de transición saturado.
+Similarmente, el Theorem~\ref{thm:weak_thm} nos permite computar la simulación de masking débil al reducir este problema a simulación de masking fuerte. Note que $\xRightarrow{e}$ puede ser alternativamente definida por medio de las siguientes reglas:
+
+\[
+\dfrac{p \xrightarrow{e} q}{p\xRightarrow{e} q} \hspace{2cm} 
+\dfrac{}{p\xRightarrow{\tau} p} \hspace{2cm} 
+\dfrac{p\xRightarrow{\tau} p_1 \xRightarrow{e} q_1 \xRightarrow{\tau} q}{p\xRightarrow{e} q}~(e \notin \Faults)
+\]
+	En lo que sigue utilizamos el teorema \ref{thm:weak_thm} para probar propiedades de masking débil, vale la pena recalcar que la mayoría de propiedades de masking fuerte pueden ser también probadas para masking débil recurriendo a este resultado.
+	
+\begin{exa}
+Consideremos el siguiente ejemplo, consideramos una celda de memoria que almacena un bit de información y soporta operaciones de lectura y escritura, presentado en forma basada en estados en \cite{DemasiCMA17}. Un estado en este sistema mantiene el valor corriente de la celda de memoria ($m=i$, para $i=0,1$), escribir le permite a uno cambiar este valor, y leer retorna el valor almacenado.  
+Obviamente, en este sistema el resultado de una lectura va a depender del valor almacenado en la celda. 
+Por lo tanto, una propiedad que uno podría asociar a este modelo es que el valor leído de la celda coincida con el de la ultima escritura que se haya ejecutado en el sistema.
+    
+Una falla potencial en este escenario ocurre cuando la celda inesperadamente pierde su carga, y su valor almacenado cambia (e.g., cambia de $1$ a $0$ debido a perdida de carga). Una técnica típica para lidiar con esta situación es \emph{redundancia}: usar tres bits de memoria en lugar de solo uno. Las operaciones de escritura se realizan simultáneamente sobre los tres bits. La lectura, por otro lado, retorna el valor que se repite en la mayoría de bits, esto se conoce como \emph{votación}. 
+
+Tomamos el siguiente enfoque para modelar este sistema. Las etiquetas $\text{W}_0, \text{W}_1, \text{R}_0,$ y $\text{R}_1$
+representan las operaciones de escritura y lectura. Específicamente, $\text{W}_0$ (resp. $\text{W}_1$): escribe el valor cero (resp. uno) en la celda de memoria. $\text{R}_0$ (resp. $\text{R}_1$): lee el valor cero (resp. uno) almacenado en la celda de memoria.
+La figura ~\ref{figure:exam_1_mem_cell} muestra tres sistemas de transición. El primero de izquierda a derecha representa el sistema nominal para este ejemplo (denotado como $A$).
+Tanto el segundo como el tercer sistema de transición son implementaciones tolerantes a fallas de $A$, denotados como $A'$ y $A''$ respectivamente. Note que $A'$ contiene una falla, mientras que $A''$ considera dos fallas. Ambas implementaciones usan redundancia triple; intuitivamente, el estado $\text{t}_0$ contiene tres bits con valor cero y $\text{t}_1$ contiene tres bits con valor uno.
+Además, el estado $\text{t}_2$ se alcanza cuando uno de los bits cambió de valor ($001$, $010$ o $100$)
+En  $A''$, el estado $\text{t}_3$ se alcanza después de que cambia un segundo bit ($011$, $101$ o $110$) empezando del estado $\text{t}_0$.
+\begin{figure}[h] 
+\begin{center}
+    \includegraphics[scale=0.45]{images/example_1_cell_mem.eps} 
+   % \vspace{-1cm}
+    \caption{Sistemas de transición para la celda de memoria.}
+    %\vspace{-0.8cm}
+    \label{figure:exam_1_mem_cell}
+\end{center}
+\end{figure}
+\sloppy Es directo de ver que existe una relación de masking'tolerancia a fallas entre $A$ y $A'$, teniendo como testigo la relación $\M = \{(\text{s}_0, \text{t}_0), (\text{s}_1, \text{t}_1), (\text{s}_0, \text{t}_2)\}$. Es sencillo verificar que $\M$ satisface las condiciones de la Def.~\ref{def:masking_rel}.
+
+On the other hand, there does not exist a masking relation between $A$ and $A''$ because state $\text{t}_3$ needs to be related to state $\text{s}_0$ in any masking relation. This  state can only be reached by executing faults, which are necessarily masked with stuttering steps. However, note that, in state  $\text{t}_3$, we can read a $1$ (transition $\text{t}_3 \xrightarrow{\text{R}_1} \text{t}_3$) whereas, in state $\text{s}_0$, we can only read a $0$.
+\end{exa}
+ 
+\subsection{Masking Simulation Game} \label{subsec:mask_sim_game}
+	Let us define a masking simulation game for two transition systems (the
+specification of the nominal system and its fault-tolerant
+implementation) that captures masking fault-tolerance.  We first
+define the masking game graph with two players, named by
+convenience the \emph{Refuter} ($\Refuter$) and the \emph{Verifier}
+($\Verifier$).
+
+\begin{defi} \label{def:strong_masking_game_graph}
+  Let $A=\langle S, \Sigma, \rightarrow, \InitState \rangle$ and $A'=\langle S',
+  \SigmaF, \rightarrow', \InitStatePrime \rangle$ two transition systems.
+  % and $M \notin \Sigma \cup \SigmaF$.
+  The \emph{strong masking game graph} 
+  $\StrMaskGG = \langle V^G, V_\Refuter, V_\Verifier, E^G, {\InitVertex}^G \rangle$ 
+  for two players is defined as follows:
+
+\begin{itemize}
+    %\item $\Sigma^G = \Sigma^1 \cup \SigmaF^2$
+  \item $V^G = (S \times ( \Sigma^1 \cup \SigmaF^2 \cup\{\#\}) \times S' \times \{ \Refuter, \Verifier \}) 
+  \cup \{\ErrorSt\}$
+  \item The initial state is $\InitVertex^G = \langle \InitState, \#, \InitStatePrime, \Refuter \rangle$, where the Refuter starts 
+  playing
+  \item The Refuter's states are $V_\Refuter = \{ (s, \#, s', \Refuter) \mid s \in S \wedge s' \in S' \} 
+  \cup \{\ErrorSt\}$
+  \item The Verifier's states are $V_\Verifier = \{ (s, \sigma, s', \Verifier) \mid s \in S \wedge s' \in S' \wedge \sigma \in ( \Sigma^1 \cup \SigmaF^2 )\}$
+\end{itemize}
+and $E^G$ is the minimal set satisfying:
+\begin{itemize}
+  \item $\{ ( (s, \#, s', \Refuter) , (t, \sigma^{1}, s', \Verifier)) \mid \exists\;\sigma \in \Sigma: s \xrightarrow{\sigma} t \} \subseteq E^G$,
+
+  \item $\{ ((s, \#, s', \Refuter), (s, \sigma^{2}, t', \Verifier))  \mid \exists\;\sigma \in \SigmaF: s' \xrightarrowprime{\sigma} t' \} \subseteq E^G$,
+
+  \item $\{ ((s, \sigma^2, s', \Verifier), (t, \#, s', \Refuter)) \mid \exists\;\sigma \in \Sigma: s \xrightarrow{\sigma} t \} \subseteq E^G$,
+
+  \item $\{ ((s, \sigma^1, s', \Verifier), (s, \#, t', \Refuter)) \mid \exists\;\sigma \in \Sigma: s' \xrightarrowprime{\sigma} t' \} \subseteq E^G$,
+
+  \item $\{ ((s, F^2, s', \Verifier), (s, \#, s', \Refuter)) \} \subseteq E^G$, for any $F \in \Faults$. 
+
+  \item If there is no outgoing transition from some state $v$, then, we additionally assume  $(v, \ErrorSt) \in E^G$ and $(\ErrorSt, \ErrorSt) \in E^G$.
+\end{itemize}
+
+\end{defi}
+
+The intuition of this game is as follows. 
+The Refuter chooses transitions of either the specification or the implementation to play,
+and the Verifier tries to match her choice, this is similar to the bisimulation game \cite{Stirling99}. 
+However, when the Refuter chooses a fault, the Verifier must match it with a stuttering step.
+The intuitive reading of this is that the fault-tolerant implementation masked the fault in such a way that the occurrence of this fault cannot be noticed from the users' side. $\Refuter$ wins if the game reaches the error state, i.e., $\ErrorSt$; otherwise, $\Verifier$ wins  the game. 
+This is basically a reachability game \cite{Jurd11}.
+
+A \emph{weak masking game graph} $\WeakMaskGG$ is defined
+in the same way as the strong masking game graph in
+Def.~\ref{def:strong_masking_game_graph}, with the exception that
+$\Sigma$ and $\SigmaF$ may contain $\tau$, and the set of labelled
+transitions (denoted as $E_W^G$) is now defined using the weak
+transition relations (i.e., $\Rightarrow$ and $\Rightarrow'$) from the respective
+transition systems.
+
+Fig.~\ref{figure:exam_2_mem_cell_gg_two_faults} shows a part 
+of the strong masking game graph for the running example considering the transition 
+systems $A$ and $A''$. Therein, Refuter's nodes are drawn as boxes whereas Verifier's nodes are drawn as circles.
+We can clearly observe on the game graph that the Verifier cannot mimic the 
+transition $((s_0, \#, t_3, R),(s_0, R_1^2, t_3, V))$
+selected by the Refuter, which reads a $1$ at state $t_3$ on the fault-tolerant 
+implementation. This is because the Verifier can only read a $0$ at state $s_0$. 
+Then, the $\ErrorSt$ is reached and the Refuter wins.
+
+As expected, there is a strong masking simulation between $A$ and $A'$
+if and only if the Verifier has a winning strategy in $\StrMaskGG$.
+
+\begin{thm} \label{thm:wingame_strat}
+  Let $A=\langle S, \Sigma, \rightarrow, \InitState \rangle$ and $A'=\langle S', \SigmaF, \rightarrow', \InitStatePrime \rangle$ two transition systems.
+  Then, $A \Masking A'$ iff the Verifier has a winning strategy for the strong masking game graph $\StrMaskGG$.
+\end{thm}
+\begin{proof} 
+	``only if'': Suppose that there is a masking simulation $\M \subseteq S \times S'$.
+The strategy of the Verifier (named $\pi^*$) is constructed as follows:  for states $(t, \sigma^1, s', V)$ (resp. $(s, \sigma^2, t', V)$) such that  the set $\{ z' \in \post(s'): t \M z' \}$
+(resp. $\{ z \in \post(s): z \M t' \}$) is not empty and $\sigma \notin \Faults$, we define $\pi^*(t, \sigma^1, s', \Verifier) = (t, \#, t', \Refuter)$ 
+(resp. $\pi^*(s, \sigma^2, t', \Verifier) = (t, \#, t', \Refuter)$) corresponding to an edge $((t, \sigma^1, s', \Verifier), (t, \#, t', \Refuter))$ (resp. $((s, \sigma^2, t', \Verifier),(t, \#, t', \Refuter))$) such that $t \in \{ z \in \post(s): z \M t' \}$ (resp. $t' \in \{ z' \in \post(s): z' \M t' \}$).  If $\sigma \in \Faults$, then we define $\pi^*(s, F^2, s', \Verifier) = (s, \#, s', \Refuter)$, for any $F \in \Faults$, corresponding to the edge $((s, F^2, s', \Verifier),( s, \#, s', \Refuter))$. If the set $\{ z' \in \post(s'): t \M z' \}$  (resp. $\{ z \in \post(s): z \M t' \}$) 
+is empty it returns a vertex corresponding to an arbitrary edge. 
+
+	We prove that any play: $\rho_0 \rho_1 \dots$ (conforming strategy $\pi^*$) holds: 
+	(1) $\pr{3}{\rho_i}=\Verifier \vee \pr{0}{\rho_i} \Masking \pr{2}{\rho_i}$ and 
+	(2) $\rho_i \neq \ErrorSt$, for all $i\geq 0$. This implies that the strategy is winning for the Verifier. 
+The proof is by induction on $i$. The base case is straightforward as 
+$\InitVertex^G \neq \ErrorSt$ and $\InitVertex^G = (\InitState, \#, \InitStatePrime, \Refuter)$ and by assumption we have $\InitState \Masking \InitStatePrime$. For the inductive case, assume that 
+$\rho_i$ holds $\rho_i \neq \ErrorSt$ and either $\pr{3}{\rho_i} = \Verifier$ or $\pr{0}{\rho_i} \Masking \pr{2}{\rho_i}$. 
+If $\rho_i = (s, \#, s', \Refuter)$, then this means $s \Masking s'$. Since we assumed that
+$\rightarrow$ and $\rightarrow'$ are serial, we have: $\exists \sigma \in \Sigma: s \xrightarrow{\sigma} t$ and $\exists \sigma \in \SigmaF : s' \xrightarrowprime{\sigma} t'$. That is, by definition of the game, $\rho_{i+1} \neq \ErrorSt$. 
+Furthermore, $\pr{3}{\rho_{i+1}} = \Verifier$ and then assertions (1) and (2) hold. 
+If $\rho_i = (s, \sigma^1, t, \Verifier)$ (resp. $\rho_i = (s, \sigma^2, t, \Verifier)$) and $\sigma \notin \Faults$,
+we have $\rho_{i-1} = (s, \#, s', \Refuter)$ and a transition $s \xrightarrow{\sigma} t$ (resp. $s' \xrightarrowprime{\sigma} t'$), by inductive hypothesis, $s \Masking s'$. 
+Thus, there is a transition $s' \xrightarrowprime{\sigma} t'$ (resp.  $s \xrightarrow{\sigma} t$) such that $t \Masking t'$. 
+The strategy plays according to one of these transitions and so
+$\rho_{i+1} = (t, \#, t', \Refuter)$ and $t \Masking t'$ and also $\rho_{i+1} \neq \ErrorSt$. If $\sigma \in \Faults$, then $\rho_i = (s, F^2, t', \Verifier)$ for some $F \in \Faults$. 
+Thus, $\rho_{i-1} = (s, \#, s', \Refuter)$ with $s \Masking s'$ (by inductive hypothesis). This means that there is a 
+transition $s' \xrightarrowprime{F} t'$, and by Def.~\ref{def:masking_rel},
+we have $s \Masking t'$. Furthermore, by definition $\pi^*(s, F^2, t', \Verifier) = (s, \#,t',\Refuter)$, 
+and in addition $s \Masking t'$. 
+
+``if'': Suppose that the Verifier has a winning strategy (say $\pi$) 
+from the initial state. Then, we define a masking simulation relation 
+as follows: 
+\[
+\M = \{(s,s') \mid \Verifier \text{ has a winning strategy for } (s, \#, s', \Refuter) \}.
+\]
+Let us prove  that it is a masking simulation. 
+First, we have $\InitState \M \InitStatePrime$ since $\pi$ is winning from $\InitVertex^G$. For condition (B.1) of Def.~\ref{def:masking_rel}, if
+$s \M s'$ and $s \xrightarrow{\sigma} t$ for some $s \in S$ and $s' \in S'$, then we must have that $\pi$ is winning from any 
+state $(s,\#,s',\Refuter)$. Furthermore, by Def.~\ref{def:strong_masking_game_graph} there is an edge 
+$((s,\#,s',\Refuter), (t,\sigma^1,s',\Verifier))$. 
+But since $\pi$ is winning, we also have $\pi(t,\sigma^1,s',\Verifier) \neq \ErrorSt$ and 
+then $\pi(t,\sigma^1,s',\Verifier)=(t, \#, t', \Refuter)$ and $\pi$ is winning from  $(t, \#, t', \Refuter)$.
+Thereby, there is a transition $t \xrightarrowprime{\sigma} t'$ such that
+$t \Masking t'$. The proof for the (B.2) is analogous. For (B.3), assume that $s \Masking s'$ and $s' \xrightarrowprime{F} t'$ for some 
+$F \in \Faults$. 
+As before, from state  $(s,\#,s',\Refuter)$, $\pi$ is winning where we also have an edge $((s,\#,s',\Refuter), (s,F^2,t',\Verifier))$ by 
+the definition of the game. 
+Since $\pi$ is winning from $(s,\#,s',\Refuter)$ for the Verifier, there is a play $\pi(s,F^2,t',\Verifier) = (s,\#,t',\Refuter)$ such that $\pi$ wins from 
+$(s,\#,t',\Refuter)$. Hence, $s \Masking t'$, and the result follows.
+\qedhere
+
+\end{proof} \\
+
+By Theorem~\ref{thm:weak_thm}, the result also holds for weak masking games as it is stated in the following theorem.
+
+\begin{thm} \label{thm:weak_wingame_strat}
+  Let $A=\langle S, \Sigma \cup \{\tau\}, \rightarrow, \InitState \rangle$ and
+  $A'=\langle S', \SigmaF \cup \{\tau\}, \rightarrow', \InitStatePrime \rangle$.
+  $A \WeakMasking A'$ iff the Verifier has a winning strategy for the
+  weak masking game graph $\WeakMaskGG$.
+\end{thm}
+
+\begin{thm}\label{th:game-determined}
+  For any $A$ and $A'$, the strong (resp.\ weak) masking game graph
+  $\StrMaskGG$ (resp.\ $\WeakMaskGG$)  can be
+  determined in time $\BigO(|E^G|)$ (resp.\ $\BigO(|E_W^G|)$).
+\end{thm}
+\begin{proof}
+	The set of winning states for the Refuter can be computed using a bottom-up breadth-first search from the error state, as in reachability games \cite{Jurd11}. 
+This procedure inspects once each edge, in the worst case. That is, the running time of this algorithm is $\BigO(|E^G|)$ for 
+the strong masking case, and $\BigO(|E_W^G|)$ for the weak case. For the latter case, one needs to bear in mind that computing  
+$\Rightarrow$ from $\rightarrow$ takes polynomial time.
+\qedhere
+\end{proof} \\
+\begin{figure} [h]
+\begin{center}
+    %\vspace{-0.5cm}
+   % \includegraphics[scale=0.5]{ex1_cell_mem_game_graph_two_faults.eps} 
+    \includegraphics[scale=0.5]{ex1_cell_mem_game_graph_two_faults.eps} 
+  %  \vspace{-0.7cm}
+    \caption{Part of the masking game graph for memory cell model with two faults}
+    \label{figure:exam_2_mem_cell_gg_two_faults}
+     %\vspace{-0.6cm}
+\end{center}
+\end{figure}
+
+	Solving reachability games can be performed by computing sets $\text{Reach}_0$ (winning states for the Refuter) as a fixed point of
+sets $\text{Reach}^i_0$  \cite{Jurd11}.
+	These ideas can be adapted to our setting to take into account the number of faults. This will be useful for the next sections, wherein the number of faults are important for reasoning about the quantitative version of masking games.
+\begin{defi}\label{def:U} Given a strong masking game graph $\StrMaskGG$, 
+the sets $\setsUs$ (for $i,j \geq 0$) are defined as follows:
+\begin{align*}
+  U^0_i =& U^j_0 = \emptyset,  \label{def:of:Uji} \\
+  U_1^1 =&  \{\ErrorSt\},
+  \hspace{12.5cm} {}\notag
+\end{align*}
+%\vspace{-0.8cm}
+\begin{align*}
+  U_{i+1}^{j+1} =&
+    \{v' \mid v' \in V_\Refuter \wedge \post(v') \cap U_{i+1}^j \neq \emptyset\} \\
+    &\textstyle\cup
+    %\{v' \mid v' \in S_V \wedge post(v') \subseteq \bigcup_{j'\leq j} U_{i+1}^{j'} \wedge post(v') \cap U^j_{i+1} \neq \emptyset \wedge \pr{2}{v'} \notin \Faults \} \\
+    %NOTE: above is the original condition of TACAS paper
+    \{v' \mid v' \in V_\Verifier \wedge \post(v') \subseteq \bigcup_{i'\leq i+1, j' \leq j}U_{i'}^{j'} \wedge \post(v') \cap U^j_{i+1} \neq \emptyset \wedge \pr{1}{v'} \notin \Faults \} \\
+    &\textstyle \cup
+    \{v' \mid  v' \in V_\Verifier \wedge \post(v') \subseteq \bigcup_{i'\leq i, j' \leq j}U_{i'}^{j'} \wedge \post(v') \cap \setsUs \neq \emptyset \wedge \pr{1}{v'} \in \Faults \}
+\end{align*}
+Furthermore, $U^k = \bigcup_{i \geq 0} U_i^k$ and $U = \bigcup_{k \geq 0} U^k$.
+\end{defi}
+Intuitively, the subindex $i$ in $U^k_i$ indicates that $\ErrorSt$ is reached after at most $i-1$ faults and $k$ steps occurred.
+The following lemma is straightforwardly proven using standard techniques of reachability games \cite{AlfaroHK07}.
+	Note that these sets can also be computed  for weak games in a similar way by using the $\Rightarrow$ relation.
+\begin{lem} \label{lemma:RefWinStrat} The Refuter has a winning strategy in $\mathcal{G}_{A, A'}$ (or $\mathcal{G}^W_{A, A'}$) iff $\InitVertex^G \in U^k$, for some $k$.
+\end{lem}
+\begin{proof} 
+	``only if'': The proof uses standard results of reachability games. More specifically, consider the set $V^G \setminus U$, this set is
+a trap for the Refuter, that is, if $(s,\sigma, s', \Verifier) \in V^G \setminus U$, then there is a $v \in \post((s,\sigma, s', \Verifier))$ such 
+that $v \in V^G \setminus U$, otherwise
+$(s,\sigma, s', \Verifier) \in U^k$ for some $k$. Similarly, if $(s,\#, s', R) \in V^G \setminus U$, then for all $v \in \post((s,\#, s', \Refuter))$ 
+we have $v \in V^G \setminus U$. That is, $V^G \setminus U$ is a ``trap'' for the Refuter. 
+Now, we can define a strategy for the Verifier $\pi_\Verifier$ as follows: if $(s, \sigma, s', \Verifier) \in V^G \setminus U$, then
+$\pi_\Verifier(s, \sigma, s', \Verifier) = \rho$ for some $v \in V^G \setminus U$ (which is guaranteed to exist), otherwise it returns an arbitrary node. 
+This strategy is winning for the Verifier from any $v \in V^G$, that is, for any play $\rho_0 \rho_1 \rho_2 \dots$ 
+if $\rho_0 \in V^G \setminus U$, then $\forall i \geq 0: \rho_i \in V^G \setminus U$ 
+(which implies $\forall i \geq 0: \rho_i \neq \ErrorSt$). 
+The proof is by induction on $i$. For $i=0$ the result is direct since $\rho_0 \in V^G \setminus \{\ErrorSt\}$. For the inductive case,
+suppose that $\rho_i \in V^G \setminus U$. In case that $\rho_i = (s, \sigma, s', \Verifier)$, then by definition of $\pi_\Verifier$, 
+$\rho_{i+1} = \pi_\Verifier(s,\sigma, s', \Verifier) \in V^G \setminus U$.
+Moreover, if $\rho_i = (s, \#, s', \Refuter)$, then $\post((s, \#, s', \Refuter)) \subseteq V^G \setminus U$, 
+and so $\rho_{i+1} \notin U$. 
+Now, since $\InitVertex^G \notin U^k$ for all $k$, then $\InitVertex^G \notin U$ and $\InitVertex^G \in V^G \setminus U$. 
+Thus, by the property proven above $\Refuter$ has a winning strategy from 
+$\InitVertex^G$. But this is a contradiction because the Refuter and the Verifier cannot have both winning strategies from the same states. 
+Hence, $\InitVertex^G \in U^k$ for some $k$.
+	
+``if'': Consider $\InitVertex^G \in U^k$ for some $k$, that is, we have  $\InitVertex^G \in U^k_i$ for some $i$ by Def.~\ref{def:U}. 
+Furthermore, for every $v \in V^G$ we define $\delta(v) = \min \{ (i,j) \mid v \in U^j_i \}$ (using the lexicographical order), for convenience we assume $\min \emptyset = (\infty, \infty)$.
+Then, the winning strategy $\pi_R$ for the Refuter is defined as follows. If $\delta(v) = (i,j)$ (with $(i,j) < (\infty, \infty)$), then $\pi_\Verifier(v) = w$, for $w$ being a vertex such that
+$\delta(w) = (i,j-1)$ (if $\pr{1}{v} \notin \Faults$) or $\delta(w) = (i-1,j-1)$ (if $\pr{1}{v} \in \Faults$), which is guaranteed to exists by Def.~\ref{def:U}. Otherwise, $\pi_\Refuter(v)$ returns
+an arbitrary vertex. Note that for any play $\rho_0 \rho_1 \rho_2 \dots$ starting at $\InitVertex^G$ we have that:  for all $i \geq 0$, $\delta(\rho_i) > \delta(\rho_{i+1})$, in lexicographic order.
+	Thus, at some $k>0$ we have $\delta(\rho_k) = (1,1)$, and then $\rho_k = \ErrorSt$.
+\qedhere
+\end{proof} \\
+
+By Theorem \ref{thm:weak_thm}, this proof also applies to the weak masking game $\WeakMaskGG$.
+%By theorem \ref{thm:weak_thm}, the proof also applies for the weak masking game graph $\mathcal{G}^W_{A, A'}$. 
+
+\section{Quantitative Masking} \label{sec:QuantMask}
+In this section, we extend the strong (resp. weak) masking simulation game introduced above 
+with quantitative objectives to define the notion of masking fault-tolerance distance.
+% In practice, fault-tolerance appears with a quantitative flavor, that is, fault-tolerant systems have %degrees of tolerance. This is particularly true when techniques like redundancy and voting are used.  %take this into account. 
+It is important to remark that we use the attribute ``quantitative'' in a non-probabilistic sense.
+\begin{defi}  
+  %Let $A=\langle S, \Sigma, E, s_0\rangle$ and $A'=\langle S', \Sigma_{\Faults}, E', s'_0 \rangle$.  T
+  For transition systems $A$ and $A'$, the \emph{quantitative strong masking game graph} 
+  $\QMStrGame = \langle V^G, V_\Refuter, V_\Verifier, E^G,  \InitVertex^G,  \reward^G \rangle$ is defined as follows:
+ 
+\begin{itemize}
+\item
+  $\mathcal{G}_{A, A'}=\langle V^G, V_\Refuter, V_\Verifier, E^G, \InitVertex^G \rangle$ is defined as in Def.~\ref{def:strong_masking_game_graph},
+\item
+  $ \reward^G(v) = (\chi_{\Faults}(\pr{1}{v}), \chi_{\ErrorSt}(v))$
+
+\end{itemize}
+%
+where $\chi_{\Faults}$ is the characteristic function over 
+set $\Faults$, returning $1$ if $\sigma \in \Faults$ and $0$ otherwise, and $\chi_{\ErrorSt}$ is the characteristic function over the singleton set $\{\ErrorSt\}$.
+\end{defi}
+Note that the reward function returns a pair of numbers instead of a
+single number. It is direct to codify this pair into a number, but we
+do not do it here for the sake of clarity.  We remark that the
+\emph{quantitative weak masking game graph} $\QMWeakGame$
+is defined in the same way as the game graph defined above but using
+the weak masking game graph $\mathcal{G}^W_{A, A'}$ instead of
+$\mathcal{G}_{A, A'}$
+
+
+Given a quantitative strong masking game graph with the reward function $\reward^G$ and a play 
+$\rho = \rho_0 \rho_1 \rho_2, \ldots$, for all $i \geq 0$, let 
+%$v_i = v^G(\rho_i \xrightarrow{\sigma_i} \rho_{i+1})$.
+$r_i = \reward^G(\rho_i)$.
+We define the \emph{masking payoff function} as follows: 
+\[%\displaystyle
+\FMask(\rho) = \lim_{n \rightarrow \infty}  \frac{\pr{1}{r_n}}{1+ \sum^{n}_{i=0} \pr{0}{r_i}},
+%\FMask(\rho) = \liminf_{n \rightarrow \infty}  \frac{\pr{1}{v_n}}{1+ \sum^{n}_{i=0} \pr{0}{v_i}},
+\]
+which is proportional to the inverse of the number of masking movements made by the Verifier. To see this, note that the numerator of $\frac{\pr{1}{r_n}}{1+ \sum^{n}_{i=0} \pr{0}{r_i}}$ will be $1$
+when we reach the error state, that is, in those paths not reaching the error state this formula returns $0$. Furthermore, if the error state is reached, then the denominator will count the number of fault transitions
+taken until the error state. All of them, except the last one, were masked successfully.  The last fault, instead, while attempted to be masked by the Verifier, eventually leads to the error state.
+That is, the vertices with value $(1,\_)$ are those corresponding to faults.  The others are mapped to $(0,\_)$.
+Notice also that if $\ErrorSt$ is reached in $v_n$ without the occurrence of any fault, the nominal part of the implementation does not match the nominal specification, in which case $\frac{\pr{1}{r_n}}{1+ \sum^{n}_{i=0} \pr{0}{r_i}}=1$.
+Then, 
+the Refuter wants to maximize the value of any run, that is, she will try to execute  faults leading to the state $\ErrorSt$. 
+In contrast, the Verifier wants to avoid $\ErrorSt$ and then she will try to mask faults with actions that take her away from the error state. 
+
+More precisely, the value of the quantitative strong masking game for the Refuter is defined as  $\val_\Refuter(\QMStrGame) = \Sup_{\pi_\Refuter \in \Pi_\Refuter} \; \Inf_{\pi_\Verifier \in \Pi_\Verifier} \FMask(\out(\pi_\Refuter, \pi_\Verifier))$. Analogously, the value of the game for the Verifier is defined as $\val_\Verifier(\QMStrGame) = \Inf_{\pi_\Verifier \in \Pi_\Verifier} \; \Sup_{\pi_\Refuter \in \Pi_\Refuter} \FMask(\out(\pi_\Refuter, 
+\pi_\Verifier))$. Then, we define the value of the quantitative strong masking game, denoted by $\val(\QMStrGame)$, as the value 
+of the game either for the Refuter or the Verifier, i.e., $\val(\QMStrGame) = \val_\Refuter(\QMStrGame) = \val_\Verifier(\QMStrGame)$. This can be done because 
+quantitative strong masking games are determined as we prove below in Theorem~\ref{thm:mask_game_det}. \\
+
+\begin{defi} \label{def:mask_dist}
+ Let $A$ and $A'$ be transition systems. 
+The \emph{strong masking distance} between $A$ and $A'$, denoted by $\DeltaMask(A, A')$ is defined as:
+$\DeltaMask(A, A') = \val(\QMStrGame).$
+\end{defi}
+
+	We would like to remark that the \emph{weak masking distance} $\DeltaMask^W$ is defined in the same way 
+for the quantitative weak masking game graph $\QMWeakGame$.  Roughly speaking, we are interested on 
+measuring the number of faults that can be masked. The value of the game 
+is essentially determined by the faulty labels on the game graph and how 
+the players can find a strategy that leads (or avoids) the state $\ErrorSt$, independently of 
+the existence of silent actions.
+
+In the following, we state some basic properties of this kind of games. 
+As we already anticipated, quantitative strong masking games are determined.
+
+\begin{thm} \label{thm:mask_game_det}
+  For any quantitative strong masking game graph $\QMStrGame$ with payoff function $\FMask$:
+%  \vspace{-0.3cm}
+  \[\textstyle
+  \Inf_{\pi_\Verifier \in \Pi_\Verifier} \; \Sup_{\pi_\Refuter \in \Pi_\Refuter} \FMask(\out(\pi_\Refuter, \pi_\Verifier)) = \Sup_{\pi_\Refuter \in \Pi_\Refuter} \;  \Inf_{\pi_\Verifier \in \Pi_\Verifier} \FMask(\out(\pi_\Refuter, \pi_\Verifier))\]
+\end{thm}
+\begin{proof} In order to prove that the masking payoff function $\FMask$ is determined we have to prove that it is bounded and Borel measurable (Martin's theorem \cite{Martin98}). First, $\FMask$ is bounded by definition. Second, to see that $\FMask$ is Borel measurable note that $\FMask(\Omega) \subseteq [0,1]$, and then it is sufficient to prove that, for every rational $x$, $\FMask^{-1}((-\infty, x])$ is  Borel in the Cantor topology of infinite executions. 
+Consider $\FMask^{-1}([-\infty,x])$ for an arbitrary $x$, this is the same as $\FMask^{-1}([0, \frac{1}{a}])$ for a given $a$. But, $\FMask^{-1}([0, \frac{1}{a}]) = \bigcup_{b \geq a} A_b$ where
+$A_b = \bigcup_{i >0} A^i_b$ for $A^i_b = \{ \rho_0 \rho_1 \dots \mid \rho_i = \ErrorSt \wedge \sum^{i-1}_{j=0} \chi_{\Faults}(\pr{1}{\rho_j}) =b\}$. Note that 
+$A^i_b = \{ C_{\rho_0 \dots \rho_i} \mid \sum^{i-1}_{j=0} \chi_{\Faults}(\pr{1}{\rho_j}) =b\}$ where $C_{\rho_0 \dots \rho_i}$ is the cone corresponding to initial segment 
+$\rho_0 \dots \rho_i$ which is Borel measurable, and so $A^i_b$, $A_b$ and $\FMask^{-1}((-\infty, x])$ are Borel measurable.
+\qedhere
+%is the set of all sequences $x_0 x_1 x_2 \dots$
+%such that we have $b$ or more ones, and this is the union $\bigcup A_i$ being $A_i = \{\sigma \mid \mbox{ number of ones of } \sigma[0,i] = b\}$, which are Borel sets, thus $A$ is a Borel set.
+\end{proof} \\
+
+
+\subsection{Computation of Masking Distance}
+
+In this subsection we present the algorithms for computing the masking distance 
+for a quantitative strong (resp. weak) masking game.
+We show that, in the case of deterministic systems, computing the  
+masking distance can be accomplished by a shortest path algorithm. 
+In contrast, for non-deterministic systems, this computation can be performed 
+via a fix-point approach.
+
+We start by presenting the next theorem that state how the value for a 
+given quantitative strong masking game can be calculated.
+%
+\begin{thm} \label{thm:quant_game}
+  Let $\QMStrGame$ be a quantitative strong masking game graph.
+  \sloppy Then, $\val(\QMStrGame) = \frac{1}{\pr{0}{\delta(\InitVertex^G)}}$, with
+  $\delta(\InitVertex^G) = \min \{ (i,j) \mid  \InitVertex^G \in \setsUs \}$, whenever
+  $\InitVertex^G \in U$, and $\val(\QMStrGame)=0$ otherwise, where
+  sets $\setsUs$ and $U$ are defined in Def.~\ref{def:U}.
+
+\end{thm}
+\begin{proof} The proof is by cases:
+	
+	If $\InitVertex^G \notin U$, then we define the following strategy for the Verifier. If $v \in V_\Verifier \setminus U$, then $\pi^*_\Verifier(v)=v'$ 
+	for some $v' \in V_\Refuter \setminus U$, and if $v \notin  V_\Verifier \setminus U$, then $\pi^*_\Verifier(v) = v'$ for an arbitrary $v'$. 
+	We prove by induction that for any play conforming $\pi^*_\Verifier$: $\rho =\rho_0 \rho_1 \dots$ we 
+have $\forall i \geq 0: \rho_i \notin V \setminus U$. The base case is direct. 
+For the inductive case, assume that $\rho_i \notin V \setminus U$. In case that $\rho_i \in V_\Verifier$, the property follows by the definition of
+$\pi^*_\Verifier$. If $\rho_i \in V_\Refuter$, since $\rho_i \in V^G \setminus U$, then $\post(\rho_i) \subseteq V^G \setminus U$ (by Def.~\ref{def:U}). 
+Thus, $\rho_{i+1} \in V^G \setminus U$. 
+	 Furthermore, we also have $\rho_i \neq \ErrorSt$ since $\{ \ErrorSt \} \subseteq U$. Also, note that any play avoiding state $\ErrorSt$ has value $0$: by definition of $\QMStrGame$, each transition performed by the Refuter  must be followed by a transition
+selected by the Verifier. These transitions (the matches performed by the Verifier) have cost $(1,0)$ since the target of any of these transitions is different from $\ErrorSt$. Because we have an infinite number of these matches, when state $\ErrorSt$ is not reached, the valuation 
+of these plays is $\lim_{n\rightarrow \infty} \frac{0}{1+ \sum^n_{i=0} \pr{0}{r_i}} = 0$ (recall that $r_i = \reward^G(\rho_i)$). 
+Summing up, $\sup_{\pi_\Refuter \in \Pi_\Refuter} \FMask(\out(\pi_\Refuter, \pi^*_\Verifier)) = 0$, and since $\FMask$ is positive
+we have $\val(\QMStrGame) = \inf_{\pi_\Verifier \in \Pi_\Verifier} \sup_{\pi_\Refuter \in \Pi_\Refuter} \FMask(\out(\pi_\Refuter, \pi_\Verifier)) = 0$.
+
+	If $\InitVertex^G \in U$, we have that $\delta(\InitVertex^G) < (\infty, \infty)$, then we define the following strategy for the Refuter. 
+	If $v \in U$, then $\pi^*_\Refuter(v)= v'$, where $\delta(v') < \delta(v)$, otherwise $\pi^*_\Refuter(v)=v'$, for an arbitrary $v'$. 
+	Strategy $\pi^*_R$ is well-defined because if $v \in \setsUs$, then there is a $v' \in \post(v)$ such that $v \in U^{j-1}_i$ (by Def.~\ref{def:U}). Furthermore, $\delta(v') = (\pr{0}{\delta(v)}, \pr{1}{\delta(v)} - 1)$.  
+	Now, we prove that for every strategy $\pi_\Verifier \in \Pi_\Verifier$ such that $\out(\pi^*_\Refuter, \pi_\Verifier) = \rho = \rho_0 \rho_1 \dots$ and $\rho_0 \in U$, we have:
+\begin{equation}\label{eq:inf-bound}
+	\FMask(\out(\pi^*_\Refuter, \pi_\Verifier)) \geq \frac{1}{ \pr{0}{\delta(\rho_0)}}
+\end{equation} 
+		To prove that, note that, if $\delta(\rho_0)= (i,j)$, then $\rho_j =\ErrorSt$ 
+		since $\pr{1}{\delta(\rho_k)} = \pr{1}{\delta(\rho_{k+1})}+1$ for all $k$. 
+That is, in $j$ steps we have $\delta(\rho_{j}) = (1,1)$ and so $\rho_{j} = \ErrorSt$.
+	This implies that $\FMask(\rho) =  \lim_{n \rightarrow \infty}  \frac{\pr{1}{r_n}}{1+ \sum^{n}_{i=0} \pr{0}{r_i}} >0$, and also
+$ \sum^{\pr{1}{\delta(\rho_0)} + k}_{i=0} \pr{0}{r_i} =  \sum^{\pr{1}{\delta(\rho_0)}}_{i=0} \pr{0}{r_i}$.
+	 That is, proving:
+\begin{equation}\label{eq:bottom-sum}
+ 1+ \sum^{\pr{1}{\delta(\rho_0)}}_{i=0} \pr{0}{r_i} \geq \pr{0}{\delta(\rho_0)}
+\end{equation} 
+we get $\FMask(\rho) \geq \frac{1}{ \pr{0}{\delta(\rho_0)}}$. The proof is by induction on $\delta(\rho_0)$, the base case is direct.
+ For the inductive case, if $\rho_0 \in V_\Refuter$, then
+\begin{align*}
+ 	1 + \sum^{\pr{1}{\delta(\rho_0)}}_{i=0} \pr{0}{r_i} & =  1 + \pr{0}{r_0} + \sum^{\pr{1}{\delta(\rho_0)}}_{i=1} \pr{0}{r_i} & \\
+					   %  & =   1+\sum^{\pr{1}{\delta(\rho_0)}}_{i=1} \pr{0}{r_i} & \\
+					    % & =   1+\sum^{\pr{1}{\delta(\rho_1)}+1}_{i=1} \pr{0}{r_i} & \\
+					     & =   1+ \sum^{\pr{1}{\delta(\rho_1)}}_{i=0} \pr{0}{r_{i+1}} &  \text{($\rho_0 \in V_\Refuter$)}\\
+					     & \geq \pr{0}{\delta(\rho_1)} & \text{(I.H.)} \\
+					     & = \pr{0}{\delta(\rho_0)} & \text{($\rho_0 \in V_\Refuter$)}
+\end{align*}
+ If $\rho_0 \in V_\Verifier$ and $\pr{1}{\rho_0} \notin \Faults$, then the proof is as above. If $\pr{1}{\rho_0} \in \Faults$, then:
+\begin{align*}
+ 	1+\sum^{\pr{1}{\delta(\rho_0)}}_{i=0} \pr{0}{r_i} & =  1+\pr{0}{r_0} + \sum^{\pr{1}{\delta(\rho_0)}}_{i=1} \pr{0}{r_i} & \\
+					 %    & =   2 + \sum^{\pr{1}{\delta(\rho_0)}}_{i=1} \pr{0}{r_i} & \text{($\pr{1}{\rho_0} \in \Faults$)}\\
+					  %   & =  2 +  \sum^{\pr{1}{\delta(\rho_1)}+1}_{i=1} \pr{0}{r_i} & \\
+					     & =  2 +  \sum^{\pr{1}{\delta(\rho_1)}}_{i=0} \pr{0}{r_{i+1}} &   \text{($\pr{1}{\rho_0} \in \Faults$)}\\
+					     & \geq 1 + \pr{0}{\delta(\rho_1)} & \text{(I.H.)} \\
+					     & = \pr{0}{\delta(\rho_0)} & \text{($\pr{1}{\rho_0} \in \Faults$)}
+\end{align*}
+Thus, inequation \ref{eq:bottom-sum} holds. Now, consider the strategy $\pi^*_\Verifier$ for the Verifier defined as follows. For $v \in U$, $\pi^*_\Verifier(v) = v'$ such that $\delta(v') = \max \{\delta(v'') \mid v'' \in \post(v)\}$, otherwise $\pi^*_\Verifier(v) = v'$ for an arbitrary $v'$. 
+Let us prove that $\FMask(\out(\pi^*_\Refuter, \pi^*_\Verifier)) = \frac{1}{\pr{0}{\delta(\rho_0)}}$. 
+%Let $(\out(\pi^*_\Verifier, \pi^*_\Refuter)) = \rho_0 \rho_1 \dots$.
+Note that, by definition of $\pi^*_\Verifier$ and $\pi^*_\Refuter$, we have that $\pr{1}{\delta(\rho_{i+1})} = \pr{1}{\delta(\rho_i)} - 1$, %$\pr{1}{\delta(\rho_i)} = \pr{1}{\delta(\rho_{i+1})}+1$
+that is, in at most $\pr{1}{\delta(\rho_0)}$ steps we reach $\ErrorSt$. Thus, $\lim_{n \rightarrow \infty}  \pr{1}{r_n} =1$. 
+Furthermore, if $\pr{1}{\rho_i} \in \Faults$, then $\pr{0}{\delta(\rho_{i+1})} = \pr{0}{\delta(\rho_i)} - 1$
+by definition of $\pi^*_V$. Thereby, at most $\pr{0}{\rho_0}$ faults occur in $\rho$, and then
+$\FMask(\out(\pi^*_\Refuter, \pi^*_\Verifier)) = \frac{1}{\pr{0}{\delta(\rho_0)}}$. Therefore, this and inequation \ref{eq:inf-bound} give us: 
+$\inf_{\pi_\Verifier \in \Pi_\Verifier} \FMask(\out(\pi^*_\Refuter, \pi_\Verifier)) = \frac{1}{\pr{0}{\delta(v^G_0)}}$. 
+
+
+Finally, let us prove that there is no
+strategy $\pi^+_\Refuter$  such that $\sup_{\pi_\Verifier} \FMask(\out(\pi^+_\Refuter, \pi_\Verifier)) < \frac{1}{\pr{0}{\delta(v^G_0)}}$. 
+Thus, $\pi^*_\Refuter$ is the best strategy. 
+For the sake of contradiction, assume that we have such a strategy. Consider $\out(\pi^+_\Refuter, \pi^*_\Verifier) = \rho = \rho_0 \rho_1 \dots$, 
+and let $\delta(\rho_0) = (i,j)$. Then, note that, if $\rho_i \in V_\Refuter$, then $\pr{0}{\delta(\rho_i)} = \pr{0}{\delta(\rho_{i+1})}$, 
+moreover, if $\rho_i \in V_\Verifier$ then $\pr{0}{\delta(\rho_i)} = 1 + \pr{0}{\delta(\rho_{i+1})}$. 
+Thus, $\lim_{n \rightarrow \infty}\sum^n_{0} \pr{0}{r_i} = \frac{1}{\pr{0}{\delta(\rho_0)}}$, which yields a contradiction.
+Hence, $\val(\QMStrGame) = \inf_{\pi_\Verifier \in \Pi_\Verifier} \sup_{\pi_\Refuter \in \Pi_\Refuter} \FMask(\out(\pi_\Refuter, \pi_\Verifier)) = \frac{1}{\pr{0}{\delta(v^G_0)}}$.
+\qedhere
+.
+
+\end{proof} \\
+
+	Interestingly, for deterministic games the value of the game is given by the shortest path (if it exists) to the error state, as shown in the following theorem.
+\begin{thm}\label{theorem:det-games} Let  $\QMStrGame = \langle V^G, V_\Refuter,V_\Verifier, E^G, \InitVertex^G, \reward^G \rangle$ be a deterministic 
+quantitative strong masking game graph,
+and let  $G_{\QMStrGame} = \langle V^G,  E^G, \InitVertex^G, w \rangle$ be its underlying weighted graph, with a weight function $w$ 
+defined as:
+\[
+w(v, v') =
+\begin{cases} 1 & \text{if $\pr{1}{v'} \in \Faults$} \\
+		      0 & \text{otherwise}	 
+\end{cases}
+\]
+	If $\rho = \rho_0 \rho_1  \dots \ErrorSt$ is the shortest path (w.r.t. function $w$)
+to the error state in $G_{\QMStrGame}$, and $k$ is the number of faults occurring in $\rho$, then: 
+\[
+	\val(\QMStrGame) = \frac{1}{1+k}
+\]
+\end{thm}
+\begin{proof}
+	Let us define a strategy $\pi_\Refuter \in \Pi_\Refuter$ for the Refuter such that:
+\[
+	\inf_{\pi_\Verifier \in \Pi_\Verifier} f_m(\out(\pi_\Refuter, \pi_\Verifier)) = \sup_{\pi_\Refuter' \in \Pi_\Refuter} \inf_{\pi_\Verifier \in \Pi_\Verifier} f_m( \out(\pi_\Refuter',\pi_\Verifier))
+\]	
+	where this strategy conforms the shortest path in the underlying graph. Let us assume that: 
+$\rho_0 \rho_1 \dots \ErrorSt$ is the shortest path. We can safely assume that no vertex appears twice in $\rho$, otherwise we can reduce the shortest path by removing the cycle.
+	Keeping in mind that remark, we define the strategy $\pi_\Refuter$ as follows:
+\[
+	\pi_\Refuter(v) = \begin{cases}
+								\rho_{j+1} & \text{if $v = \rho_j$ for some $j \geq 0$,} \\
+								v' & \text{for arbitrary $v' \in V_\Verifier$.}
+						   \end{cases}
+\] 
+First, let us prove that $\inf_{\pi_\Verifier \in \Pi_\Verifier} f_m (\out(\pi_\Refuter, \pi_\Verifier)) = \frac{1}{1+k}$. Let $\pi_\Verifier$ be an arbitrary strategy for the Verifier. Let us prove that
+the play $\rho'_0 \rho'_1 \dots$ conforming $\pi_\Refuter$ and $\pi_\Verifier$ is equal to $\rho$. We prove it by induction 
+on $\rho_i$, it holds for $\rho_0 = \InitVertex = \rho'_0$. Assume that it holds 
+for $i=n$, that is, $\rho'_n = \rho_n$, if $\rho_n = (t, \sigma^1, s', \Verifier)$ (resp.  $\rho_n = (s, \sigma^2, t', \Verifier)$), since $A$ and $A'$ are deterministic, there is a unique edge $((t, \sigma^1, s', \Verifier), (t, \#, t', \Verifier)) \in E^G$ (resp. $((s, \sigma^1, t', \Verifier), (t, \#, t', \Verifier)) \in E^G$) and therefore $\rho'_{n+1} = \pi_\Verifier( \rho'_n) = (t, \#, t', \Verifier) = \rho_{n+1}$. If 
+$\rho'_n = \rho_n = (s, \#, s', \Refuter)$ then $\rho'_{n+1} = \pi_\Refuter(\rho'_n) = \pi_\Refuter(\rho_n) = \rho_{n+1}$. 
+	
+	In addition,  the valuation of $\rho$ is $\frac{1}{1+k}$, that is, we obtain:
+\begin{equation} \label{eq1}
+\begin{split}
+ f_m (\out(\pi_\Refuter, \pi_\Verifier))  =  \frac{1}{1+k},
+\end{split}
+\end{equation}	
+and since this holds for any $\pi_\Verifier$, we obtain:
+\begin{equation} \label{eq1}
+\begin{split}
+\inf_{\pi_V \in \Pi_V} f_m (\out(\pi_\Refuter, \pi_\Verifier))  =  \frac{1}{1+k}
+\end{split}
+\end{equation}
+
+Now, assume that there is a strategy $\pi_\Refuter'$ for the Refuter such that 
+$\inf_{\pi_V \in \Pi_V} f_m (\out(\pi_\Refuter', \pi_\Verifier)) > \inf_{\pi_\Verifier \in \Pi_\Verifier} f_m (\out(\pi_\Refuter, \pi_\Verifier))$.
+From (\ref{eq1}) we have that $\inf_{\pi_\Verifier \in \Pi_\Verifier} f_m(\out(\pi_\Refuter', \pi_\Verifier)) > \frac{1}{1+k}$. 
+Therefore, the number of faults observed in 
+$\inf_{\pi_\Verifier \in \Pi_\Verifier} f_m(\out(\pi_\Refuter', \pi_\Verifier))$ should be less than $k$. 
+But, it would be a shorter path in the underlying graph, which is a contradiction. Thereby, we have:
+\[	
+	\inf_{\pi_\Verifier \in \Pi_\Verifier} f_m(\out(\pi_\Refuter, \pi_\Verifier)) = \sup_{\pi_\Refuter' \in \Pi_\Refuter} \inf_{\pi_\Verifier \in \Pi_\Verifier} f_m( \out(\pi_\Refuter',\pi_\Verifier)).
+\]	
+\qedhere
+\end{proof} \\
+
+	Let us note that Theorems~\ref{thm:mask_game_det}, \ref{thm:quant_game} and \ref{theorem:det-games} apply as well to 
+$\QMWeakGame$.
+	Theorem~\ref{theorem:det-games} allows us to provide efficient procedures for deciding quantitative games in the 
+case of deterministic systems. For non-deterministic systems, the procedure is computationally more
+expensive (in terms of time and memory) than the deterministic case, because 
+the sets $\setsUs$ (Def.~\ref{def:U}) need to be computed. \\
+
+It is important to remark that, for non-deterministic systems, the shortest path does not always determine winning strategies. This can be seen by means of a simple example as follows. Let us consider the two transition systems shown in Fig.~\ref{fig:two-nondet-systems}.
+
+\begin{figure} [h]
+\begin{center}
+    \includegraphics[scale=0.5]{nondeterm.eps} 
+    \caption{Two non-deterministic systems}
+    \label{figure:nondeterm}\label{fig:two-nondet-systems}
+\end{center}
+\end{figure}
+\begin{figure} [h]
+\begin{center}
+    \includegraphics[scale=0.5]{nondeterm-game.eps} 
+    \caption{The quantitative game for systems $M$ and $M'$}
+    \label{figure:nondeterm-game}
+\end{center}
+\end{figure}
+
+In this example, the non-determinism is provided by action $b$. Note also that there is a fault in  $M'$ connecting states $t_2$ and $t_3$. The quantitative game for these systems is shown in Fig.~\ref{figure:nondeterm-game}. Note that any shortest path of this graph w.r.t. the weight 
+function $w$ has value $1$ (any path in the graph avoiding the faults). However, the value of this game is $\frac{1}{2}$ due to the best 
+strategy for the Refuter is to take the Verifier to state $(s_2,b^1,t_1,\Verifier)$. 
+From there, since the Verifier wants to minimize the value of the game, her best play  is to move to state $(s_2,\#,t_2,\Refuter)$. Then, the Refuter can choose a fault which leads to the error state. \\
+%Note that the value of this game is $\frac{1}{2}$.\\
+
+The above observation suggests that a different algorithm for computing the masking distance for 
+non-deterministic systems is needed. 
+The main idea is to compute the sets $\setsUs$ as defined in Def.~\ref{def:U} via 
+a fix-point approach. More precisely, the sets $\setsUs$ can be calculated using a 
+bottom-up breadth-first search from the error state. 
+Algorithm \ref{Alg:MainAlg} shows the pseudo-code for solving any quantitative 
+strong (resp. weak) masking game. 
+It takes as input a quantitative strong masking game graph $\QMStrGame = \langle V^G, V_\Refuter, V_\Verifier,E^G, \InitVertex^G, \reward^G \rangle$ 
+and computes the value of the game, i.e., $\val(\QMStrGame)$.
+%Let us describe the essential steps of the algorithm for solving any quantitative strong (resp. weak) masking game. 
+The algorithm annotates the nodes of the graph with numbers $i$ and $j$. 
+%The algorithm can be understood as follows. 
+The main steps of the algorithm are as follows:
+
+
+\begin{enumerate}
+  \item Every vertex $v$ is annotated with a pair $(i, j)$ representing that $v \in U_{i}^{j}$. Initially, $\ErrorSt$ is labeled with $(1, 1)$ and every other   
+  node is labeled with $(\infty, \infty)$ (lines \ref{Alg:InitB}-\ref{Alg:InitE}). 
+  Moreover, we use the assignment $\Q \gets \emptyset$ to denote the creation of an empty queue. 
+  Subsequently, we enqueue the error state (lines \ref{Alg:CreateQ}-\ref{Alg:LoopB}). We also maintain a set $\STB$ with the stabilized  states, i.e. states whose labels are final. The states that are not reachable from the error state are ignored.
+  \item A bottom-up breadth-first search is performed from the error state by means of the priority queue $\Q$ (lines \ref{Alg:LoopB}-\ref{Alg:LoopE}), where the state with the lowest label has the highest priority. 
+  Let $v'$ be the vertex with the highest priority in the queue. Then, for all predecessor $v$ of $v'$ the following steps 
+  are executed (lines \ref{Alg:LoopBPre}-\ref{Alg:LoopEPre}):
+  \begin{itemize}
+    \item If $v$ is a Verifier's node (resp. a Refuter's node), then we get the 
+    maximum (resp. minimum) label $(i,j)$ from all of its successors w.r.t. lexicographical order. In addition, if $v$ is a Verifier's vertex and all its successors are in $\STB$, then $v$ is added to the set. In case that $v$ is a Refuter's vertex, 
+    the vertex is simply added without any restrictions. 
+    \item Update $(i,j)$ by incrementing $j$ and incrementing $i$ only if $\pr{1}{v} \in \Faults$. Let  $(i',j')$ be this new label.
+    \item If $i'$ is different from the first component of the current label of $v$, then update it and add $v$ to the queue. 
+    Observe that the same node could be added to the queue
+     more than once as its successors' labels change.
+  \end{itemize}
+  \item When the queue is empty, 
+  the algorithm terminates and returns the value of the game (lines \ref{Alg:EndB}-\ref{Alg:EndE}). 
+  Intuitively, the procedure halts as soon as the labels of all states in the game graph  reach a final value. 
+  Let $k$ be the first component of the initial state's label, then the value of the game is $0$ if 
+  $k = \infty$, and $\frac{1}{k}$ otherwise.\\
+\end{enumerate}
+\begin{algorithm}[t]
+\SetAlgoLined
+\KwIn{Quantitative Strong Masking Game $\QMStrGame = \langle V^G, V_\Refuter, V_\Verifier,E^G, \InitVertex^G, \reward^G \rangle$}
+\KwOut{$\val(\QMStrGame)$}
+ Label $\ErrorSt$ with $(1,1)$\; \label{Alg:InitB}
+ Label every vertex in $V^G \setminus \{\ErrorSt\}$ with $(\infty,\infty)$\; \label{Alg:InitE}
+ %$\Q \gets \emptyset$ \tcp*{$\Q$ is a priority queue}  \label{Alg:CreateQ}
+ $\Q \gets \emptyset$ \tcp*{$\Q$ is a priority queue}  \label{Alg:CreateQ}
+ $\STB \gets \{\ErrorSt\}$\; \label{Alg:CreateSTB}
+ %$\mathcal{VE} \longleftarrow \emptyset$\; \label{Alg:CreateVE} 
+
+ $\enqueue(\Q, \ErrorSt)$\; \label{Alg:LoopB} 
+ \While{$\Q$ is not empty}{ \label{Alg:While} 
+ 	 $s' \gets \dequeue(\Q)$\; \label{Alg:Dequeue-Node}
+ 	 %\lIf{$\{s'\xrightarrow{\sigma}t \mid t \in post(s')\} \subseteq \mathcal{VE}$}{ \label{Alg:UpdateSTB}
+	%	$\mathcal{STB} \longleftarrow \mathcal{STB} \cup \{s'\}$
+	 %}
+	 
+	 \For{$v \in \pre(v') \wedge v \notin \STB$ }{ \label{Alg:LoopBPre}
+	 %\For{$s\xrightarrow{\sigma}s' \in E^G$}{ \label{Alg:LoopBPre}
+	 	\If{$v \in V_\Verifier$}{
+	 		$\lbl \gets \maxlabel(\post(v))$\; \label{Alg:V-Update}
+	 		\lIf{$\post(v) \subseteq \STB$}{ \label{Alg:UpdateSTB}
+	 		$\STB \gets \STB \cup \{v\}$ 
+	 		}
+	 		%$enq \longleftarrow post(s) \subseteq \mathcal{STB}$
+	 	}
+	 	\Else{
+	 		$\lbl \gets \minlabel(\post(v))$\; \label{Alg:R-Update}
+	 		%$enq \longleftarrow post(s) \cap \mathcal{STB} \neq \emptyset$
+	 		$\STB \gets \STB \cup \{v\}$ \label{Alg:R-STB-Update}
+	 	}
+	 	$\pr{1}{\lbl} \gets \pr{1}{\lbl} + 1$ \tcp*{we assume $\infty+1=\infty$} \label{Alg:Inc_j}
+	 	\lIf{$\pr{1}{v} \in \Faults$}{
+	 		$\pr{0}{\lbl} \gets \pr{0}{\lbl} + 1$  \label{Alg:Inc_i}
+	 	}
+	 	\If{$\pr{0}{\Label(v)} \neq \pr{0}{\lbl}$}{ \label{Alg:Insert-Cond}
+	 		Label $v$ with $\text{lbl}$\;
+	 		$\text{Enqueue}(\Q, v)$  \tcp*{$v$ has priority $\Label(v')$} \label{Alg:Enqueue-Vertex}
+	 		%$\mathcal{VE} \longleftarrow \mathcal{VE} \cup \{s\xrightarrow{\sigma}s'\}$
+	 	}
+	 } \label{Alg:LoopEPre}
+ } \label{Alg:LoopE}
+ %\lIf{$\pr{0}{Label(s_{0}^G)} \neq \infty$}{ \label{Alg:EndB}
+ \lIf{$\InitVertex^G \in \STB$}{ \label{Alg:EndB}
+	$\result \gets \frac{1}{\pr{0}{\Label(\InitVertex^G)}}$
+ }
+ \lElse{
+	$\result \gets 0$ \label{Alg:Ret0}
+ }
+ \Return{$\result$}\; \label{Alg:EndE}
+ \caption{Computing the value for a quantitative strong masking game} \label{Alg:MainAlg} 
+\end{algorithm}
+
+
+	 Let us prove the termination and correctness of this algorithm.
+
+\sloppy \begin{thm}\label{th:alg-termination}  \textbf{(Termination)} Algorithm \ref{Alg:MainAlg} terminates.
+\end{thm}
+\begin{proof}
+	Let us prove that a vertex cannot be added an unbounded number of times to $\Q$. 
+First, note that lines \ref{Alg:LoopBPre} and \ref{Alg:R-STB-Update} of Algorithm \ref{Alg:MainAlg} imply that Refuter's vertices are 
+added only once to the queue. 
+Thus, only Verifier's vertices can be added an unbounded number of times to $\Q$. 
+We prove by contradiction that this is not the case. 
+Assume that $v$ is a Verifier's vertex that is added infinitely often to the queue. 
+This implies that $v \notin \STB$ is always true inside the loop, and so 
+$\post(v) \cap (V^G \setminus \STB) \neq \emptyset$ (otherwise $v$ would be inserted into $\STB$, line \ref{Alg:UpdateSTB}). 
+That is,  some Refuter's node  $w \in \post(v)$ must satisfy $\post(w) \cap \STB = \emptyset$. 
+Furthermore, we must also have $\Label(w) = (\infty, \infty)$ because this is the initial value assigned to $w$, 
+and the only way of modifying this is by executing line \ref{Alg:R-Update}, 
+in such a case, $w$ will be added to $\Q$, contradicting our assumption. 
+But the label of $v$ is always calculated taking the maximum of its successors (line \ref{Alg:V-Update}), that is, 
+$\Label(v) = (\infty, \infty)$ must hold inside the loop, and since we defined $\infty + 1 = \infty$, the condition in line \ref{Alg:Insert-Cond} is always false.
+Thus $v$ is never added to the queue, contradicting our initial assumption. 
+Summing up, no node is added an unbounded number of times to the queue. Hence, 
+the queue eventually gets empty and the algorithm terminates.
+\qedhere
+\end{proof} 
+\sloppy \begin{thm}\label{th:alg-correctness} \textbf{(Correctness)} On Termination, Algorithm \ref{Alg:MainAlg} 
+returns the value of the quantitative strong (resp. weak) masking game graph $\QMStrGame$.
+\end{thm}
+\begin{proof}
+	Let us consider the function  $\delta(v) = \min \{(i,j) \mid v \in \setsUs\}$, where $\min \emptyset = (\infty, \infty)$.
+We also consider the extension of this function to sets, that is, $\delta(W) = \{\delta(w) \mid w \in W \}$. 
+Furthermore, the following properties of $\delta$ are a consequence of Def. \ref{def:U}: \\
+
+\noindent
+if $v$ is a Refuter's vertex:
+\begin{equation}\label{prop:delta-1}
+ \delta(v)  = \min \{(i,j+1) \mid (i,j) \in \delta(\post(v)) \}
+\end{equation}
+If $v$ is a Verifier's vertex and $\pr{1}{v} \in \Faults$ then:
+\begin{equation}\label{prop:delta-2}
+ \delta(v)  = \max \{(i+1,j+1) \mid (i,j) \in \delta(\post(v)) \}
+\end{equation}
+If $v$ is a Verifier's vertex and $\pr{1}{v} \notin \Faults$ then:
+\begin{equation}\label{prop:delta-3}
+ \delta(v) = \max \{(i,j+1) \mid (i,j) \in \delta(\post(v)) \}
+\end{equation}
+	Now, let us prove that the following predicates always hold after line \ref{Alg:While}.
+\begin{equation}\label{Alg:inv0}
+	\forall v \in \STB : \Label(v) < (\infty, \infty)
+\end{equation}
+\begin{equation}\label{Alg:inv1}
+	\forall w, v \in S^G : v \in \STB \wedge \Label(w) < \Label(v) \Rightarrow w \in \STB
+\end{equation}
+%and 
+\begin{equation}\label{Alg:inv2}
+	\forall v \in \STB : \Label(v) = \delta(v)
+\end{equation}
+
+	Proof of Property \ref{Alg:inv0}: it holds for the initialization (line \ref{Alg:CreateSTB}). We proceed by contradiction. 
+Let $v$ be the first node added to $\STB$ such that $\Label(v) = (\infty, \infty)$.
+If it is a Refuter's vertex, then $\post(v) \cap \STB \neq \emptyset$ and since $v$ was the first node added to $\STB$ with 
+$\Label(v) = (\infty, \infty)$ we have that $\forall w \in \post(v) \cap \STB: \Label(w) < (\infty, \infty)$. But then, in line \ref{Alg:R-Update},
+$v$ is labelled with some label different from $(\infty, \infty)$ which is a contradiction. 
+Similarly, if $v$ is a Verifier's vertex, then $\post(v) \subseteq \STB$ and 
+therefore it is labelled in line \ref{Alg:V-Update} with a value different from $(\infty, \infty)$, contradicting our initial assumption. 
+Hence, $\forall v \in \STB : \Label(v) < (\infty, \infty)$.
+
+	Proof of Property \ref{Alg:inv1}: $\STB$ is initialized with $\{\ErrorSt \}$ and therefore the property holds before line \ref{Alg:While}. 
+For the sake of contradiction, assume that $v$ is the first node added to $\STB$ that does not hold the property, that is, there is a $w$ such that $\Label(w) < \Label(v)$ and
+$w \notin \STB$; furthermore, let us assume that $w$ is a vertex with minimum label satisfying this. 
+Since $v \in \STB$ we have $\Label(v)<(\infty, \infty)$ (by Prop.~\ref{Alg:inv0}) and therefore $\Label(w)< (\infty, \infty)$. 
+In fact, $w$ cannot be a Refuter's vertex, otherwise, when labelled, it would be added to $\STB$ (line \ref{Alg:R-STB-Update}), 
+contradicting our assumptions. 
+Now, if $w$ is a Verifier's vertex and $\Label(w) < (\infty, \infty)$
+since $\Label(w) = \max\{\Label(z) \mid z \in \post(w)\}$ (line \ref{Alg:R-Update}), we have: $\forall z \in \post(w) : \Label(z) < (\infty, \infty)$.
+Moreover, we have by transitivity that $\forall z \in \post(w) : \Label(z) < \Label(v)$. But since we assumed that 
+$w$ was the vertex with minimum label satisfying $\Label(w) < \Label(v)$ and $w \notin \STB$, we have 
+that $\forall z \in \post(v) : z \in \STB$. But then when $v$ was inspected in line \ref{Alg:UpdateSTB} it was added to $\STB$, 
+which yields a contradiction.
+
+	Proof of Property \ref{Alg:inv2}: the property holds for $\ErrorSt$. Let $v$ be the first vertex added to $\STB$ such 
+	that $\Label(v) \neq \delta(v)$. In case that $v$ is a Verifier's vertex, then, 
+	since $v \in \STB$, we have $\post(v) \subseteq \STB$. Moreover,  we assumed that $v$ was the first vertex violating the property,  
+	so we have that $\forall w \in \post(v):\delta(w)=\Label(w)$. Furthermore, if $\pr{1}{v} \notin \Faults$, then: 
+\begin{align*}
+\Label(v) & = \max \{(i,j+1) \mid (i,j) \in \Label(\post(v))\}&  \text{(Lines \ref{Alg:V-Update} and \ref{Alg:Inc_j})}\\
+	      & =  \max \{(i,j+1) \mid (i,j) \in \delta(\post(v))\}&  \text{(Assumption)}\\
+	      & = \delta(v)& \text{(Prop. \ref{prop:delta-3})}
+\end{align*}
+which is a contradiction. Now, in case that $\pr{1}{v} \in \Faults$ we have that:
+\begin{align*}
+\Label(v) & = \max \{(i+1,j+1) \mid (i,j) \in \Label(\post(v))\}&  \text{(Lines \ref{Alg:V-Update}, \ref{Alg:Inc_j}, and \ref{Alg:Inc_i})}\\
+	      & =  \max \{(i+1,j+1) \mid (i,j) \in \delta(\post(v))\}&  \text{(Assumption)}\\
+	      & = \delta(v)& \text{(Prop. \ref{prop:delta-2})}
+\end{align*}
+which also contradicts our assumption. Therefore, $v$ cannot be a Verifier's vertex. 
+In case that $v$ is a Refuter's vertex, since $v \in \STB$ we have that $\Label(v) < (\infty, \infty)$ by Prop.~\ref{Alg:inv0}. 
+Thus, when $v$ was added to $\STB$, $\Label(v) = \min\{ \Label(w) \mid w \in \post(v)\}$. Therefore, 
+there exists a $w \in \post(v)$ such that $\Label(w) \leq \Label(v)$, but then by Prop.~\ref{Alg:inv1} 
+we have $w \in \STB$. Thereby:
+\begin{align*}
+\Label(v) & = \min \{(i,j+1) \mid (i,j) \in \Label(\post(v))\}&  \text{(Lines \ref{Alg:R-Update} and \ref{Alg:Inc_j})} \\
+	      & =  \min \{(i,j+1) \mid (i,j) \in \delta(\post(v))\}&  \text{(Assumption)}\\
+	      & = \delta(v)& \text{(Prop. \ref{prop:delta-2})}
+\end{align*}
+contradicting our assumptions. Hence, $\Label(v) = \delta(v)$.
+
+	Now, we prove that when the loop of line \ref{Alg:LoopBPre} terminates we have:
+\begin{equation}\label{Alg:inv3}
+ \forall v \in S^G \setminus \STB : \delta(v)=(\infty, \infty)
+\end{equation}
+
+We proceed by contradiction. Let $v \in S^G \setminus \STB$ such that $\delta(v) < (\infty, \infty)$ and, furthermore, assume 
+%$\delta(v) = \min \{w \in S^G \setminus \STB \mid \delta(w) < (\infty, \infty) \}$.
+$\delta(v)$ is the minimum label satisfying this.
+If $v$ is a Refuter's vertex, then there exists some $w \in \post(v)$ such that $\delta(w) < \delta(v)$. 
+Thus, we have that $w \in \STB$ (by our assumption) which means that $v$ was added at least once in the queue since it 
+was initialized with $(\infty, \infty)$. 
+Thereby, it was added to $\STB$ in line \ref{Alg:R-STB-Update}, contradicting the initial assumption. 
+Therefore, $v$ must be a Verifier's vertex. 
+If $\pr{1}{v} \in \Faults$, then $\delta(v) = \max \{(i+1,j+1) \mid (i,j) \in \delta(\post(v))\}$ 
+and therefore $\delta(v) > \delta(w)$ for all $w \in \post(w)$.
+Thus, by our assumptions, $w \in \STB$ for every $w \in \post(v)$.
+Moreover, when the last $w \in \post(v)$ was added to $\STB$, $v$ was in the queue because of the BFS policy.
+In fact, when condition $\post(v) \subseteq \STB$ was checked for $v$ (line \ref{Alg:UpdateSTB}), it was true and then $v$ 
+should be added to $\STB$, contradicting our assumption. Hence, $v \in \STB$.
+
+Finally, the result computed by Algorithm \ref{Alg:MainAlg} follows from properties \ref{Alg:inv2}, \ref{Alg:inv3}, 
+and Theorem \ref{thm:quant_game}. 
+In more details, if $\delta(s_{0}^G) = (\infty, \infty)$, then by Prop. ~\ref{Alg:inv0} and \ref{Alg:inv3}, we 
+have upon termination that $\Label(s_{0}^G) = (\infty, \infty)$. 
+Thereby, the algorithm returns $0$ in line \ref{Alg:Ret0} which is correct by Theorem~\ref{thm:quant_game}. 
+In case that $\delta(s_0^G)< (\infty, \infty)$, then $s_0^G \in \STB$ and also by Prop.~\ref{Alg:inv2} we 
+have $\Label(v) = \delta(v)$. Therefore, the algorithm returns the correct answer in line \ref{Alg:EndB} by Theorem \ref{thm:quant_game}. 
+\qedhere
+\end{proof}
+
+
+
+
+It remains to discuss the running time complexity for computing the value of quantitative masking games. 
+The following theorem states the time complexity of determining the value of any kind of quantitative masking games.
+%
+%\noindent
+%Finally, winning regions (and strategies) can be computed in lineal time.  
+\sloppy \begin{thm}\label{th:qgame-determined} Any quantitative strong (resp. weak) masking game graph 
+$\QMStrGame = \langle V^G, V_\Refuter, V_\Verifier, E^G, \InitVertex^G, \reward^G \rangle$   can  be determined in 
+time  $\BigO(|E^G|*\log |V^G|)$ (resp. $\BigO(|E_W^G|*\log |V^G|)$).
+\end{thm}
+\begin{proof}
+	Note that the loop in line \ref{Alg:LoopBPre} inspects the edges of the graph. Furthermore, note that, no edge $(v, v')$ can be inspected twice:
+	if $v'$ is a Refuter's vertex, then it will be added to $\STB$ and the edge cannot be processed any longer. 
+	If $v$ is Verifier's vertex, then $v'$ is a Refuter's
+	vertex, thus once dequeued (line \ref{Alg:Dequeue-Node}), it will not be added to the queue again, and therefore the edge  $(v, v')$ will not
+	processed again. Thereby,  the loop of line \ref{Alg:LoopBPre} will be executed $|E^G|$ times in the worst case. 
+	Furthermore,  if some efficient implementation of priority queues is used for storing the states (line \ref{Alg:Enqueue-Vertex}), 
+	then it takes $\BigO(\log |V^G|)$ steps to insert or remove an element from the queue, that is, in total the loop of line \ref{Alg:LoopBPre} takes $\BigO(|E^G|*\log |V^G|)$ steps.
+	In addition, note that the \emph{while loop} of line \ref{Alg:While} is executed until the $\Q$ gets empty, and nodes are enqueued only in line \ref{Alg:Enqueue-Vertex}. Thus, the number of times that the \emph{while loop} is executed is 
+	bounded by the number of times that the \emph{for loop} 	is executed, which implies that
+	the outmost loop is executed at most $O(|E^G|)$ times. Similar remarks hold for the quantitative weak masking game.	
+
+\qedhere
+\end{proof} \\
+% TBD similar for weak games
+
+Theorems \ref{th:game-determined} and \ref{th:qgame-determined} describe the complexity of solving the quantitative and standard masking games. However, in practice, one needs to bear in mind that $|V^G| = |S|*|S'|$ and $|E^G| = |{\rightarrow}|+|{\rightarrow'}|$, so constructing the game takes 
+$\BigO(|S|^2*|S'|^2)$ steps in the worst case. Additionally, for weak games, the transitive closure of the original model needs to be computed, which for the best known algorithm yields $\BigO(\max(|S|,|S'|)^{2.3727})$ \cite{Wil12}.
+
+	Interestingly, deterministic games can be solved in linear time by using the fact proven in Theorem \ref{theorem:det-games}.
+\begin{thm}\label{th:deterministic-qgame-complexity} 
+  Any quantitative strong (resp. weak) deterministic masking game can be solved in 
+time $\BigO(|E^G|)$ (resp. $\BigO(|E_W^G|)$).
+\end{thm}
+\begin{proof} By Theorem \ref{theorem:det-games}, the value of the game is given by the shortest path to the error state in the game graph where the weight function assigns  $1$ to faults, and $0$ to other transitions. Dial's algorithm \cite{Dial69} can be used to obtain the shortest path in this graph, which runs in $\BigO(|E^G|)$  (resp. $\BigO(|E^G_W|)$ in the case of weak games).
+\qedhere
+\end{proof} 
+
+Let us note that using the sets $\setsUs$ we can define optimal strategies for the 
+Refuter and the Verifier, without taking into account the history of the play. 
+That is, we have the following theorem.
+ 
+\begin{thm} \label{thm:memoryless} Let $\QMStrGame$ be a quantitative strong masking game graph.
+  Players $\Refuter$ and $\Verifier$ have memoryless optimal strategies for $\QMStrGame$.
+\end{thm}
+\begin{proof} Giving a game we can compute the sets $\setsUs$ using Algorithm~\ref{Alg:MainAlg}.
+Thereby, it is straightforward to define an optimal strategy for the Refuter. 
+For a given node $v$, if it belongs to some $\setsUs$, then the Refuter chooses some node in $U^{j'}_{i'}$ where: 
+$(i', j') = \text{max}\{(i'', j'') \mid post(v) \cap U^{j}_{i} \neq \emptyset \wedge (i'',j'') < (i,j) \}$. 
+By Definition of $\setsUs$, we know that such a pair exists, and also that this 
+strategy is winning for the Refuter. If $v \notin \setsUs$, then any choice by the Refuter will lead to a winning play of the Verifier. 
+Hence, the Refuter moves to any successor of $v$.
+In a similar way, we can define an optimal strategy for the Verifier.
+\qedhere 
+\end{proof} \\
+
+%% \noindent
+%% Now, we present some basic properties of the masking distance.
+
+By using $\QMWeakGame$ instead of $\QMStrGame$ in
+Def.~\ref{def:mask_dist}, we can define the \emph{weak masking
+  distance} $\DeltaMask^W$.  The next theorem states that $A$ and
+$A'$ are at distance $0$ if and only if there exists a strong (or weak) masking
+simulation between them.
+
+\begin{thm}\label{theorem:ref}
+  For any transition systems $A = \langle S, \Sigma, \rightarrow, \InitState \rangle$ and $A' = \langle S', \Sigma_{\mathcal{F'}}, \rightarrow', \InitStatePrime \rangle$, it holds that:
+  \begin{enumerate}[(i)]
+  \item  $\DeltaMask(A,A') = 0$ iff $A \Masking A'$, and
+   \item $\DeltaMask^W(A,A') = 0$ iff $A \WeakMasking A' $.
+  \end{enumerate}
+\end{thm}
+%
+This follows from Theorem \ref{thm:quant_game}.
+%That is, the masking distance between two systems is $0$ if and only if there is a masking simulation between them.
+Noting that $A \Masking A$ (and $A \WeakMasking A$) for 
+any transition system $A$, we obtain that $\DeltaMask(A,A)=0$ (resp.\ $\DeltaMask^W(A,A)=0$) by Theorem \ref{theorem:ref}, i.e., 
+both distances are reflexive.
+
+For our running example, the masking distance is $1/3$ 
+with a redundancy of $3$ bits and considering two faults. 
+This means that only one fault can be masked by this implementation. \\
+
+We can prove a version of the triangle inequality for our notion of distance. 
+%
+\begin{thm} \label{thm:triang_ineq}
+  Let $A = \langle S, \Sigma, \rightarrow, s_0 \rangle$, $A' = \langle S', \Sigma_{\mathcal{F'}}, \rightarrow', s'_0 \rangle$,  and  $A'' = \langle S'', \Sigma_{\mathcal{F''}},\rightarrow'', s''_0 \rangle$ be transition systems such that $\Faults' \subseteq \Faults''$, and the corresponding games $\mathcal{Q}_{A,A'}$, $\mathcal{Q}_{A',A''}$ and $\mathcal{Q}_{A,A''}$.
+  Then $\DeltaMask(A,A'') \leq \DeltaMask(A,A') + \DeltaMask(A', A'')$ and
+  $\DeltaMask^W(A,A'') \leq \DeltaMask^W(A,A') + \DeltaMask^W(A', A'').$
+\end{thm}
+\begin{proof} 
+We will prove that for every node $(s,\#,s'',\Refuter)$ in $\mathcal{Q}_{A,A''}$ and  pair of nodes
+$(s,\#, s', R)$ in $\QMStrGame$ and $(s',\#,s'', R)$ in $\mathcal{Q}_{{A'},A''}$ (for any state $s'$ in $A'$), it holds that:
+\[
+\frac{1}{\pr{0}{\delta((s,\#, s'', \Refuter))}} \leq \frac{1}{\pr{0}{(\delta(s,\#, s', R))}} + \frac{1}{\pr{0}{\delta((s',\#, s'', R))}}
+\] 
+where $\delta(v) = \min \{(i,j) \mid v \in U^i_j\}$, calculated in the corresponding game. 
+As in Theorem \ref{thm:quant_game}, we just define $\max \emptyset = (\infty, \infty)$. 
+The result follows from this fact and Theorem \ref{thm:quant_game}. The proof is by induction on $\delta((s,\#, s'', \Refuter))$.
+
+First, let us observe that for any node $(s, \#, s'', \Refuter)$ of game $\mathcal{Q}_{A,A''}$ we must have $\delta((s, \#, s'', \Refuter)) \geq (1,3)$.
+In fact, this node cannot be the error state, which means that $j \neq 1$. Moreover, after the movement of the Refuter we have at least one movement from the Verifier and thus $j \geq 3$. That is the base case is $\delta((s,\#, s'', \Refuter)) = (1,3)$.
+\begin{description}
+\item [Base Case] If $\delta((s,\#, s'', \Refuter)) = (1,3)$. Assume that $(s, \#, s'', R) \in U^3_1$. This means that we have a transition 
+$((s, \#, s'', \Refuter), (w, \sigma^t, w'', \Verifier))$, where $t \in \{1,2\}$, that cannot be matched by the Verifier. 
+In case that $t=1$, then this move is a transition $((s, \#, s'', \Refuter), (w, \sigma^1, s'', \Verifier))$ from $A$. 
+Now, let $(s, \#, s', \Refuter)$ and $(s', \#, s'', \Refuter)$ be a pair of states of $\QMStrGame$ and $\mathcal{Q}_{A',A''}$, respectively. 
+By definition, we have a transition $((s, \#, s', \Refuter), (w, \sigma^1, s', \Verifier))$ in $Q_{A,A'}$. 
+In case that the Verifier cannot match this move in that game, we have that $(s, \#, s', \Refuter) \in U^3_1$. 
+This finishes the proof since $1 \leq 1 + k''$, regardless of the value of $k''$. 
+Otherwise, the Verifier chooses a matching move, that is, $((w, \sigma^1, s', \Verifier), (w, \#, w', \Refuter))$ in $\mathcal{Q}_{A,A'}$. 
+Moreover, we have a transition $((s', \#, s'', \Refuter), (w', \sigma^1, s'', \Verifier))$ in $\mathcal{Q}_{A',A''}$. 
+But, this cannot be matched due to our initial assumption. Therefore, $\delta((s', \#, s'', \Refuter))= (1,3)$, and we have that:
+\begin{align*}
+	\frac{1}{\pr{0}{\delta((s,\#, s'', \Refuter))}}  & = 1\\
+							& \leq \frac{1}{\pr{0}{\delta((s, \#, s', \Refuter))}} + 1\\
+							& =   \frac{1}{\pr{0}{\delta((s, \#, s', \Refuter))}}  + \frac{1}{\pr{0}{\delta((s', \#, s'', \Refuter))}}
+\end{align*}
+For $t=2$,  the reasoning is similar using the transitions of $A''$. 
+
+\item [Induction Step] For $(i,j) > (1,3)$ the proof is as follows. 
+Assume that $\delta((s, \#, s'', \Refuter)) = (i,j)$. Because of $1<i \leq j$, we have a transition 
+$((s, \#, s'', \Refuter), (w, \sigma^t, w'', \Verifier))$ in $\mathcal{Q}_{A,A''}$. We proceed by cases.
+
+  Case $\sigma^t = F^2$ for some $F \in \Faults''$. Since $\delta((s, \#, s'', \Refuter)) > (1,3)$,
+we must have a transition $((s, F^2, w'', \Verifier), (s, \#, w'', \Refuter)) \in Q_{A,A''}$ and $\delta((s, \#, w'', \Refuter)) = (i-1,j-2)$. 
+Thus, by definition of $\mathcal{Q}_{A',A''}$, we have a transition 
+$((s', \#, s'', \Refuter), (s', F^2, w'', \Verifier))$ in $\mathcal{Q}_{A',A''}$. 
+In case that $F \in \Faults'$, then $F \in \Sigma_{\Faults'}$. 
+If it cannot be matched, then:
+\begin{align*}
+\frac{1}{\pr{0}{\delta((s,\#, s'', \Refuter))}}  & \leq 1	\\
+							     &= \frac{1}{\pr{0}{\delta((s', \#, s'', \Refuter))}}  \\
+							     &\leq  \frac{1}{\pr{0}{\delta((s, \#, s', \Refuter))}} +  \frac{1}{\pr{0}{\delta((s', \#, s'', \Refuter))}}   
+\end{align*}
+and the result follows.  Otherwise, we have a collection of transitions  $((s', F^2, w'', \Verifier), (w', \#, w'', \Refuter))$ in $\mathcal{Q}_{A',A''}$. 
+So, in game $\QMStrGame$, we have at least an edge $((s, \#, s', \Refuter), (s, F^2, w', \Verifier))$. 
+Then, since $((s, F^2, w'', \Verifier), (s, \#, w'', \Refuter)) \in Q_{A,A''}$, we also have  a transition $((s, F^2, w', \Verifier), (s, \#, w', \Refuter))$ in $Q_{A,A'}$. 
+By induction hypothesis, we have $\delta((s, \#, w', \Refuter))= i'$ and $\max \{ \delta(v) \mid v \in \post((s', F^2, w'', \Verifier)) \}=i''$ such that:
+\begin{equation}\label{eq:hi1}
+\frac{1}{i-1} \leq \frac{1}{i'} + \frac{1}{i''}.
+\end{equation} 
+and thus:
+\begin{equation}\label{eq:hi1a}
+\frac{1}{i} \leq \frac{1}{i'+1} + \frac{1}{i''}.
+\end{equation}
+Furthermore, note that $\delta((s, F^2, w', \Verifier)) \geq (i'+1,j'+1)$ and we have a unique (masking) transition from $(s, F^2, w', \Verifier)$. 
+Thereby, 
+\begin{equation}\label{eq:hi2}
+	\delta((s, \#, s', \Refuter)) \geq (i'+1,j'+2)
+\end{equation}
+Similarly, since $F \in \Sigma_{\Faults'}$ we have that:
+\begin{equation}\label{eq:hi3}
+	\delta((s', \#, s'', \Refuter)) \geq (i'',j'+2)
+\end{equation}
+Hence, taking into account inequations \ref{eq:hi1a}, \ref{eq:hi2} and \ref{eq:hi3}, we 
+obtain:
+\begin{align*}
+	\frac{1}{\pr{0}{\delta((s,\#, s'', \Refuter))}} & = \frac{1}{i} & \text{(Assumption)} \\
+									      & \leq \frac{1}{i'+1} + \frac{1}{i''} & \text{Ineq.~\ref{eq:hi1a}} \\
+									      &  = \frac{1}{\pr{0}{\delta((s, \#, s', \Refuter))}} +  \frac{1}{\pr{0}{\delta((s', \#, s'', \Refuter))}} &
+\end{align*}
+	If $F \notin \Faults'$, we must also have a transition $((s', F^2, w'', \Verifier), (s', \#, w'', \Refuter))$ in $\mathcal{Q}_{A',A''}$. 
+Now, by induction hypothesis, we have $\delta((s, \#, s', \Refuter)) = (i',j')$ and $\delta((s', \#, w'', \Refuter)) = (i'',j'')$ such that 
+$\frac{1}{i-1} \leq \frac{1}{i'} + \frac{1}{i''}$. Thereby, $\delta((s', \#, s'', \Refuter)) = (i''+1, j''+2)$ and similarly as above the result follows.
+
+	Case $\sigma^t \neq F^2$. If $t=1$, then we have a transition $((s, \#, s'', R), (w, \sigma^1, s'', V))$ in $\mathcal{Q}_{A,A''}$, and 
+	since $\delta((s, \#, s'', \Refuter)) > (1,3)$,
+we must have a transition $((s, \sigma^1, w'', \Verifier), (w, \#, w'', \Refuter))$ in $Q_{A,A''}$ such that $\delta((s, \#, w'', \Refuter)) = (i,j-2)$. 
+By definition of game $Q_{A, A'}$, we have a transition
+$((s, \#, s', \Refuter), (w, \sigma^1, s', \Verifier))$. In case that it cannot be matched, 
+then it leads to the desired result. Otherwise, let us define $(i',j') = \max \{\delta(v) \mid v \in \post((w, \sigma^1, s', \Verifier)) \}$. 
+Since $\post((w, \sigma^1, s', \Verifier)) \neq \{\ErrorSt\}$, there must be also a transition $((s', \#, s'', R), (w', \sigma^1, s'', V))$ in $Q_{A',A''}$. 
+In case that this cannot be matched, then we have $\delta((s', \#, s'', R)) = (1,3)$ and the proof finishes. 
+In other case, let us define $i'' = \max \{\delta(v) \mid v \in \post((w', \sigma^1, s'', V)) \}$ where by induction hypothesis we have
+\begin{equation}
+	\frac{1}{i} \leq \frac{1}{i'} + \frac{1}{i''}
+\end{equation}	
+	Hence, 
+\begin{equation}
+	\frac{1}{\pr{0}{\delta((s, \#, s'', R))}} \leq \frac{1}{\pr{0}{\delta((s, \#, s', R))}} + \frac{1}{\pr{0}{\delta((s', \#, s'', R))}}
+\end{equation}	
+	For the case $t=2$ the proof is similar.
+\end{description}
+
+
+\qedhere
+\end{proof}\\
+
+The proof for $\DeltaMask^W$ is similar to the $\DeltaMask$ 
+but using $\QMWeakGame$ instead of $\QMStrGame$ and by Theorem~\ref{thm:weak_thm}.
+
+Reflexivity and  triangle inequality imply that both masking distances are directed semi-metrics \cite{CharikarMM06,AlfaroMRS08}.  Moreover, it is interesting to note that the triangle inequality property has practical applications. When developing critical software is quite common to develop a first version of the software taking into account some possible anticipated faults. 
+Later, after testing and running of the system, more plausible faults could be observed. 
+Consequently, the system is modified with additional fault-tolerant capabilities to be able 
+to overcome them. 
+Theorem \ref{thm:triang_ineq} states that incrementally measuring the masking distance between these different versions of the software provides an upper bound to the actual distance between the nominal system and its last fault-tolerant version. That is, if the sum of the distances obtained between the different versions is a small number, then we can ensure that the final system will 
+exhibit an acceptable masking tolerance to faults w.r.t. the nominal system.
+
+
+
+
+
+\section{Related Work} \label{sec:related_work}
+
+This article is a revised and expanded version of a conference paper presented at 
+TACAS 2019 \cite{CastroDDP18b} and it extends it as follows:  
+(1) it presents formal proofs for all theorems; (2) it describes the problem of computing  
+the masking distance considering deterministic and 
+non-deterministic systems; (3) it includes a more efficient implementation 
+of the \MaskD~tool; and (4) it proposes a more thorough experimental analysis, including more 
+instances for each case study and a new case study (Raft).
+
+In recent years, there has been a growing interest in the quantitative 
+generalizations of the boolean notion of correctness and the 
+corresponding quantitative verification questions \cite{BokerCHK14,CernyHR12,Henzinger10,Henzinger13}.
+The framework described in \cite{CernyHR12} is the closest related work to our approach. 
+The authors generalize the traditional notion of 
+simulation relation to three different versions of simulation distance: \emph{correctness}, \emph{coverage}, and \emph{robustness}.
+These are defined using quantitative games with \emph{discounted-sum} 
+and \emph{mean-payoff} objectives, two well-known cost functions.
+Similarly to that work, we also consider distances between purely 
+discrete (non-probabilistic, untimed) systems.
+
+Correctness and coverage distances are concerned with the nominal part of the systems, 
+and so faults play no role on them. On the other hand, robustness distance measures how many unexpected errors can be performed by the implementation in such a way that the resulting behavior is tolerated by the specification. So, it can be used to analyze the resilience of the implementation. Note that, robustness
+distance can only be applied to correct implementations, that is, implementations that preserve the behavior of the specification but perhaps do not cover all its behavior. As noted in~\cite{CernyHR12}, bisimilarity sometimes implies a distance of $1$. In this sense a greater grade of robustness (as defined in~\cite{CernyHR12}) is achieved by pruning critical points from the specification. Furthermore, the  errors considered in that work are transitions mimicking the original ones but with different labels. In contrast to this, 
+ in our approach we consider that faults are injected into the fault-tolerant 
+ implementation, where their behaviors are not restricted by the nominal system. 
+ This follows the idea of model extension in fault-tolerance where faulty behavior is added 
+ to the nominal system. Further, note that when no faults are present, the masking distance between the specification and the implementation is $0$ when they are bisimilar, and it is $1$ otherwise.
+It is useful to note that robustness distance of~\cite{CernyHR12} is not reflexive. We believe that all these definitions of distance between systems capture different notions useful for software development, and they can be used together, in a complementary way, to obtain an in-depth
+evaluation of fault-tolerant implementations.
+
+
+
+
+

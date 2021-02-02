@@ -1,0 +1,131 @@
+% Definitions
+
+\def\ThesisTitle{\textbf{Medidas para Masking-Tolerancia a Fallas}}
+\def\Author{Luciano Putruele}
+\def\Supervisor{Pablo Francisco Castro}
+% used for masking relations
+\newcommand{\M}{ \mathbin{\mathbf{M}} }
+\newcommand*{\xrightarrowprime}[2][]{\mathrel{{\xrightarrow[#1]{#2}}{}'}} 
+\newcommand*{\xrightarrowstar}[2][]{\mathrel{{\xrightarrow[#1]{#2}}{}^*}} 
+\newcommand*{\xRightarrowprime}[2][]{\mathrel{{\xRightarrow[#1]{#2}}{}'}} 
+\newcommand*{\xRightarrowstar}[2][]{\mathrel{{\xRightarrow[#1]{#2}}{}^*}} 
+\newcommand*{\xrightarrowgame}[2][]{\mathrel{{\xrightarrow[#1]{#2}}{}^G}} 
+\newcommand*{\xRightarrowgame}[2][]{\mathrel{{\xRightarrow[#1]{#2}}{}^G}} 
+
+% masking TS relation
+%\def\Masking{\preceq_{mask}}
+\def\Masking{\preceq_{m}}
+
+\def\Faults{\mathcal{F}}
+% weak masking TS relation
+%\def\WeakMasking{\preceq^w_{mask}}
+\def\WeakMasking{\preceq^w_{m}}
+% masking payoff cunction
+%\def\FMask{f_{mask}}
+\def\FMask{f_{m}}
+% masking distance
+%\def\DeltaMask{\delta_{mask}}
+\def\DeltaMask{\delta_{m}}
+% set of all transition systms
+\def\AllTS{\mathfrak{A}}
+% Refuter id
+\def\Refuter{\mathrm{R}}
+% Verifier id
+\def\Verifier{\mathrm{V}}
+% Error state
+\def\ErrorSt{v_{\mathit{err}}}
+% Supremo
+%\def\Sup{\mbox{sup}}
+\def\Sup{\sup}
+% infimo
+%\def\Inf{\mbox{inf}}
+\def\Inf{\inf}
+% max brp
+\def\MaxBRP{M}
+% the projection operator
+\def\pr#1#2{\operatorname{pr}_{#1}(#2)}
+%SigmaF
+\def\SigmaF{\Sigma_{\mathcal{F}}}
+%SigmaM
+\def\SigmaM{\Sigma_{M}}
+%MaskD
+\def\MaskD{\textsf{MaskD}}
+%big O
+\def\BigO{\mathcal{O}}
+% Strong Masking Game Graph
+\def\StrMaskGG{\mathcal{G}_{A, A'}}
+% Weak Masking Game Graph
+\def\WeakMaskGG{\mathcal{G}^W_{A,A'}}
+% Quantitative Strong Masking Game 
+\def\QMStrGame{\mathcal{Q}_{A, A'}}
+% Quantitative Weak Masking Game 
+\def\QMWeakGame{\mathcal{Q}^W_{A,A'}}
+% set of U
+\def\setsUs{U^j_i}
+% Stabilized Set
+\def\STB{\mathcal{STB}}
+% Queue Q f
+\def\Q{\mathcal{Q}}
+\def\InitState{s_0}
+\def\InitStatePrime{s'_0}
+\def\InitVertex{v_0}
+
+
+\DeclareMathOperator{\pre}{pre}
+\DeclareMathOperator{\reward}{r}
+\DeclareMathOperator{\val}{val}
+\DeclareMathOperator{\post}{post}
+\DeclareMathOperator{\out}{out}
+\DeclareMathOperator{\enqueue}{Enqueue}
+\DeclareMathOperator{\dequeue}{Dequeue}
+\DeclareMathOperator{\lbl}{lbl}
+\DeclareMathOperator{\maxlabel}{MaxLabel}
+\DeclareMathOperator{\minlabel}{MinLabel}
+\DeclareMathOperator{\Label}{Label}
+\DeclareMathOperator{\result}{result}
+
+
+% Proof env
+\renewenvironment{proof}{\noindent\textbf{Proof.}}{\hfill$\diamond$}
+
+
+
+
+
+
+\usepackage{color}
+
+\definecolor{lightblue}{RGB}{231,255,255}
+\definecolor{lightred}{RGB}{255,224,224}
+\definecolor{lightgreen}{RGB}{224,255,224}
+\definecolor{lightyellow}{RGB}{255,255,224}
+\definecolor{lightpurple}{RGB}{255,224,255}
+\definecolor{darkerred}{RGB}{64,0,0}
+\definecolor{darkred}{RGB}{128,0,0}
+\definecolor{darkblue}{RGB}{0,0,128}
+\definecolor{darkgreen}{RGB}{0,128,0}
+\definecolor{darkpurple}{RGB}{128,0,128}
+\definecolor{black}{RGB}{0,0,0}
+
+\newcommand{\colorpar}[3]{\colorbox{#1}{\parbox{#2}{#3}}}
+\newcommand{\marginremark}[3]{\marginpar{\colorpar{#2}{\linewidth}{\color{#1}#3}}}
+\newcommand{\remarkPC}[1]{\marginremark{darkblue}{lightblue}{\scriptsize{[PC]~ #1}}}
+\newcommand{\remarkPRD}[1]{\marginremark{darkred}{lightred}{\tiny{[PRD]~ #1}}}
+\newcommand{\remarkRD}[1]{\marginremark{darkgreen}{lightgreen}{\tiny{[RD]~ #1}}}
+\newcommand{\remarkLP}[1]{\marginremark{darkpurple}{lightpurple}{\tiny{[LP]~ #1}}}
+
+\newcommand{\highlightedremark}[4]{%
+  \begin{center}\fcolorbox{#1}{#2}{%
+  \begin{minipage}{.98\linewidth}\color{#1}%
+  \textbf{\THICKhrulefill[ #3 ]\THICKhrulefill}%
+  \par\noindent#4\end{minipage}}\end{center}%
+}
+
+\makeatletter
+\def\THICKhrulefill{\leavevmode \leaders \hrule height 5pt\hfill \kern \z@}
+\makeatother
+\newcommand{\hrmkPRD}[1]{\highlightedremark{darkred}{lightred}{PRD}{#1}}
+\newcommand{\hrmkPC}[1]{\highlightedremark{darkblue}{lightblue}{PC}{#1}}
+\newcommand{\hrmkRD}[1]{\highlightedremark{darkgreen}{lightgreen}{RD}{#1}}
+\newcommand{\hrmkLP}[1]{\highlightedremark{darkpurple}{lightpurple}{LP}{#1}}
+

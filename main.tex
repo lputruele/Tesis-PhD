@@ -1,0 +1,66 @@
+%\documentclass[10pt]{report} %twoside para impresion final 
+\documentclass[11pt,a4paper]{report} %a4paper,
+
+
+% Note: Make all your adjustments in here
+\input{classicthesis-config}
+
+\titleformat{\paragraph}[runin]
+{\normalfont\normalsize\bfseries}{\theparagraph}{1em}{}
+\titlespacing*{\paragraph}   {0pt}{3.25ex plus 1ex minus .2ex}{1em}
+\babelhyphenation[spanish]{Node-Caching-Linked-List}
+
+\input{macros}
+
+\begin{document}
+\frenchspacing
+\raggedbottom
+
+% ********************************************************************
+% Frontmatter
+\pagenumbering{roman}
+\pagestyle{plain}
+%\include{titlepage}
+\include{titlepage-famaf}
+
+\cleardoublepage\null
+\include{resumen}
+\cleardoublepage%\null
+\include{agradecimientos}
+\cleardoublepage
+\tableofcontents
+\cleardoublepage
+\listoffigures
+%\cleardoublepage
+\listoftables
+\pagestyle{scrheadings}
+%\cleardoublepage
+% ********************************************************************
+% Mainmatter
+\lstset{basicstyle=\ttfamily,showstringspaces=false}
+\pagestyle{headings}
+\pagenumbering{arabic}
+\cleardoublepage
+\include{introduccion}
+\include{chapter1}
+\include{chapter2}
+\include{chapter3}
+\include{chapter4}
+\include{chapter5}
+\include{conclusiones}
+\include{trabajosfuturos}
+
+% ********************************************************************
+% Backmatter
+\cleardoublepage\null
+%\bibliographystyle{amsplain}
+\bibliographystyle{apalike}
+%\bibliographystyle{apacite}
+%\bibliographystyle{alpha}
+%\cleardoublepage\phantomsection
+\addcontentsline{toc}{chapter}{{\sc bibliografía}}
+\bibliography{bibliografia}
+%\appendix
+%\cleardoublepage
+%\part{Appendix}
+\end{document}

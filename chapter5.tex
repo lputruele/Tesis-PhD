@@ -1,0 +1,116 @@
+\chapter{Evaluación Experimental}
+\label{cap:experimentos}
+
+
+\section{Experimental Evaluation} \label{sec:experimental_eval}
+%\subsection{Details of the implementation}
+
+The approach described in this paper has been implemented in a tool in \textsf{Java} called \MaskD: 
+Masking Distance Tool \cite{MaskD}. 
+%This is written in \textsf{Java} and is available at \cite{MaskD}. 
+\MaskD~takes as input a nominal model and its fault-tolerant implementation, 
+and produces as output the masking distance between them. 
+The input models are specified using the guarded command language introduced in \cite{AroraGouda93}, a simple programming language common for describing fault-tolerant algorithms. 
+More precisely, a program is a collection of processes, where each process is composed of a collection of actions of the style: $Guard \rightarrow Command$, where $Guard$ is a boolean condition over the actual state of the program and $Command$ is a collection of basic assignments. These syntactical constructions are called actions. The language also allows user to label 
+an action as internal (i.e., $\tau$ actions). Moreover, usually some actions are used to represent faults. 
+The tool has several additional features, for instance it can print the traces to the error state or start a simulation from the initial state.
+
+We report on Table~\ref{table:results} the results of the masking distance for multiple instances 
+of several case studies. These are: a Redundant Cell Memory (our running example), N-Modular Redundancy (a standard example of fault-tolerant system \cite{ShoomanBook}), a variation of the Dining Philosophers problem \cite{Dijkstra71}, the Byzantine 
+Generals problem introduced by Lamport et al. \cite{LamportSP82}, the Log Replication consistency check of Raft \cite{OngaroO14}, and the Bounded Retransmission Protocol (a well-known example of a fault-tolerant  protocol \cite{GrooteP96}). All case studies have been evaluated using the algorithms for both non-deterministic and deterministic games (column ``Time'' and ``Time(Det)'', respectively), with the exception of the innately non-deterministic models (i.e., the Byzantine Generals problem and the Bounded Retransmission Protocol). It is worth noting that most of the computational complexity arises from building the game graph rather than the actual masking distance calculation.
+
+Some words are useful to interpret the results. For the case of a $3$ bit memory the masking distance is $0.333$. The main reason for this is that the faulty model, in the worst case, is only able to mask $2$ faults (in this example, a fault is an unexpected change of a bit) before failing to replicate the nominal behaviour (i.e. reading the majority value). Thus, the result comes from the definition of masking distance and taking into account the occurrence of two faults. The situation is similar for the other instances of this problem with more redundancy.
+
+N-Modular-Redundancy consists of N systems, in which these perform a process and that results are processed by a majority-voting system to produce a single output. 
+Assuming a single perfect voter, we have evaluated this case study for different numbers of modules.
+%Note that, in this case study, the distance measuring exhibits a similar pattern to that of the 
+Note that the distance measures for this case study are similar to the memory example. 
+
+
+\begin{table} [h]
+%\vspace{-0.4cm}
+  \centering
+  	\scalebox{1}{
+ 	\begin{tabular}{|c|c|c|c|c|}
+ 		\hline
+ 		Case Study      & Redundancy & Masking Distance & Time & Time(Det)  \\
+ 		\hline
+ 		\multirow{5}{*}{Redundant Memory Cell} 	        & $3$ bits & $0.333$ & $0.7s$ & $0.6s$\\ \cline{2-5}
+ 		 	       	 	& $5$ bits & $0.25$ & $2.5s$ & $1.9s$\\ \cline{2-5}
+ 		 	        	& $7$ bits & $0.2$ & $7.2s$  & $5.7s$\\ \cline{2-5}
+ 		 	        	& $9$ bits & $0.167$ & $1m.4s$ & $1m11s$\\ \cline{2-5}
+ 		 	        	& $11$ bits & $0.143$ & $28m27s$ & $26m10s$\\ \cline{2-5}
+ 		\hline
+ 		\multirow{5}{*}{N-Modular Redundancy} 	        & $3$ modules & $0.333$ & $0.6s$ & $0.5s$ \\ \cline{2-5}
+ 		 	       	 	& $5$ modules & $0.25$ & $1.2s$ & $0.7s$\\ \cline{2-5}
+ 		 	        	& $7$ modules & $0.2$ & $5.6s$  & $3.8s$\\ \cline{2-5}
+ 		 	        	& $9$ modules & $0.167$ & $2m55s$  & $2m32s$\\ \cline{2-5}
+ 		 	        	& $11$ modules & $0.143$ & $75m17s$  & $72m48s$\\ \cline{2-5}
+ 		\hline
+ 		\multirow{5}{*}{Dining Philosophers}    & $2$ phils & $0.5$ & $0.6s$ & $0.6s$\\ \cline{2-5}
+ 						& $3$ phils & $0.333$ & $1.9s$ & $0.9s$\\ \cline{2-5}
+ 						& $4$ phils & $0.25$ & $5.9s$ & $2.6s$\\ \cline{2-5}
+ 						& $5$ phils & $0.2$ & $25.3s$ & $24.1s$\\ \cline{2-5}
+ 						& $6$ phils & $0.167$ & $19m.23s$ & $11m39s$\\ \cline{2-5}
+ 	    \hline
+ 		\multirow{3}{*}{Byzantine Generals}    
+ 		                & $3$ generals & $0.5$ & $0.9s$ & $-$ \\ \cline{2-5}
+ 						& $4$ generals & $0.333$ & $17.1s$ & $-$\\ \cline{2-5}
+            & $5$ generals & $0.333$ & $429m54s$ & $-$\\ \cline{2-5}
+ 		\hline
+    \multirow{3}{*}{Raft LRCC (5)}        & $1$ follower & $0$ & $0.7s$ & $0.8s$\\ \cline{2-5}
+            & $2$ followers & $0$ & $5.6s$ & $3.6s$ \\ \cline{2-5}
+            & $3$ followers & $0$ & $49m.50s$ & $37m.53s$ \\ \cline{2-5}
+    \hline
+ 		\multirow{5}{*}{BRP(1)}       	& $1$ retransm. & $0.333$ & $0.7s$ & $-$\\ \cline{2-5}
+ 						& $5$ retransm. & $0.143$ & $0.8s$  & $-$\\ \cline{2-5}
+ 						& $10$ retransm. & $0.083$ & $1.3s$  & $-$\\ \cline{2-5}
+ 						& $20$ retransm. & $0.045$ & $3.9s$  & $-$\\ \cline{2-5}
+ 						& $40$ retransm. & $0.024$ & $4.8s$ & $-$ \\ \cline{2-5}
+ 		\hline
+ 		\multirow{5}{*}{BRP(5)}       	& $1$ retransm. & $0.333$ & $4.2s$ & $-$\\ \cline{2-5}
+ 						& $5$ retransm. & $0.143$ & $4.8s$  & $-$\\ \cline{2-5}
+ 						& $10$ retransm. & $0.083$ & $6.1s$  & $-$\\ \cline{2-5}
+ 						& $20$ retransm. & $0.045$ & $8.7s$  & $-$\\ \cline{2-5}
+ 						& $40$ retransm. & $0.024$ & $18.6s$ & $-$ \\ \cline{2-5}
+ 		\hline
+ 		\multirow{5}{*}{BRP(10)}       	& $1$ retransm. & $0.333$ & $4.7s$ & $-$\\ \cline{2-5}
+ 						& $5$ retransm. & $0.143$ & $6.4s$ & $-$ \\ \cline{2-5}
+ 						& $10$ retransm. & $0.083$ & $10.1s$ & $-$ \\ \cline{2-5}
+ 						& $20$ retransm. & $0.045$ & $20.5s$ & $-$ \\ \cline{2-5}
+ 						& $40$ retransm. & $0.024$ & $1m.9s$ & $-$ \\ \cline{2-5}
+ 		\hline
+ 	\end{tabular}}
+ 	%\vspace{0.2cm}
+ 	\caption{Results of the masking distance for the case studies.}
+ 	%\vspace{-0.8cm}
+ 	\label{table:results}
+		
+ \end{table}
+
+For the dining philosophers problem we have adopted the odd/even philosophers implementation (it prevents from deadlock), i.e.,  there are 
+$n-1$ \emph{even} philosophers that pick the right fork first, and $1$ \emph{odd} philosopher that picks the left fork first. The fault we consider in this case occurs when
+an even philosopher behaves as an odd one, this could be the case of a byzantine fault. For two philosophers the masking distance is $0{.}5$ since a single fault leads to a deadlock, when more philosophers are added this distance becomes smaller. 
+%We have evaluated this problem on four instances with $2, 3, 4,$ and $5$ philosophers, respectively.
+
+%\hrmkPRD{Explicar el de los Generales Bizantinos!!}
+Another interesting example of a fault-tolerant system is the Byzantine generals problem, introduced originally by Lamport et al. \cite{LamportSP82}. This is a consensus problem, where we have a general with $n-1$ lieutenants. The communication between the general and his lieutenants is performed through messengers. The general may decide to attack an enemy city or to retreat; then, he sends the order to his lieutenants. Some of the lieutenants might be traitors. 
+We assume that the messages are delivered correctly and all the lieutenants can communicate directly with each other. In this scenario they can recognize who is sending a message. Faults can convert loyal lieutenants into traitors (byzantines faults). As a consequence, traitors might deliver false messages or perhaps they avoid sending a message that they received. The loyal lieutenants must agree on attacking or retreating after $m + 1$ rounds of communication, where $m$ is the maximum numbers of traitors. Here we consider the case of $m=1$.  
+
+%The algorithm can ensure correct operation only if fewer than one third of the lieutenants are traitors.
+
+Raft \cite{OngaroO14} is a consensus algorithm that has become somewhat popular in the last years. In Raft, a leader is elected from the available servers, once elected, the leader receives requests from clients and sends them to its followers so they can replicate the new information on their states. A follower may reject an entry if there is an inconsistency between its log and the leader's log, this is considered  a fault. When this occurs, the leader tries again with the previous entry on its log, this is repeated until a match occurs. Here we model only one of the different stages of Raft algorithm, namely Log Replication. Specifically, we adapt the consistency check  made by the protocol to ensure the consistency between  the followers' logs and the log of the  leader.  We computed the masking distance for this model with $1$, $2$ and $3$ followers, and considering a leader's log of $5$ entries. Let us note that this distance  is always $0$. Intuitively, this happens because, even though there could be some rejections, eventually the logs will agree (in the worst case, the protocol will discard all the entries of the followers' log reaching the empty log, and then it will copy back the entries of the leader to the other logs). 
+
+The Bounded Retransmission Protocol (BRP) is a well-known industrial
+case study in software verification.
+While all the other case studies were treated as toy examples and analyzed with $\DeltaMask$, the BRP was modeled closer to the implementation following~\cite{GrooteP96}, considering the different components (sender, receiver, and models of the channels).  To analyze such a complex model we have used instead the weak masking distance $\DeltaMask^W$.
+We have calculated the masking distance for the bounded retransmission protocol with $1$, $5$ and $10$ chunks, denoted BRP(1), BRP(5) and BRP(10), respectively. 
+
+We observe that the distance values are not affected by the number of chunks 
+to be sent by the protocol. This is expected because the masking distance depends on 
+the redundancy added to mask the faults, which in this case, depends on the number of 
+retransmissions.
+
+We have run our experiments on a MacBook Air with Processor 1.3 GHz Intel Core i5 and 
+a memory of 4 Gb. The tool and case studies for reproducing the results are available in the tool repository.
+%at \url{https://github.com/lputruele/MaskD}.
