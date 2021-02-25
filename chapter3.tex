@@ -140,7 +140,7 @@ Si tal relación existe decimos que $A'$ es una \emph{implementación fuertement
 
  Intuitivamente, la definición establece que, partiendo de $s'$, las fallas pueden ser enmascaradas de tal forma que el comportamiento exhibido es el mismo que el observado al partir de $s$ ejecutando transiciones sin fallas. 
  En otras palabras, una relación de masking asegura que cualquier comportamiento defectuoso en la implementación puede ser simulado por la especificación. Mas específicamente, note que las condiciones (A), (B.1) y (B.2) implican que tenemos una bisimulación cuando $A$ y $A'$ no exhiben comportamientos defectuosos.
-Particularmente, la condición (B.1) dice que la ejecución normal de $A$ puede ser simulada por una ejecución de $A'$. Por otro lado, la condición (B.2) dice que la implementación no agrega mas comportamientos normales (no defectuosos). Por ultimo, la condición (B.3) establece que toda transición defectuosa ($F$) que salga de $s'$ debe ser correspondida por un movimiento en el mismo lugar desde $s$.
+Particularmente, la condición (B.1) dice que la ejecución normal de $A$ puede ser simulada por una ejecución de $A'$. Por otro lado, la condición (B.2) dice que la implementación no agrega mas comportamientos normales (no defectuosos). Por ultimo, la condición (B.3) establece que toda transición defectuosa ($F$) que salga de $s'$ debe ser emparejada por un movimiento en el mismo lugar desde $s$.
 
 \subsection{Simulación de Masking Débil}
 
@@ -568,37 +568,34 @@ Comenzamos presentando el próximo teorema que establece como se calcula el valo
 \end{thm}
 \begin{proof} La prueba es por casos:
 	
-	If $\InitVertex^G \notin U$, then we define the following strategy for the Verifier. If $v \in V_\Verifier \setminus U$, then $\pi^*_\Verifier(v)=v'$ 
-	for some $v' \in V_\Refuter \setminus U$, and if $v \notin  V_\Verifier \setminus U$, then $\pi^*_\Verifier(v) = v'$ for an arbitrary $v'$. 
-	We prove by induction that for any play conforming $\pi^*_\Verifier$: $\rho =\rho_0 \rho_1 \dots$ we 
-have $\forall i \geq 0: \rho_i \notin V \setminus U$. The base case is direct. 
-For the inductive case, assume that $\rho_i \notin V \setminus U$. In case that $\rho_i \in V_\Verifier$, the property follows by the definition of
-$\pi^*_\Verifier$. If $\rho_i \in V_\Refuter$, since $\rho_i \in V^G \setminus U$, then $\post(\rho_i) \subseteq V^G \setminus U$ (by Def.~\ref{def:U}). 
-Thus, $\rho_{i+1} \in V^G \setminus U$. 
-	 Furthermore, we also have $\rho_i \neq \ErrorSt$ since $\{ \ErrorSt \} \subseteq U$. Also, note that any play avoiding state $\ErrorSt$ has value $0$: by definition of $\QMStrGame$, each transition performed by the Refuter  must be followed by a transition
-selected by the Verifier. These transitions (the matches performed by the Verifier) have cost $(1,0)$ since the target of any of these transitions is different from $\ErrorSt$. Because we have an infinite number of these matches, when state $\ErrorSt$ is not reached, the valuation 
-of these plays is $\lim_{n\rightarrow \infty} \frac{0}{1+ \sum^n_{i=0} \pr{0}{r_i}} = 0$ (recall that $r_i = \reward^G(\rho_i)$). 
-Summing up, $\sup_{\pi_\Refuter \in \Pi_\Refuter} \FMask(\out(\pi_\Refuter, \pi^*_\Verifier)) = 0$, and since $\FMask$ is positive
-we have $\val(\QMStrGame) = \inf_{\pi_\Verifier \in \Pi_\Verifier} \sup_{\pi_\Refuter \in \Pi_\Refuter} \FMask(\out(\pi_\Refuter, \pi_\Verifier)) = 0$.
+	Si $\InitVertex^G \notin U$, entonces definimos la siguiente estrategia para el Verificador. Si $v \in V_\Verifier \setminus U$, entonces $\pi^*_\Verifier(v)=v'$ 
+	para algún $v' \in V_\Refuter \setminus U$, y si $v \notin  V_\Verifier \setminus U$, entonces $\pi^*_\Verifier(v) = v'$ para un $v'$ arbitrario. 
+	Probamos por inducción que para cualquier jugada que se conforme a $\pi^*_\Verifier$: $\rho =\rho_0 \rho_1 \dots$ tenemos $\forall i \geq 0: \rho_i \notin V \setminus U$. El caso base es directo. 
+Para el caso inductivo, asumamos que $\rho_i \notin V \setminus U$. En caso que $\rho_i \in V_\Verifier$, la propiedad se deduce por definición de
+$\pi^*_\Verifier$. Si $\rho_i \in V_\Refuter$, como $\rho_i \in V^G \setminus U$, entonces $\post(\rho_i) \subseteq V^G \setminus U$ (por Def.~\ref{def:U}). 
+Por lo tanto, $\rho_{i+1} \in V^G \setminus U$. 
+	 Además, también tenemos $\rho_i \neq \ErrorSt$ ya que $\{ \ErrorSt \} \subseteq U$. También note que cualquier jugada que evite el estado $\ErrorSt$ tiene valor $0$: por definición de $\QMStrGame$, cada transición ejecutada por el Refutador debe ser sucedida por una transición seleccionada por el Verificador. Estas transiciones (las elegidas por el Verificador) tienen costo $(1,0)$ ya que el destino de cualquiera de estas transiciones es diferente de $\ErrorSt$. Como tenemos una cantidad infinita de estos movimientos del Verificador, cuando el estado $\ErrorSt$ no es alcanzado, la valuación de estas jugadas es $\lim_{n\rightarrow \infty} \frac{0}{1+ \sum^n_{i=0} \pr{0}{r_i}} = 0$ (recordemos que $r_i = \reward^G(\rho_i)$). 
+En resumen, $\sup_{\pi_\Refuter \in \Pi_\Refuter} \FMask(\out(\pi_\Refuter, \pi^*_\Verifier)) = 0$, y como $\FMask$ es positiva
+tenemos $\val(\QMStrGame) = \inf_{\pi_\Verifier \in \Pi_\Verifier} \sup_{\pi_\Refuter \in \Pi_\Refuter} \FMask(\out(\pi_\Refuter, \pi_\Verifier)) = 0$.
 
-	If $\InitVertex^G \in U$, we have that $\delta(\InitVertex^G) < (\infty, \infty)$, then we define the following strategy for the Refuter. 
-	If $v \in U$, then $\pi^*_\Refuter(v)= v'$, where $\delta(v') < \delta(v)$, otherwise $\pi^*_\Refuter(v)=v'$, for an arbitrary $v'$. 
-	Strategy $\pi^*_R$ is well-defined because if $v \in \setsUs$, then there is a $v' \in \post(v)$ such that $v \in U^{j-1}_i$ (by Def.~\ref{def:U}). Furthermore, $\delta(v') = (\pr{0}{\delta(v)}, \pr{1}{\delta(v)} - 1)$.  
-	Now, we prove that for every strategy $\pi_\Verifier \in \Pi_\Verifier$ such that $\out(\pi^*_\Refuter, \pi_\Verifier) = \rho = \rho_0 \rho_1 \dots$ and $\rho_0 \in U$, we have:
+	Si $\InitVertex^G \in U$, tenemos que $\delta(\InitVertex^G) < (\infty, \infty)$, entonces definimos la siguiente estrategia para el Refutador. 
+	Si $v \in U$, entonces $\pi^*_\Refuter(v)= v'$, donde $\delta(v') < \delta(v)$, sino $\pi^*_\Refuter(v)=v'$, para un $v'$ arbitrario. 
+	La estrategia $\pi^*_R$ esta bien definida ya que si $v \in \setsUs$, entonces existe un $v' \in \post(v)$ tal que $v \in U^{j-1}_i$ (por Def.~\ref{def:U}). Además, $\delta(v') = (\pr{0}{\delta(v)}, \pr{1}{\delta(v)} - 1)$.  
+	Ahora bien, probaremos que para cada estrategia $\pi_\Verifier \in \Pi_\Verifier$ tal que $\out(\pi^*_\Refuter, \pi_\Verifier) = \rho = \rho_0 \rho_1 \dots$ y $\rho_0 \in U$, tenemos:
 \begin{equation}\label{eq:inf-bound}
 	\FMask(\out(\pi^*_\Refuter, \pi_\Verifier)) \geq \frac{1}{ \pr{0}{\delta(\rho_0)}}
 \end{equation} 
-		To prove that, note that, if $\delta(\rho_0)= (i,j)$, then $\rho_j =\ErrorSt$ 
-		since $\pr{1}{\delta(\rho_k)} = \pr{1}{\delta(\rho_{k+1})}+1$ for all $k$. 
-That is, in $j$ steps we have $\delta(\rho_{j}) = (1,1)$ and so $\rho_{j} = \ErrorSt$.
-	This implies that $\FMask(\rho) =  \lim_{n \rightarrow \infty}  \frac{\pr{1}{r_n}}{1+ \sum^{n}_{i=0} \pr{0}{r_i}} >0$, and also
+		Para demostrar esto, note que, si $\delta(\rho_0)= (i,j)$, entonces $\rho_j =\ErrorSt$ 
+		ya que $\pr{1}{\delta(\rho_k)} = \pr{1}{\delta(\rho_{k+1})}+1$ para todo $k$. 
+Esto significa que, en $j$ pasos tenemos $\delta(\rho_{j}) = (1,1)$ y entonces $\rho_{j} = \ErrorSt$.
+	Esto implica que $\FMask(\rho) =  \lim_{n \rightarrow \infty}  \frac{\pr{1}{r_n}}{1+ \sum^{n}_{i=0} \pr{0}{r_i}} >0$, y también
 $ \sum^{\pr{1}{\delta(\rho_0)} + k}_{i=0} \pr{0}{r_i} =  \sum^{\pr{1}{\delta(\rho_0)}}_{i=0} \pr{0}{r_i}$.
-	 That is, proving:
+	 Es decir, probando que:
 \begin{equation}\label{eq:bottom-sum}
  1+ \sum^{\pr{1}{\delta(\rho_0)}}_{i=0} \pr{0}{r_i} \geq \pr{0}{\delta(\rho_0)}
 \end{equation} 
-we get $\FMask(\rho) \geq \frac{1}{ \pr{0}{\delta(\rho_0)}}$. The proof is by induction on $\delta(\rho_0)$, the base case is direct.
- For the inductive case, if $\rho_0 \in V_\Refuter$, then
+tenemos $\FMask(\rho) \geq \frac{1}{ \pr{0}{\delta(\rho_0)}}$. La prueba es por inducción sobre $\delta(\rho_0)$, el caso base es directo.
+ Para el caso inductivo, si $\rho_0 \in V_\Refuter$, entonces
 \begin{align*}
  	1 + \sum^{\pr{1}{\delta(\rho_0)}}_{i=0} \pr{0}{r_i} & =  1 + \pr{0}{r_0} + \sum^{\pr{1}{\delta(\rho_0)}}_{i=1} \pr{0}{r_i} & \\
 					   %  & =   1+\sum^{\pr{1}{\delta(\rho_0)}}_{i=1} \pr{0}{r_i} & \\
@@ -607,7 +604,7 @@ we get $\FMask(\rho) \geq \frac{1}{ \pr{0}{\delta(\rho_0)}}$. The proof is by in
 					     & \geq \pr{0}{\delta(\rho_1)} & \text{(I.H.)} \\
 					     & = \pr{0}{\delta(\rho_0)} & \text{($\rho_0 \in V_\Refuter$)}
 \end{align*}
- If $\rho_0 \in V_\Verifier$ and $\pr{1}{\rho_0} \notin \Faults$, then the proof is as above. If $\pr{1}{\rho_0} \in \Faults$, then:
+ Si $\rho_0 \in V_\Verifier$ y $\pr{1}{\rho_0} \notin \Faults$, entonces la prueba es como arriba. Si $\pr{1}{\rho_0} \in \Faults$, entonces:
 \begin{align*}
  	1+\sum^{\pr{1}{\delta(\rho_0)}}_{i=0} \pr{0}{r_i} & =  1+\pr{0}{r_0} + \sum^{\pr{1}{\delta(\rho_0)}}_{i=1} \pr{0}{r_i} & \\
 					 %    & =   2 + \sum^{\pr{1}{\delta(\rho_0)}}_{i=1} \pr{0}{r_i} & \text{($\pr{1}{\rho_0} \in \Faults$)}\\
@@ -616,173 +613,156 @@ we get $\FMask(\rho) \geq \frac{1}{ \pr{0}{\delta(\rho_0)}}$. The proof is by in
 					     & \geq 1 + \pr{0}{\delta(\rho_1)} & \text{(I.H.)} \\
 					     & = \pr{0}{\delta(\rho_0)} & \text{($\pr{1}{\rho_0} \in \Faults$)}
 \end{align*}
-Thus, inequation \ref{eq:bottom-sum} holds. Now, consider the strategy $\pi^*_\Verifier$ for the Verifier defined as follows. For $v \in U$, $\pi^*_\Verifier(v) = v'$ such that $\delta(v') = \max \{\delta(v'') \mid v'' \in \post(v)\}$, otherwise $\pi^*_\Verifier(v) = v'$ for an arbitrary $v'$. 
-Let us prove that $\FMask(\out(\pi^*_\Refuter, \pi^*_\Verifier)) = \frac{1}{\pr{0}{\delta(\rho_0)}}$. 
+Por lo tanto, la inecuación \ref{eq:bottom-sum} vale. Ahora bien, consideremos la estrategia $\pi^*_\Verifier$ para el Verificador que se define a continuación. Para $v \in U$, $\pi^*_\Verifier(v) = v'$ tal que $\delta(v') = \max \{\delta(v'') \mid v'' \in \post(v)\}$, sino $\pi^*_\Verifier(v) = v'$ para un $v'$ arbitrario. 
+Vamos a probar que $\FMask(\out(\pi^*_\Refuter, \pi^*_\Verifier)) = \frac{1}{\pr{0}{\delta(\rho_0)}}$. 
 %Let $(\out(\pi^*_\Verifier, \pi^*_\Refuter)) = \rho_0 \rho_1 \dots$.
-Note that, by definition of $\pi^*_\Verifier$ and $\pi^*_\Refuter$, we have that $\pr{1}{\delta(\rho_{i+1})} = \pr{1}{\delta(\rho_i)} - 1$, %$\pr{1}{\delta(\rho_i)} = \pr{1}{\delta(\rho_{i+1})}+1$
-that is, in at most $\pr{1}{\delta(\rho_0)}$ steps we reach $\ErrorSt$. Thus, $\lim_{n \rightarrow \infty}  \pr{1}{r_n} =1$. 
-Furthermore, if $\pr{1}{\rho_i} \in \Faults$, then $\pr{0}{\delta(\rho_{i+1})} = \pr{0}{\delta(\rho_i)} - 1$
-by definition of $\pi^*_V$. Thereby, at most $\pr{0}{\rho_0}$ faults occur in $\rho$, and then
-$\FMask(\out(\pi^*_\Refuter, \pi^*_\Verifier)) = \frac{1}{\pr{0}{\delta(\rho_0)}}$. Therefore, this and inequation \ref{eq:inf-bound} give us: 
+Note que, por definición de $\pi^*_\Verifier$ y $\pi^*_\Refuter$, tenemos que $\pr{1}{\delta(\rho_{i+1})} = \pr{1}{\delta(\rho_i)} - 1$, %$\pr{1}{\delta(\rho_i)} = \pr{1}{\delta(\rho_{i+1})}+1$
+es decir, en a lo sumo $\pr{1}{\delta(\rho_0)}$ pasos alcanzamos $\ErrorSt$. De esta forma, $\lim_{n \rightarrow \infty}  \pr{1}{r_n} =1$. 
+Además, si $\pr{1}{\rho_i} \in \Faults$, entonces $\pr{0}{\delta(\rho_{i+1})} = \pr{0}{\delta(\rho_i)} - 1$
+por definición de $\pi^*_V$. De este modo, ocurrirán a lo sumo $\pr{0}{\rho_0}$ fallas en $\rho$, y entonces
+$\FMask(\out(\pi^*_\Refuter, \pi^*_\Verifier)) = \frac{1}{\pr{0}{\delta(\rho_0)}}$. Por lo tanto, esto y la inecuación \ref{eq:inf-bound} nos da: 
 $\inf_{\pi_\Verifier \in \Pi_\Verifier} \FMask(\out(\pi^*_\Refuter, \pi_\Verifier)) = \frac{1}{\pr{0}{\delta(v^G_0)}}$. 
 
 
-Finally, let us prove that there is no
-strategy $\pi^+_\Refuter$  such that $\sup_{\pi_\Verifier} \FMask(\out(\pi^+_\Refuter, \pi_\Verifier)) < \frac{1}{\pr{0}{\delta(v^G_0)}}$. 
-Thus, $\pi^*_\Refuter$ is the best strategy. 
-For the sake of contradiction, assume that we have such a strategy. Consider $\out(\pi^+_\Refuter, \pi^*_\Verifier) = \rho = \rho_0 \rho_1 \dots$, 
-and let $\delta(\rho_0) = (i,j)$. Then, note that, if $\rho_i \in V_\Refuter$, then $\pr{0}{\delta(\rho_i)} = \pr{0}{\delta(\rho_{i+1})}$, 
-moreover, if $\rho_i \in V_\Verifier$ then $\pr{0}{\delta(\rho_i)} = 1 + \pr{0}{\delta(\rho_{i+1})}$. 
-Thus, $\lim_{n \rightarrow \infty}\sum^n_{0} \pr{0}{r_i} = \frac{1}{\pr{0}{\delta(\rho_0)}}$, which yields a contradiction.
-Hence, $\val(\QMStrGame) = \inf_{\pi_\Verifier \in \Pi_\Verifier} \sup_{\pi_\Refuter \in \Pi_\Refuter} \FMask(\out(\pi_\Refuter, \pi_\Verifier)) = \frac{1}{\pr{0}{\delta(v^G_0)}}$.
+Finalmente, probaremos que no existe una estrategia $\pi^+_\Refuter$  tal que $\sup_{\pi_\Verifier} \FMask(\out(\pi^+_\Refuter, \pi_\Verifier)) < \frac{1}{\pr{0}{\delta(v^G_0)}}$. 
+De esta forma, $\pi^*_\Refuter$ es la mejor estrategia. 
+Vamos a hacer una prueba por contradicción, asumamos que tenemos tal estrategia. Consideremos $\out(\pi^+_\Refuter, \pi^*_\Verifier) = \rho = \rho_0 \rho_1 \dots$, 
+y sea $\delta(\rho_0) = (i,j)$. Entonces, note que, si $\rho_i \in V_\Refuter$, entonces $\pr{0}{\delta(\rho_i)} = \pr{0}{\delta(\rho_{i+1})}$, 
+además, si $\rho_i \in V_\Verifier$ entonces $\pr{0}{\delta(\rho_i)} = 1 + \pr{0}{\delta(\rho_{i+1})}$. 
+Por lo tanto, $\lim_{n \rightarrow \infty}\sum^n_{0} \pr{0}{r_i} = \frac{1}{\pr{0}{\delta(\rho_0)}}$, lo cual lleva a una contradicción.
+Entonces, $\val(\QMStrGame) = \inf_{\pi_\Verifier \in \Pi_\Verifier} \sup_{\pi_\Refuter \in \Pi_\Refuter} \FMask(\out(\pi_\Refuter, \pi_\Verifier)) = \frac{1}{\pr{0}{\delta(v^G_0)}}$.
 \qedhere
 .
 
 \end{proof} \\
 
-	Interestingly, for deterministic games the value of the game is given by the shortest path (if it exists) to the error state, as shown in the following theorem.
-\begin{thm}\label{theorem:det-games} Let  $\QMStrGame = \langle V^G, V_\Refuter,V_\Verifier, E^G, \InitVertex^G, \reward^G \rangle$ be a deterministic 
-quantitative strong masking game graph,
-and let  $G_{\QMStrGame} = \langle V^G,  E^G, \InitVertex^G, w \rangle$ be its underlying weighted graph, with a weight function $w$ 
-defined as:
+	Interesantemente, el valor del juego para juegos deterministas está dado por el camino más corto (si existe) hacia el estado de error, como se muestra en el siguiente teorema.
+\begin{thm}\label{theorem:det-games} Sea  $\QMStrGame = \langle V^G, V_\Refuter,V_\Verifier, E^G, \InitVertex^G, \reward^G \rangle$ un grafo de juego de masking cuantitativo fuerte determinista,
+y sea  $G_{\QMStrGame} = \langle V^G,  E^G, \InitVertex^G, w \rangle$ su grafo con pesos subyacente, con la función de peso $w$ 
+definida como:
 \[
 w(v, v') =
-\begin{cases} 1 & \text{if $\pr{1}{v'} \in \Faults$} \\
-		      0 & \text{otherwise}	 
+\begin{cases} 1 & \text{si $\pr{1}{v'} \in \Faults$} \\
+		      0 & \text{en caso contrario}	 
 \end{cases}
 \]
-	If $\rho = \rho_0 \rho_1  \dots \ErrorSt$ is the shortest path (w.r.t. function $w$)
-to the error state in $G_{\QMStrGame}$, and $k$ is the number of faults occurring in $\rho$, then: 
+	Si $\rho = \rho_0 \rho_1  \dots \ErrorSt$ es el camino mas corto (con respecto a la función $w$)
+hacia el estado de error en $G_{\QMStrGame}$, y $k$ es la cantidad de fallas que ocurren en $\rho$, entonces: 
 \[
 	\val(\QMStrGame) = \frac{1}{1+k}
 \]
 \end{thm}
 \begin{proof}
-	Let us define a strategy $\pi_\Refuter \in \Pi_\Refuter$ for the Refuter such that:
+	Definamos la estrategia $\pi_\Refuter \in \Pi_\Refuter$ para el Refutador tal que:
 \[
 	\inf_{\pi_\Verifier \in \Pi_\Verifier} f_m(\out(\pi_\Refuter, \pi_\Verifier)) = \sup_{\pi_\Refuter' \in \Pi_\Refuter} \inf_{\pi_\Verifier \in \Pi_\Verifier} f_m( \out(\pi_\Refuter',\pi_\Verifier))
 \]	
-	where this strategy conforms the shortest path in the underlying graph. Let us assume that: 
-$\rho_0 \rho_1 \dots \ErrorSt$ is the shortest path. We can safely assume that no vertex appears twice in $\rho$, otherwise we can reduce the shortest path by removing the cycle.
-	Keeping in mind that remark, we define the strategy $\pi_\Refuter$ as follows:
+	donde esta estrategia se conforma con el camino mas corto en el grafo subyacente. Asumamos que: 
+$\rho_0 \rho_1 \dots \ErrorSt$ es el camino mas corto. Podemos asumir de forma segura que ningún vértice aparece mas de una vez en $\rho$, de lo contrario podemos reducir el camino mas corto eliminando ciclos.
+	Teniendo en cuenta esto, definimos la estrategia $\pi_\Refuter$ de la siguiente forma:
 \[
 	\pi_\Refuter(v) = \begin{cases}
-								\rho_{j+1} & \text{if $v = \rho_j$ for some $j \geq 0$,} \\
-								v' & \text{for arbitrary $v' \in V_\Verifier$.}
+								\rho_{j+1} & \text{si $v = \rho_j$ para algún $j \geq 0$,} \\
+								v' & \text{para un $v' \in V_\Verifier$ arbitrario.}
 						   \end{cases}
 \] 
-First, let us prove that $\inf_{\pi_\Verifier \in \Pi_\Verifier} f_m (\out(\pi_\Refuter, \pi_\Verifier)) = \frac{1}{1+k}$. Let $\pi_\Verifier$ be an arbitrary strategy for the Verifier. Let us prove that
-the play $\rho'_0 \rho'_1 \dots$ conforming $\pi_\Refuter$ and $\pi_\Verifier$ is equal to $\rho$. We prove it by induction 
-on $\rho_i$, it holds for $\rho_0 = \InitVertex = \rho'_0$. Assume that it holds 
-for $i=n$, that is, $\rho'_n = \rho_n$, if $\rho_n = (t, \sigma^1, s', \Verifier)$ (resp.  $\rho_n = (s, \sigma^2, t', \Verifier)$), since $A$ and $A'$ are deterministic, there is a unique edge $((t, \sigma^1, s', \Verifier), (t, \#, t', \Verifier)) \in E^G$ (resp. $((s, \sigma^1, t', \Verifier), (t, \#, t', \Verifier)) \in E^G$) and therefore $\rho'_{n+1} = \pi_\Verifier( \rho'_n) = (t, \#, t', \Verifier) = \rho_{n+1}$. If 
-$\rho'_n = \rho_n = (s, \#, s', \Refuter)$ then $\rho'_{n+1} = \pi_\Refuter(\rho'_n) = \pi_\Refuter(\rho_n) = \rho_{n+1}$. 
+Primero, vamos a probar que $\inf_{\pi_\Verifier \in \Pi_\Verifier} f_m (\out(\pi_\Refuter, \pi_\Verifier)) = \frac{1}{1+k}$. Sea $\pi_\Verifier$ una estrategia arbitraria para el Verificador. Probemos que la jugada $\rho'_0 \rho'_1 \dots$ que se conforma a $\pi_\Refuter$ y $\pi_\Verifier$ es igual a $\rho$. Esto lo demostramos por inducción sobre $\rho_i$, vale para $\rho_0 = \InitVertex = \rho'_0$. Asumamos que vale para $i=n$, es decir, $\rho'_n = \rho_n$, si $\rho_n = (t, \sigma^1, s', \Verifier)$ (resp.  $\rho_n = (s, \sigma^2, t', \Verifier)$), como $A$ y $A'$ son deterministas, existe un único arco $((t, \sigma^1, s', \Verifier), (t, \#, t', \Verifier)) \in E^G$ (resp. $((s, \sigma^1, t', \Verifier), (t, \#, t', \Verifier)) \in E^G$) y por lo tanto  $\rho'_{n+1} = \pi_\Verifier( \rho'_n) = (t, \#, t', \Verifier) = \rho_{n+1}$. Si 
+$\rho'_n = \rho_n = (s, \#, s', \Refuter)$ entonces $\rho'_{n+1} = \pi_\Refuter(\rho'_n) = \pi_\Refuter(\rho_n) = \rho_{n+1}$. 
 	
-	In addition,  the valuation of $\rho$ is $\frac{1}{1+k}$, that is, we obtain:
+	Adicionalmente, la valuación de $\rho$ es $\frac{1}{1+k}$, es decir, obtenemos:
 \begin{equation} \label{eq1}
 \begin{split}
  f_m (\out(\pi_\Refuter, \pi_\Verifier))  =  \frac{1}{1+k},
 \end{split}
 \end{equation}	
-and since this holds for any $\pi_\Verifier$, we obtain:
+y como esto vale para cualquier $\pi_\Verifier$, obtenemos:
 \begin{equation} \label{eq1}
 \begin{split}
 \inf_{\pi_V \in \Pi_V} f_m (\out(\pi_\Refuter, \pi_\Verifier))  =  \frac{1}{1+k}
 \end{split}
 \end{equation}
 
-Now, assume that there is a strategy $\pi_\Refuter'$ for the Refuter such that 
+Ahora bien, asumamos que hay una estrategia $\pi_\Refuter'$ para el Refutador tal que 
 $\inf_{\pi_V \in \Pi_V} f_m (\out(\pi_\Refuter', \pi_\Verifier)) > \inf_{\pi_\Verifier \in \Pi_\Verifier} f_m (\out(\pi_\Refuter, \pi_\Verifier))$.
-From (\ref{eq1}) we have that $\inf_{\pi_\Verifier \in \Pi_\Verifier} f_m(\out(\pi_\Refuter', \pi_\Verifier)) > \frac{1}{1+k}$. 
-Therefore, the number of faults observed in 
-$\inf_{\pi_\Verifier \in \Pi_\Verifier} f_m(\out(\pi_\Refuter', \pi_\Verifier))$ should be less than $k$. 
-But, it would be a shorter path in the underlying graph, which is a contradiction. Thereby, we have:
+De (\ref{eq1}) tenemos que $\inf_{\pi_\Verifier \in \Pi_\Verifier} f_m(\out(\pi_\Refuter', \pi_\Verifier)) > \frac{1}{1+k}$. 
+De esta forma, la cantidad de fallas observadas en 
+$\inf_{\pi_\Verifier \in \Pi_\Verifier} f_m(\out(\pi_\Refuter', \pi_\Verifier))$ debería ser menor a $k$. 
+Pero, seria un camino mas corto en el grafo subyacente, lo cual es una contradicción. Por lo tanto, tenemos que:
 \[	
 	\inf_{\pi_\Verifier \in \Pi_\Verifier} f_m(\out(\pi_\Refuter, \pi_\Verifier)) = \sup_{\pi_\Refuter' \in \Pi_\Refuter} \inf_{\pi_\Verifier \in \Pi_\Verifier} f_m( \out(\pi_\Refuter',\pi_\Verifier)).
 \]	
 \qedhere
 \end{proof} \\
 
-	Let us note that Theorems~\ref{thm:mask_game_det}, \ref{thm:quant_game} and \ref{theorem:det-games} apply as well to 
+	Notemos que los teoremas~\ref{thm:mask_game_det}, \ref{thm:quant_game} y \ref{theorem:det-games} aplican también a 
 $\QMWeakGame$.
-	Theorem~\ref{theorem:det-games} allows us to provide efficient procedures for deciding quantitative games in the 
-case of deterministic systems. For non-deterministic systems, the procedure is computationally more
-expensive (in terms of time and memory) than the deterministic case, because 
-the sets $\setsUs$ (Def.~\ref{def:U}) need to be computed. \\
+	El teorema~\ref{theorem:det-games} nos permite proveer procedimientos eficientes para decidir juegos cuantitativos en el caso de sistemas deterministas. Para el caso de sistemas no deterministas, el procedimiento es mas costoso computacionalmente (en términos de tiempo y memoria) que para el caso de sistemas deterministas, ya que los conjuntos $\setsUs$ (Def.~\ref{def:U}) deben ser computados. \\
 
-It is important to remark that, for non-deterministic systems, the shortest path does not always determine winning strategies. This can be seen by means of a simple example as follows. Let us consider the two transition systems shown in Fig.~\ref{fig:two-nondet-systems}.
+Es importante destacar que, para sistemas no deterministas, el camino mas corto no siempre determina estrategias ganadoras. Esto se puede observar a través de un ejemplo simple a continuación. Consideremos los dos sistemas de transición que se muestran en la figura ~\ref{fig:two-nondet-systems}.
 
 \begin{figure} [h]
 \begin{center}
-    \includegraphics[scale=0.5]{nondeterm.eps} 
-    \caption{Two non-deterministic systems}
+    \includegraphics[scale=0.5]{images/nondeterm.eps} 
+    \caption{Dos sistemas no deterministas}
     \label{figure:nondeterm}\label{fig:two-nondet-systems}
 \end{center}
 \end{figure}
 \begin{figure} [h]
 \begin{center}
-    \includegraphics[scale=0.5]{nondeterm-game.eps} 
-    \caption{The quantitative game for systems $M$ and $M'$}
+    \includegraphics[scale=0.5]{images/nondeterm-game.eps} 
+    \caption{El juego cuantitativo para los sistemas $M$ y $M'$}
     \label{figure:nondeterm-game}
 \end{center}
 \end{figure}
 
-In this example, the non-determinism is provided by action $b$. Note also that there is a fault in  $M'$ connecting states $t_2$ and $t_3$. The quantitative game for these systems is shown in Fig.~\ref{figure:nondeterm-game}. Note that any shortest path of this graph w.r.t. the weight 
-function $w$ has value $1$ (any path in the graph avoiding the faults). However, the value of this game is $\frac{1}{2}$ due to the best 
-strategy for the Refuter is to take the Verifier to state $(s_2,b^1,t_1,\Verifier)$. 
-From there, since the Verifier wants to minimize the value of the game, her best play  is to move to state $(s_2,\#,t_2,\Refuter)$. Then, the Refuter can choose a fault which leads to the error state. \\
+En este ejemplo, el no-determinismo está dado por la acción $b$. Note también que hay una falla en $M'$ que conecta los estados $t_2$ y $t_3$. El juego cuantitativo para estos sistemas se muestra en la figura~\ref{figure:nondeterm-game}. Notemos que cualquier camino mas corto en este grafo con respecto a la función de peso $w$ tiene valor $1$ (cualquier camino en el grafo que evite las fallas). Sin embargo, el valor del juego es $\frac{1}{2}$ ya que la mejor estrategia del Refutador es llevar al Verificador al estado $(s_2,b^1,t_1,\Verifier)$. 
+Desde ahí, como el Verificador quiere minimizar el valor del juego, su mejor jugada es hacer un movimiento hacia el estado $(s_2,\#,t_2,\Refuter)$. Entonces, el Refutador puede elegir una falla que lleva al estado de error. \\
 %Note that the value of this game is $\frac{1}{2}$.\\
 
-The above observation suggests that a different algorithm for computing the masking distance for 
-non-deterministic systems is needed. 
-The main idea is to compute the sets $\setsUs$ as defined in Def.~\ref{def:U} via 
-a fix-point approach. More precisely, the sets $\setsUs$ can be calculated using a 
-bottom-up breadth-first search from the error state. 
-Algorithm \ref{Alg:MainAlg} shows the pseudo-code for solving any quantitative 
-strong (resp. weak) masking game. 
-It takes as input a quantitative strong masking game graph $\QMStrGame = \langle V^G, V_\Refuter, V_\Verifier,E^G, \InitVertex^G, \reward^G \rangle$ 
-and computes the value of the game, i.e., $\val(\QMStrGame)$.
+La observación anterior sugiere que se necesita un algoritmo diferente para computar la distancia de masking para sistemas no deterministas. 
+La idea principal es computar los conjuntos $\setsUs$ que fueron definidos en Def.~\ref{def:U} a través de un algoritmo de punto fijo. Para ser mas precisos, los conjuntos $\setsUs$ pueden ser calculados utilizando una búsqueda a lo ancho de abajo hacia arriba ( 
+bottom-up breadth-first) desde el estado de error. 
+El algoritmo \ref{Alg:MainAlg} muestra el pseudo-código para resolver cualquier juego cuantitativo de masking fuerte (resp. débil). 
+El algoritmo toma como entrada un grafo de juego cuantitativo de masking fuerte  $\QMStrGame = \langle V^G, V_\Refuter, V_\Verifier,E^G, \InitVertex^G, \reward^G \rangle$ 
+y computa el valor del juego, i.e., $\val(\QMStrGame)$.
 %Let us describe the essential steps of the algorithm for solving any quantitative strong (resp. weak) masking game. 
-The algorithm annotates the nodes of the graph with numbers $i$ and $j$. 
+El algoritmo etiqueta los nodos del grafo con los índices $i$ y $j$. 
 %The algorithm can be understood as follows. 
-The main steps of the algorithm are as follows:
+Los pasos principales del algoritmo se detallan a continuación:
 
 
 \begin{enumerate}
-  \item Every vertex $v$ is annotated with a pair $(i, j)$ representing that $v \in U_{i}^{j}$. Initially, $\ErrorSt$ is labeled with $(1, 1)$ and every other   
-  node is labeled with $(\infty, \infty)$ (lines \ref{Alg:InitB}-\ref{Alg:InitE}). 
-  Moreover, we use the assignment $\Q \gets \emptyset$ to denote the creation of an empty queue. 
-  Subsequently, we enqueue the error state (lines \ref{Alg:CreateQ}-\ref{Alg:LoopB}). We also maintain a set $\STB$ with the stabilized  states, i.e. states whose labels are final. The states that are not reachable from the error state are ignored.
-  \item A bottom-up breadth-first search is performed from the error state by means of the priority queue $\Q$ (lines \ref{Alg:LoopB}-\ref{Alg:LoopE}), where the state with the lowest label has the highest priority. 
-  Let $v'$ be the vertex with the highest priority in the queue. Then, for all predecessor $v$ of $v'$ the following steps 
-  are executed (lines \ref{Alg:LoopBPre}-\ref{Alg:LoopEPre}):
+  \item Cada vértice $v$ esta etiquetado con un par $(i, j)$ que representa que $v \in U_{i}^{j}$. Inicialmente, $\ErrorSt$ está etiquetado con $(1, 1)$ y todos los demás nodos están etiquetados con $(\infty, \infty)$ (lineas \ref{Alg:InitB}-\ref{Alg:InitE}). 
+  Además, usamos la asignación $\Q \gets \emptyset$ para denotar la creación de una cola vacía. 
+  Después, encolamos el estado de error (lineas \ref{Alg:CreateQ}-\ref{Alg:LoopB}). También mantenemos un conjunto $\STB$ que contiene los estados estabilizados, i.e. estados cuyas etiquetas son finales. Los estados que no son alcanzables desde el estado de error son ignorados.
+  \item Desde el estado de error se lleva a cabo una búsqueda a lo ancho de abajo hacia arriba (bottom-up breadth-first) utilizando una cola de prioridad $\Q$ (lineas \ref{Alg:LoopB}-\ref{Alg:LoopE}), donde el estado con la etiqueta mas pequeña (en orden lexicográfico) tiene mayor prioridad. 
+  Sea $v'$ el vértice con la prioridad mas alta en la cola. Entonces, para todo predecesor $v$ de $v'$ se ejecutan los siguientes pasos (lineas \ref{Alg:LoopBPre}-\ref{Alg:LoopEPre}):
   \begin{itemize}
-    \item If $v$ is a Verifier's node (resp. a Refuter's node), then we get the 
-    maximum (resp. minimum) label $(i,j)$ from all of its successors w.r.t. lexicographical order. In addition, if $v$ is a Verifier's vertex and all its successors are in $\STB$, then $v$ is added to the set. In case that $v$ is a Refuter's vertex, 
-    the vertex is simply added without any restrictions. 
-    \item Update $(i,j)$ by incrementing $j$ and incrementing $i$ only if $\pr{1}{v} \in \Faults$. Let  $(i',j')$ be this new label.
-    \item If $i'$ is different from the first component of the current label of $v$, then update it and add $v$ to the queue. 
-    Observe that the same node could be added to the queue
-     more than once as its successors' labels change.
+    \item Si $v$ es un nodo del Verificador (resp. un nodo del Refutador), entonces obtenemos la máxima (resp. mínima) etiqueta $(i,j)$ de todos sus sucesores con respecto al orden lexicográfico. Adicionalmente, si $v$ es un vértice del Verificador y todos sus sucesores están en $\STB$, entonces $v$ se añade al conjunto. En el caso que $v$ sea un vértice del Refutador, 
+    el vértice simplemente se añade sin restricción alguna. 
+    \item Actualizar el valor de $(i,j)$ incrementando $j$ e incrementando $i$ solo si $\pr{1}{v} \in \Faults$. Llamemos $(i',j')$ a esta nueva etiqueta.
+    \item Si $i'$ es diferente del primer componente de la etiqueta actual de $v$, entonces se actualiza y se agrega $v$ a la cola. 
+    Observemos que el mismo nodo puede ser añadido a la cola mas de una vez a medida que las etiquetas de sus sucesores cambian.
   \end{itemize}
-  \item When the queue is empty, 
-  the algorithm terminates and returns the value of the game (lines \ref{Alg:EndB}-\ref{Alg:EndE}). 
-  Intuitively, the procedure halts as soon as the labels of all states in the game graph  reach a final value. 
-  Let $k$ be the first component of the initial state's label, then the value of the game is $0$ if 
-  $k = \infty$, and $\frac{1}{k}$ otherwise.\\
+  \item Cuando la cola está vacia, 
+  el algoritmo termina y retorna el valor del juego (lineas \ref{Alg:EndB}-\ref{Alg:EndE}). 
+  Intuitivamente, el procedimiento para tan pronto como las etiquetas de todos los estados en el grafo de juego alcanzan su valor final (punto fijo). 
+  Sea $k$ la primer componente de la etiqueta del estado inicial, entonces el valor del juego es $0$ si 
+  $k = \infty$, y $\frac{1}{k}$ en caso contrario.\\
 \end{enumerate}
 \begin{algorithm}[t]
 \SetAlgoLined
-\KwIn{Quantitative Strong Masking Game $\QMStrGame = \langle V^G, V_\Refuter, V_\Verifier,E^G, \InitVertex^G, \reward^G \rangle$}
+\KwIn{Juego de Masking Cuantitativo Fuerte $\QMStrGame = \langle V^G, V_\Refuter, V_\Verifier,E^G, \InitVertex^G, \reward^G \rangle$}
 \KwOut{$\val(\QMStrGame)$}
- Label $\ErrorSt$ with $(1,1)$\; \label{Alg:InitB}
- Label every vertex in $V^G \setminus \{\ErrorSt\}$ with $(\infty,\infty)$\; \label{Alg:InitE}
+ Etiquetar $\ErrorSt$ con $(1,1)$\; \label{Alg:InitB}
+ Etiquetar cada nodo en $V^G \setminus \{\ErrorSt\}$ con $(\infty,\infty)$\; \label{Alg:InitE}
  %$\Q \gets \emptyset$ \tcp*{$\Q$ is a priority queue}  \label{Alg:CreateQ}
- $\Q \gets \emptyset$ \tcp*{$\Q$ is a priority queue}  \label{Alg:CreateQ}
+ $\Q \gets \emptyset$ \tcp*{$\Q$ es una cola de prioridad}  \label{Alg:CreateQ}
  $\STB \gets \{\ErrorSt\}$\; \label{Alg:CreateSTB}
  %$\mathcal{VE} \longleftarrow \emptyset$\; \label{Alg:CreateVE} 
 
  $\enqueue(\Q, \ErrorSt)$\; \label{Alg:LoopB} 
- \While{$\Q$ is not empty}{ \label{Alg:While} 
+ \While{$\Q$ no está vacía}{ \label{Alg:While} 
  	 $s' \gets \dequeue(\Q)$\; \label{Alg:Dequeue-Node}
  	 %\lIf{$\{s'\xrightarrow{\sigma}t \mid t \in post(s')\} \subseteq \mathcal{VE}$}{ \label{Alg:UpdateSTB}
 	%	$\mathcal{STB} \longleftarrow \mathcal{STB} \cup \{s'\}$
@@ -802,13 +782,13 @@ The main steps of the algorithm are as follows:
 	 		%$enq \longleftarrow post(s) \cap \mathcal{STB} \neq \emptyset$
 	 		$\STB \gets \STB \cup \{v\}$ \label{Alg:R-STB-Update}
 	 	}
-	 	$\pr{1}{\lbl} \gets \pr{1}{\lbl} + 1$ \tcp*{we assume $\infty+1=\infty$} \label{Alg:Inc_j}
+	 	$\pr{1}{\lbl} \gets \pr{1}{\lbl} + 1$ \tcp*{asumimos $\infty+1=\infty$} \label{Alg:Inc_j}
 	 	\lIf{$\pr{1}{v} \in \Faults$}{
 	 		$\pr{0}{\lbl} \gets \pr{0}{\lbl} + 1$  \label{Alg:Inc_i}
 	 	}
 	 	\If{$\pr{0}{\Label(v)} \neq \pr{0}{\lbl}$}{ \label{Alg:Insert-Cond}
-	 		Label $v$ with $\text{lbl}$\;
-	 		$\text{Enqueue}(\Q, v)$  \tcp*{$v$ has priority $\Label(v')$} \label{Alg:Enqueue-Vertex}
+	 		Etiquetar $v$ con $\text{lbl}$\;
+	 		$\text{Enqueue}(\Q, v)$  \tcp*{$v$ tiene prioridad $\Label(v')$} \label{Alg:Enqueue-Vertex}
 	 		%$\mathcal{VE} \longleftarrow \mathcal{VE} \cup \{s\xrightarrow{\sigma}s'\}$
 	 	}
 	 } \label{Alg:LoopEPre}
@@ -821,56 +801,55 @@ The main steps of the algorithm are as follows:
 	$\result \gets 0$ \label{Alg:Ret0}
  }
  \Return{$\result$}\; \label{Alg:EndE}
- \caption{Computing the value for a quantitative strong masking game} \label{Alg:MainAlg} 
+ \caption{Computando el valor del juego de masking cuantitativo fuerte} \label{Alg:MainAlg} 
 \end{algorithm}
 
 
-	 Let us prove the termination and correctness of this algorithm.
+	 Vamos a demostrar que el algoritmo termina y que es correcto.
 
-\sloppy \begin{thm}\label{th:alg-termination}  \textbf{(Termination)} Algorithm \ref{Alg:MainAlg} terminates.
+\sloppy \begin{thm}\label{th:alg-termination}  \textbf{(Terminación)} El Algoritmo \ref{Alg:MainAlg} termina.
 \end{thm}
 \begin{proof}
-	Let us prove that a vertex cannot be added an unbounded number of times to $\Q$. 
-First, note that lines \ref{Alg:LoopBPre} and \ref{Alg:R-STB-Update} of Algorithm \ref{Alg:MainAlg} imply that Refuter's vertices are 
-added only once to the queue. 
-Thus, only Verifier's vertices can be added an unbounded number of times to $\Q$. 
-We prove by contradiction that this is not the case. 
-Assume that $v$ is a Verifier's vertex that is added infinitely often to the queue. 
-This implies that $v \notin \STB$ is always true inside the loop, and so 
-$\post(v) \cap (V^G \setminus \STB) \neq \emptyset$ (otherwise $v$ would be inserted into $\STB$, line \ref{Alg:UpdateSTB}). 
-That is,  some Refuter's node  $w \in \post(v)$ must satisfy $\post(w) \cap \STB = \emptyset$. 
-Furthermore, we must also have $\Label(w) = (\infty, \infty)$ because this is the initial value assigned to $w$, 
-and the only way of modifying this is by executing line \ref{Alg:R-Update}, 
-in such a case, $w$ will be added to $\Q$, contradicting our assumption. 
-But the label of $v$ is always calculated taking the maximum of its successors (line \ref{Alg:V-Update}), that is, 
-$\Label(v) = (\infty, \infty)$ must hold inside the loop, and since we defined $\infty + 1 = \infty$, the condition in line \ref{Alg:Insert-Cond} is always false.
-Thus $v$ is never added to the queue, contradicting our initial assumption. 
-Summing up, no node is added an unbounded number of times to the queue. Hence, 
-the queue eventually gets empty and the algorithm terminates.
+	Probemos que un vértice no puede ser añadido una cantidad no acotada de veces a $\Q$. 
+Primero, note que las lineas \ref{Alg:LoopBPre} y \ref{Alg:R-STB-Update} del Algoritmo  \ref{Alg:MainAlg} implican que los vértices del Refutador solo se agregan una vez a la cola. 
+Por lo tanto, solo los vértices del Verificador pueden ser añadidos a a $\Q$ una cantidad no acotada de veces.
+Probaremos por contradicción que este no es el caso. 
+Asumamos que $v$ es un vértice del Verificador que es agregado infinitas veces a la cola. 
+Esto implica que $v \notin \STB$ es siempre verdadero dentro del ciclo, y entonces 
+$\post(v) \cap (V^G \setminus \STB) \neq \emptyset$ (d lo contrario $v$ seria insertado en $\STB$, linea \ref{Alg:UpdateSTB}). 
+Esto significa que,  algún nodo $w \in \post(v)$ del Refutador debe satisfacer $\post(w) \cap \STB = \emptyset$. 
+Mas aun, también tenemos $\Label(w) = (\infty, \infty)$ ya que este es el valor inicial que se asigna a $w$, 
+y la única manera de modificarlo es ejecutando la linea \ref{Alg:R-Update}, 
+en tal caso, $w$ sera agregado a $\Q$, lo cual contradice lo que asumimos. 
+Pero la etiqueta de $v$ se calcula siempre tomando el máximo de sus sucesores (linea \ref{Alg:V-Update}), es decir, 
+$\Label(v) = (\infty, \infty)$ debe valer dentro del ciclo, y como definimos $\infty + 1 = \infty$, la condición en la linea \ref{Alg:Insert-Cond} siempre es falsa.
+Por lo tanto $v$ nunca es agregado a la cola, lo cual contradice nuestro supuesto inicial. 
+En resumen, ningún nodo se puede agregar un numero no acotado de veces a la cola. Por esto, 
+la cola eventualmente se vacía y el algoritmo termina.
 \qedhere
 \end{proof} 
-\sloppy \begin{thm}\label{th:alg-correctness} \textbf{(Correctness)} On Termination, Algorithm \ref{Alg:MainAlg} 
-returns the value of the quantitative strong (resp. weak) masking game graph $\QMStrGame$.
+\sloppy \begin{thm}\label{th:alg-correctness} \textbf{(Correctitud)} Al terminar, el Algoritmo \ref{Alg:MainAlg} 
+retorna el valor del grafo juego cuantitativo de masking fuerte (respec. débil) $\QMStrGame$.
 \end{thm}
 \begin{proof}
-	Let us consider the function  $\delta(v) = \min \{(i,j) \mid v \in \setsUs\}$, where $\min \emptyset = (\infty, \infty)$.
-We also consider the extension of this function to sets, that is, $\delta(W) = \{\delta(w) \mid w \in W \}$. 
-Furthermore, the following properties of $\delta$ are a consequence of Def. \ref{def:U}: \\
+	Consideremos la función  $\delta(v) = \min \{(i,j) \mid v \in \setsUs\}$, donde $\min \emptyset = (\infty, \infty)$.
+También consideramos la extensión de esta función a conjuntos, es decir, $\delta(W) = \{\delta(w) \mid w \in W \}$. 
+Además, las siguientes propiedades de $\delta$ son una consecuencia de la definición \ref{def:U}: \\
 
 \noindent
-if $v$ is a Refuter's vertex:
+Si $v$ es un vértice del Refutador:
 \begin{equation}\label{prop:delta-1}
  \delta(v)  = \min \{(i,j+1) \mid (i,j) \in \delta(\post(v)) \}
 \end{equation}
-If $v$ is a Verifier's vertex and $\pr{1}{v} \in \Faults$ then:
+Si $v$ es un vértice del Verificador y $\pr{1}{v} \in \Faults$ entonces:
 \begin{equation}\label{prop:delta-2}
  \delta(v)  = \max \{(i+1,j+1) \mid (i,j) \in \delta(\post(v)) \}
 \end{equation}
-If $v$ is a Verifier's vertex and $\pr{1}{v} \notin \Faults$ then:
+Si $v$ es un vértice del Verificador y $\pr{1}{v} \notin \Faults$ entonces:
 \begin{equation}\label{prop:delta-3}
  \delta(v) = \max \{(i,j+1) \mid (i,j) \in \delta(\post(v)) \}
 \end{equation}
-	Now, let us prove that the following predicates always hold after line \ref{Alg:While}.
+	Ahora bien, probemos que los siguientes predicados siempre valen después de la linea \ref{Alg:While}.
 \begin{equation}\label{Alg:inv0}
 	\forall v \in \STB : \Label(v) < (\infty, \infty)
 \end{equation}
@@ -882,291 +861,269 @@ If $v$ is a Verifier's vertex and $\pr{1}{v} \notin \Faults$ then:
 	\forall v \in \STB : \Label(v) = \delta(v)
 \end{equation}
 
-	Proof of Property \ref{Alg:inv0}: it holds for the initialization (line \ref{Alg:CreateSTB}). We proceed by contradiction. 
-Let $v$ be the first node added to $\STB$ such that $\Label(v) = (\infty, \infty)$.
-If it is a Refuter's vertex, then $\post(v) \cap \STB \neq \emptyset$ and since $v$ was the first node added to $\STB$ with 
-$\Label(v) = (\infty, \infty)$ we have that $\forall w \in \post(v) \cap \STB: \Label(w) < (\infty, \infty)$. But then, in line \ref{Alg:R-Update},
-$v$ is labelled with some label different from $(\infty, \infty)$ which is a contradiction. 
-Similarly, if $v$ is a Verifier's vertex, then $\post(v) \subseteq \STB$ and 
-therefore it is labelled in line \ref{Alg:V-Update} with a value different from $(\infty, \infty)$, contradicting our initial assumption. 
-Hence, $\forall v \in \STB : \Label(v) < (\infty, \infty)$.
+	Prueba de la propiedad \ref{Alg:inv0}: vale para la inicialización (linea \ref{Alg:CreateSTB}). Vamos a hacer la prueba por contradicción. 
+Sea $v$ el primer nodo agregado a $\STB$ tal que $\Label(v) = (\infty, \infty)$.
+Si es un vértice del Refutador, entonces $\post(v) \cap \STB \neq \emptyset$ y como $v$ era el primer nodo agregado a $\STB$ con 
+$\Label(v) = (\infty, \infty)$ tenemos que $\forall w \in \post(v) \cap \STB: \Label(w) < (\infty, \infty)$. Pero entonces, en la linea \ref{Alg:R-Update},
+$v$ es etiquetado con una etiqueta diferente de $(\infty, \infty)$ lo cual es una contradicción. 
+De forma similar, si $v$ es un vértice del Verificador, entonces $\post(v) \subseteq \STB$ y 
+por lo tanto se lo etiqueta en la linea \ref{Alg:V-Update} con un valor diferente de $(\infty, \infty)$, lo cual contradice nuestro supuesto inicial. 
+Por consiguiente, $\forall v \in \STB : \Label(v) < (\infty, \infty)$.
 
-	Proof of Property \ref{Alg:inv1}: $\STB$ is initialized with $\{\ErrorSt \}$ and therefore the property holds before line \ref{Alg:While}. 
-For the sake of contradiction, assume that $v$ is the first node added to $\STB$ that does not hold the property, that is, there is a $w$ such that $\Label(w) < \Label(v)$ and
-$w \notin \STB$; furthermore, let us assume that $w$ is a vertex with minimum label satisfying this. 
-Since $v \in \STB$ we have $\Label(v)<(\infty, \infty)$ (by Prop.~\ref{Alg:inv0}) and therefore $\Label(w)< (\infty, \infty)$. 
-In fact, $w$ cannot be a Refuter's vertex, otherwise, when labelled, it would be added to $\STB$ (line \ref{Alg:R-STB-Update}), 
-contradicting our assumptions. 
-Now, if $w$ is a Verifier's vertex and $\Label(w) < (\infty, \infty)$
-since $\Label(w) = \max\{\Label(z) \mid z \in \post(w)\}$ (line \ref{Alg:R-Update}), we have: $\forall z \in \post(w) : \Label(z) < (\infty, \infty)$.
-Moreover, we have by transitivity that $\forall z \in \post(w) : \Label(z) < \Label(v)$. But since we assumed that 
-$w$ was the vertex with minimum label satisfying $\Label(w) < \Label(v)$ and $w \notin \STB$, we have 
-that $\forall z \in \post(v) : z \in \STB$. But then when $v$ was inspected in line \ref{Alg:UpdateSTB} it was added to $\STB$, 
-which yields a contradiction.
+	Prueba de la propiedad \ref{Alg:inv1}: $\STB$ se inicializa con $\{\ErrorSt \}$ y por lo tanto la propiedad vale antes de la linea \ref{Alg:While}. 
+De nuevo hacemos la prueba por contradicción, asumamos que $v$ es el primer nodo agregado a $\STB$ que no cumple con la propiedad, es decir, existe un $w$ tal que $\Label(w) < \Label(v)$ y
+$w \notin \STB$; además, asumamos que $w$ es e vértice con la etiqueta mas pequeña que satisface esto. 
+Como $v \in \STB$ tenemos $\Label(v)<(\infty, \infty)$ (por Prop.~\ref{Alg:inv0}) y entonces $\Label(w)< (\infty, \infty)$. 
+De hecho, $w$ no puede ser un vértice del Refutador, de lo contrario, al ser etiquetado, tendría que ser agregado a $\STB$ (linea \ref{Alg:R-STB-Update}), 
+contradiciendo nuestros supuestos. 
+Ahora bien, si $w$ es un vértice del Verificado y $\Label(w) < (\infty, \infty)$
+ya que $\Label(w) = \max\{\Label(z) \mid z \in \post(w)\}$ (linea \ref{Alg:R-Update}), tenemos: $\forall z \in \post(w) : \Label(z) < (\infty, \infty)$.
+Además, por transitividad tenemos que $\forall z \in \post(w) : \Label(z) < \Label(v)$. Pero como asumimos que 
+$w$ era el vértice con la menor etiqueta que satisface $\Label(w) < \Label(v)$ y $w \notin \STB$, tenemos que $\forall z \in \post(v) : z \in \STB$. Pero entonces cuando $v$ fue inspeccionado en la linea \ref{Alg:UpdateSTB} este fue agregado a $\STB$, 
+lo cual lleva a una contradicción.
 
-	Proof of Property \ref{Alg:inv2}: the property holds for $\ErrorSt$. Let $v$ be the first vertex added to $\STB$ such 
-	that $\Label(v) \neq \delta(v)$. In case that $v$ is a Verifier's vertex, then, 
-	since $v \in \STB$, we have $\post(v) \subseteq \STB$. Moreover,  we assumed that $v$ was the first vertex violating the property,  
-	so we have that $\forall w \in \post(v):\delta(w)=\Label(w)$. Furthermore, if $\pr{1}{v} \notin \Faults$, then: 
+	Prueba de la Propiedad \ref{Alg:inv2}: la propiedad vale para $\ErrorSt$. Sea $v$ el primer vértice agregado a $\STB$ tal que $\Label(v) \neq \delta(v)$. En el caso que $v$ es un vértice del Verificador, entonces, 
+	como $v \in \STB$, tenemos $\post(v) \subseteq \STB$. Además, asumimos que $v$ era el primer vértice que viola esta propiedad,  
+	entonces tenemos que $\forall w \in \post(v):\delta(w)=\Label(w)$. Además, si $\pr{1}{v} \notin \Faults$, entonces: 
 \begin{align*}
-\Label(v) & = \max \{(i,j+1) \mid (i,j) \in \Label(\post(v))\}&  \text{(Lines \ref{Alg:V-Update} and \ref{Alg:Inc_j})}\\
-	      & =  \max \{(i,j+1) \mid (i,j) \in \delta(\post(v))\}&  \text{(Assumption)}\\
+\Label(v) & = \max \{(i,j+1) \mid (i,j) \in \Label(\post(v))\}&  \text{(Lineas \ref{Alg:V-Update} y \ref{Alg:Inc_j})}\\
+	      & =  \max \{(i,j+1) \mid (i,j) \in \delta(\post(v))\}&  \text{(Suposición)}\\
 	      & = \delta(v)& \text{(Prop. \ref{prop:delta-3})}
 \end{align*}
-which is a contradiction. Now, in case that $\pr{1}{v} \in \Faults$ we have that:
+lo cual es una contradicción. Ahora bien, en el caso que $\pr{1}{v} \in \Faults$ tenemos que:
 \begin{align*}
-\Label(v) & = \max \{(i+1,j+1) \mid (i,j) \in \Label(\post(v))\}&  \text{(Lines \ref{Alg:V-Update}, \ref{Alg:Inc_j}, and \ref{Alg:Inc_i})}\\
-	      & =  \max \{(i+1,j+1) \mid (i,j) \in \delta(\post(v))\}&  \text{(Assumption)}\\
+\Label(v) & = \max \{(i+1,j+1) \mid (i,j) \in \Label(\post(v))\}&  \text{(Lineas \ref{Alg:V-Update}, \ref{Alg:Inc_j}, y \ref{Alg:Inc_i})}\\
+	      & =  \max \{(i+1,j+1) \mid (i,j) \in \delta(\post(v))\}&  \text{(Suposición)}\\
 	      & = \delta(v)& \text{(Prop. \ref{prop:delta-2})}
 \end{align*}
-which also contradicts our assumption. Therefore, $v$ cannot be a Verifier's vertex. 
-In case that $v$ is a Refuter's vertex, since $v \in \STB$ we have that $\Label(v) < (\infty, \infty)$ by Prop.~\ref{Alg:inv0}. 
-Thus, when $v$ was added to $\STB$, $\Label(v) = \min\{ \Label(w) \mid w \in \post(v)\}$. Therefore, 
-there exists a $w \in \post(v)$ such that $\Label(w) \leq \Label(v)$, but then by Prop.~\ref{Alg:inv1} 
-we have $w \in \STB$. Thereby:
+lo cual también contradice nuestra suposición. Por lo tanto, $v$ no puede ser un vértice del Verificador. 
+En el caso que $v$ sea un vértice del Refutador, como $v \in \STB$ tenemos que $\Label(v) < (\infty, \infty)$ por la Prop.~\ref{Alg:inv0}. 
+Por lo tanto, cuando $v$ fue agregado a $\STB$, $\Label(v) = \min\{ \Label(w) \mid w \in \post(v)\}$. Por consiguiente, 
+existe un $w \in \post(v)$ tal que $\Label(w) \leq \Label(v)$, pero entonces por la Prop.~\ref{Alg:inv1} 
+tenemos $w \in \STB$. De este modo:
 \begin{align*}
-\Label(v) & = \min \{(i,j+1) \mid (i,j) \in \Label(\post(v))\}&  \text{(Lines \ref{Alg:R-Update} and \ref{Alg:Inc_j})} \\
-	      & =  \min \{(i,j+1) \mid (i,j) \in \delta(\post(v))\}&  \text{(Assumption)}\\
+\Label(v) & = \min \{(i,j+1) \mid (i,j) \in \Label(\post(v))\}&  \text{(Lineas \ref{Alg:R-Update} y \ref{Alg:Inc_j})} \\
+	      & =  \min \{(i,j+1) \mid (i,j) \in \delta(\post(v))\}&  \text{(Suposición)}\\
 	      & = \delta(v)& \text{(Prop. \ref{prop:delta-2})}
 \end{align*}
-contradicting our assumptions. Hence, $\Label(v) = \delta(v)$.
+lo cual contradice nuestras suposiciones. Por esto, $\Label(v) = \delta(v)$.
 
-	Now, we prove that when the loop of line \ref{Alg:LoopBPre} terminates we have:
+	Ahora bien, vamos a probar que cuando el ciclo de la linea \ref{Alg:LoopBPre} termina tenemos:
 \begin{equation}\label{Alg:inv3}
  \forall v \in S^G \setminus \STB : \delta(v)=(\infty, \infty)
 \end{equation}
 
-We proceed by contradiction. Let $v \in S^G \setminus \STB$ such that $\delta(v) < (\infty, \infty)$ and, furthermore, assume 
+Vamos a hacer la prueba por contradicción. Sea $v \in S^G \setminus \STB$ tal que $\delta(v) < (\infty, \infty)$ y, además, asumamos que
 %$\delta(v) = \min \{w \in S^G \setminus \STB \mid \delta(w) < (\infty, \infty) \}$.
-$\delta(v)$ is the minimum label satisfying this.
-If $v$ is a Refuter's vertex, then there exists some $w \in \post(v)$ such that $\delta(w) < \delta(v)$. 
-Thus, we have that $w \in \STB$ (by our assumption) which means that $v$ was added at least once in the queue since it 
-was initialized with $(\infty, \infty)$. 
-Thereby, it was added to $\STB$ in line \ref{Alg:R-STB-Update}, contradicting the initial assumption. 
-Therefore, $v$ must be a Verifier's vertex. 
-If $\pr{1}{v} \in \Faults$, then $\delta(v) = \max \{(i+1,j+1) \mid (i,j) \in \delta(\post(v))\}$ 
-and therefore $\delta(v) > \delta(w)$ for all $w \in \post(w)$.
-Thus, by our assumptions, $w \in \STB$ for every $w \in \post(v)$.
-Moreover, when the last $w \in \post(v)$ was added to $\STB$, $v$ was in the queue because of the BFS policy.
-In fact, when condition $\post(v) \subseteq \STB$ was checked for $v$ (line \ref{Alg:UpdateSTB}), it was true and then $v$ 
-should be added to $\STB$, contradicting our assumption. Hence, $v \in \STB$.
+$\delta(v)$ es la etiqueta mas pequeña que satisface esto.
+Si $v$ es un vértice del Refutador, entonces existe algún $w \in \post(v)$ tal que $\delta(w) < \delta(v)$. 
+Por lo tanto, tenemos que $w \in \STB$ (por nuestra suposición) lo cual significa que $v$ fue agregado al menos una vez a la cola ya que fue inicializado con $(\infty, \infty)$. 
+De este modo, fue agregado a $\STB$ en la linea \ref{Alg:R-STB-Update}, lo cual contradice nuestro supuesto inicial. 
+Por lo tanto, $v$ debe ser un vértice del Verificador. 
+Si $\pr{1}{v} \in \Faults$, entonces $\delta(v) = \max \{(i+1,j+1) \mid (i,j) \in \delta(\post(v))\}$ 
+y por lo tanto $\delta(v) > \delta(w)$ para todo $w \in \post(w)$.
+Entonces, por nuestras suposiciones, $w \in \STB$ para todo $w \in \post(v)$.
+Además, cuando el ultimo $w \in \post(v)$ fue agregado a $\STB$, $v$ estuvo en la cola debido a la política de recorrido primero en lo ancho (BFS).
+De hecho, cuando la condición $\post(v) \subseteq \STB$ fue evaluada para $v$ (linea \ref{Alg:UpdateSTB}), es verdadera y entonces $v$ 
+debería ser agregado a $\STB$, contradiciendo nuestra suposición. Por lo tanto, $v \in \STB$.
 
-Finally, the result computed by Algorithm \ref{Alg:MainAlg} follows from properties \ref{Alg:inv2}, \ref{Alg:inv3}, 
-and Theorem \ref{thm:quant_game}. 
-In more details, if $\delta(s_{0}^G) = (\infty, \infty)$, then by Prop. ~\ref{Alg:inv0} and \ref{Alg:inv3}, we 
-have upon termination that $\Label(s_{0}^G) = (\infty, \infty)$. 
-Thereby, the algorithm returns $0$ in line \ref{Alg:Ret0} which is correct by Theorem~\ref{thm:quant_game}. 
-In case that $\delta(s_0^G)< (\infty, \infty)$, then $s_0^G \in \STB$ and also by Prop.~\ref{Alg:inv2} we 
-have $\Label(v) = \delta(v)$. Therefore, the algorithm returns the correct answer in line \ref{Alg:EndB} by Theorem \ref{thm:quant_game}. 
+Finalmente, el resultado computado por el Algoritmo \ref{Alg:MainAlg} se deduce de las propiedades \ref{Alg:inv2}, \ref{Alg:inv3}, 
+y el Teorema \ref{thm:quant_game}. 
+Entrando mas en detalle, si $\delta(s_{0}^G) = (\infty, \infty)$, entonces por Prop. ~\ref{Alg:inv0} y \ref{Alg:inv3}, tenemos que cuando termina, $\Label(s_{0}^G) = (\infty, \infty)$. 
+De este modo, el algoritmo retorna $0$ en la linea \ref{Alg:Ret0} lo cual es correcto por el Teorema~\ref{thm:quant_game}. 
+En el caso que $\delta(s_0^G)< (\infty, \infty)$, entonces $s_0^G \in \STB$ y también que Prop.~\ref{Alg:inv2} tenemos $\Label(v) = \delta(v)$. Por lo tanto, el algoritmo retorna el resultado correcto en la linea \ref{Alg:EndB} por el Teorema \ref{thm:quant_game}. 
 \qedhere
 \end{proof}
 
 
 
 
-It remains to discuss the running time complexity for computing the value of quantitative masking games. 
-The following theorem states the time complexity of determining the value of any kind of quantitative masking games.
+Nos queda discutir la complejidad del tiempo de ejecución para computar el valor de juegos cuantitativos de masking. 
+El siguiente teorema establece cual es la complejidad de determinar el valor de cualquier tipo de juegos cuantitativos de masking.
 %
 %\noindent
 %Finally, winning regions (and strategies) can be computed in lineal time.  
-\sloppy \begin{thm}\label{th:qgame-determined} Any quantitative strong (resp. weak) masking game graph 
-$\QMStrGame = \langle V^G, V_\Refuter, V_\Verifier, E^G, \InitVertex^G, \reward^G \rangle$   can  be determined in 
-time  $\BigO(|E^G|*\log |V^G|)$ (resp. $\BigO(|E_W^G|*\log |V^G|)$).
+\sloppy \begin{thm}\label{th:qgame-determined} Cualquier grafo de juego cuantitativo de masking fuerte (resp. débil) 
+$\QMStrGame = \langle V^G, V_\Refuter, V_\Verifier, E^G, \InitVertex^G, \reward^G \rangle$ puede ser determinado en tiempo $\BigO(|E^G|*\log |V^G|)$ (resp. $\BigO(|E_W^G|*\log |V^G|)$).
 \end{thm}
 \begin{proof}
-	Note that the loop in line \ref{Alg:LoopBPre} inspects the edges of the graph. Furthermore, note that, no edge $(v, v')$ can be inspected twice:
-	if $v'$ is a Refuter's vertex, then it will be added to $\STB$ and the edge cannot be processed any longer. 
-	If $v$ is Verifier's vertex, then $v'$ is a Refuter's
-	vertex, thus once dequeued (line \ref{Alg:Dequeue-Node}), it will not be added to the queue again, and therefore the edge  $(v, v')$ will not
-	processed again. Thereby,  the loop of line \ref{Alg:LoopBPre} will be executed $|E^G|$ times in the worst case. 
-	Furthermore,  if some efficient implementation of priority queues is used for storing the states (line \ref{Alg:Enqueue-Vertex}), 
-	then it takes $\BigO(\log |V^G|)$ steps to insert or remove an element from the queue, that is, in total the loop of line \ref{Alg:LoopBPre} takes $\BigO(|E^G|*\log |V^G|)$ steps.
-	In addition, note that the \emph{while loop} of line \ref{Alg:While} is executed until the $\Q$ gets empty, and nodes are enqueued only in line \ref{Alg:Enqueue-Vertex}. Thus, the number of times that the \emph{while loop} is executed is 
-	bounded by the number of times that the \emph{for loop} 	is executed, which implies that
-	the outmost loop is executed at most $O(|E^G|)$ times. Similar remarks hold for the quantitative weak masking game.	
+	Notemos que el ciclo de la linea \ref{Alg:LoopBPre} inspecciona los arcos del grafo. Además, notemos que, ningún arco $(v, v')$ se puede inspeccionar dos veces:
+	si $v'$ es un vértice del Refutador, entonces sera agregado a $\STB$ y el arco no puede ser procesado nuevamente. 
+	Si $v$ es un vértice del Verificador, entonces $v'$ es un vértice del Refutador, por lo que una vez desencolado (linea \ref{Alg:Dequeue-Node}), no será agregado a la cola de nuevo, y por lo tanto el arco $(v, v')$ no sera procesado de nuevo. Por esto, el ciclo de la linea \ref{Alg:LoopBPre} será ejecutado $|E^G|$ veces en el peor caso. 
+	Además, si se utiliza una implementación eficiente de colas de prioridad para almacenar los estados (linea \ref{Alg:Enqueue-Vertex}), 
+	entonces tomaría $\BigO(\log |V^G|)$ pasos la inserción o eliminación de un elemento en la cola, es decir, en total, el ciclo de la linea \ref{Alg:LoopBPre} toma $\BigO(|E^G|*\log |V^G|)$ pasos.
+	Adicionalmente, notemos que el \emph{ciclo while} de la linea \ref{Alg:While} se ejecuta hasta que $\Q$ se vacíe, y los nodos solo son encolados en la linea \ref{Alg:Enqueue-Vertex}. Por lo tanto, la cantidad de veces que el \emph{ciclo while} es ejecutado está acotado por el numero de veces que el \emph{ciclo for} 	es ejecutado, lo cual implica que el ciclo exterior es ejecutado a lo sumo $O(|E^G|)$ veces. Estas consideraciones son similares para el caso de los juegos cuantitativos de masking débil.	
 
 \qedhere
 \end{proof} \\
 % TBD similar for weak games
 
-Theorems \ref{th:game-determined} and \ref{th:qgame-determined} describe the complexity of solving the quantitative and standard masking games. However, in practice, one needs to bear in mind that $|V^G| = |S|*|S'|$ and $|E^G| = |{\rightarrow}|+|{\rightarrow'}|$, so constructing the game takes 
-$\BigO(|S|^2*|S'|^2)$ steps in the worst case. Additionally, for weak games, the transitive closure of the original model needs to be computed, which for the best known algorithm yields $\BigO(\max(|S|,|S'|)^{2.3727})$ \cite{Wil12}.
+Los teoremas \ref{th:game-determined} y \ref{th:qgame-determined} describen la complejidad de resolver los juegos de masking estándar y cuantitativos respectivamente. Sin embargo, en la practica, uno necesita tener en cuenta que $|V^G| = |S|*|S'|$ y $|E^G| = |{\rightarrow}|+|{\rightarrow'}|$, así que construir el juego toma 
+$\BigO(|S|^2*|S'|^2)$ pasos en el peor caso. Adicionalmente, para juegos débiles, la clausura transitiva del modelo original necesita ser computada, lo cual cuesta $\BigO(\max(|S|,|S'|)^{2.3727})$ para el mejor algoritmo conocido \cite{Wil12}.
 
-	Interestingly, deterministic games can be solved in linear time by using the fact proven in Theorem \ref{theorem:det-games}.
+	Es interesante destacar que los juegos deterministas pueden ser resueltos en tiempo lineal utilizando el hecho demostrado en el Teorema \ref{theorem:det-games}.
 \begin{thm}\label{th:deterministic-qgame-complexity} 
-  Any quantitative strong (resp. weak) deterministic masking game can be solved in 
-time $\BigO(|E^G|)$ (resp. $\BigO(|E_W^G|)$).
+  Cualquier juego de masking determinista fuerte (resp. débil) puede ser resuelto en tiempo $\BigO(|E^G|)$ (resp. $\BigO(|E_W^G|)$).
 \end{thm}
-\begin{proof} By Theorem \ref{theorem:det-games}, the value of the game is given by the shortest path to the error state in the game graph where the weight function assigns  $1$ to faults, and $0$ to other transitions. Dial's algorithm \cite{Dial69} can be used to obtain the shortest path in this graph, which runs in $\BigO(|E^G|)$  (resp. $\BigO(|E^G_W|)$ in the case of weak games).
+\begin{proof} Por el Teorema \ref{theorem:det-games}, el valor del juego está dado por el camino mas corto hacia el estado de error en el grafo de juego donde la función de peso asigna $1$ a las fallas, y $0$ a otras transiciones. El algoritmo de Dial \cite{Dial69} puede ser utilizado para obtener el camino mas corto en este grafo, el cual tiene complejidad $\BigO(|E^G|)$  (resp. $\BigO(|E^G_W|)$ en el caso de los juegos débiles).
 \qedhere
 \end{proof} 
 
-Let us note that using the sets $\setsUs$ we can define optimal strategies for the 
-Refuter and the Verifier, without taking into account the history of the play. 
-That is, we have the following theorem.
+Observemos que al utilizar los conjuntos $\setsUs$ podemos definir estrategias óptimas para el Refutador y el Verificador, sin tener en cuenta la historia de la jugada. Esto significa que podemos dar el siguiente teorema.
  
-\begin{thm} \label{thm:memoryless} Let $\QMStrGame$ be a quantitative strong masking game graph.
-  Players $\Refuter$ and $\Verifier$ have memoryless optimal strategies for $\QMStrGame$.
+\begin{thm} \label{thm:memoryless} Sea $\QMStrGame$ un grafo de juego cuantitativo de masking fuerte.
+  Los jugadores $\Refuter$ y $\Verifier$ tienen estrategias óptimas sin memoria para $\QMStrGame$.
 \end{thm}
-\begin{proof} Giving a game we can compute the sets $\setsUs$ using Algorithm~\ref{Alg:MainAlg}.
-Thereby, it is straightforward to define an optimal strategy for the Refuter. 
-For a given node $v$, if it belongs to some $\setsUs$, then the Refuter chooses some node in $U^{j'}_{i'}$ where: 
+\begin{proof} Para un juego dado podemos computar los conjuntos $\setsUs$ utilizando el Algoritmo~\ref{Alg:MainAlg}.
+Por esto, se puede definir de forma directa una estrategia óptima para el Refutador. 
+Para un nodo dado $v$, si este pertenece a algún $\setsUs$, entonces el Refutador elige algún nodo en $U^{j'}_{i'}$ donde: 
 $(i', j') = \text{max}\{(i'', j'') \mid post(v) \cap U^{j}_{i} \neq \emptyset \wedge (i'',j'') < (i,j) \}$. 
-By Definition of $\setsUs$, we know that such a pair exists, and also that this 
-strategy is winning for the Refuter. If $v \notin \setsUs$, then any choice by the Refuter will lead to a winning play of the Verifier. 
-Hence, the Refuter moves to any successor of $v$.
-In a similar way, we can define an optimal strategy for the Verifier.
+Por definición de $\setsUs$, sabemos que el susodicho par existe, y también que esta estrategia es ganadora para el Refutador. Si $v \notin \setsUs$, entonces cualquier elección del Refutador llevará a una jugada ganadora del Verificador. 
+Por lo tanto, el Refutador se mueve a cualquier sucesor de $v$.
+De forma similar, podemos definir una estrategia óptima para el Verificador.
 \qedhere 
 \end{proof} \\
 
 %% \noindent
 %% Now, we present some basic properties of the masking distance.
 
-By using $\QMWeakGame$ instead of $\QMStrGame$ in
-Def.~\ref{def:mask_dist}, we can define the \emph{weak masking
-  distance} $\DeltaMask^W$.  The next theorem states that $A$ and
-$A'$ are at distance $0$ if and only if there exists a strong (or weak) masking
-simulation between them.
+Al utilizar $\QMWeakGame$ en lugar de $\QMStrGame$ en la 
+Def.~\ref{def:mask_dist}, podemos definir la \emph{distancia de masking débil} $\DeltaMask^W$. El próximo teorema establece que $A$ y
+$A'$ están a distancia $0$ si y solo si existe una simulación de masking fuerte (o débil) entre ellos.
 
 \begin{thm}\label{theorem:ref}
-  For any transition systems $A = \langle S, \Sigma, \rightarrow, \InitState \rangle$ and $A' = \langle S', \Sigma_{\mathcal{F'}}, \rightarrow', \InitStatePrime \rangle$, it holds that:
+  Para cualquier par de sistemas de transición $A = \langle S, \Sigma, \rightarrow, \InitState \rangle$ y $A' = \langle S', \Sigma_{\mathcal{F'}}, \rightarrow', \InitStatePrime \rangle$, vale que:
   \begin{enumerate}[(i)]
-  \item  $\DeltaMask(A,A') = 0$ iff $A \Masking A'$, and
-   \item $\DeltaMask^W(A,A') = 0$ iff $A \WeakMasking A' $.
+  \item  $\DeltaMask(A,A') = 0$ si y solo si $A \Masking A'$, y
+   \item $\DeltaMask^W(A,A') = 0$ si y solo si $A \WeakMasking A' $.
   \end{enumerate}
 \end{thm}
 %
-This follows from Theorem \ref{thm:quant_game}.
+Esto se deduce del Teorema \ref{thm:quant_game}.
 %That is, the masking distance between two systems is $0$ if and only if there is a masking simulation between them.
-Noting that $A \Masking A$ (and $A \WeakMasking A$) for 
-any transition system $A$, we obtain that $\DeltaMask(A,A)=0$ (resp.\ $\DeltaMask^W(A,A)=0$) by Theorem \ref{theorem:ref}, i.e., 
-both distances are reflexive.
+Si notamos que $A \Masking A$ (y $A \WeakMasking A$) para cualquier sistema de transición $A$, obtenemos que $\DeltaMask(A,A)=0$ (resp.\ $\DeltaMask^W(A,A)=0$) por el Teorema \ref{theorem:ref}, i.e., 
+las dos distancias son reflexivas.
 
-For our running example, the masking distance is $1/3$ 
-with a redundancy of $3$ bits and considering two faults. 
-This means that only one fault can be masked by this implementation. \\
+Para nuestro ejemplo de la celda de memoria, la distancia de masking es de $1/3$ 
+con una redundancia de $3$ bits y considerando dos fallas. 
+Esto significa que solo una falla pudo ser enmascarada de forma exitosa por esta implementación. \\
 
-We can prove a version of the triangle inequality for our notion of distance. 
+Podemos probar una versión de la desigualdad triangular para nuestra noción de distancia.
 %
 \begin{thm} \label{thm:triang_ineq}
-  Let $A = \langle S, \Sigma, \rightarrow, s_0 \rangle$, $A' = \langle S', \Sigma_{\mathcal{F'}}, \rightarrow', s'_0 \rangle$,  and  $A'' = \langle S'', \Sigma_{\mathcal{F''}},\rightarrow'', s''_0 \rangle$ be transition systems such that $\Faults' \subseteq \Faults''$, and the corresponding games $\mathcal{Q}_{A,A'}$, $\mathcal{Q}_{A',A''}$ and $\mathcal{Q}_{A,A''}$.
-  Then $\DeltaMask(A,A'') \leq \DeltaMask(A,A') + \DeltaMask(A', A'')$ and
+  Sean $A = \langle S, \Sigma, \rightarrow, s_0 \rangle$, $A' = \langle S', \Sigma_{\mathcal{F'}}, \rightarrow', s'_0 \rangle$,  y  $A'' = \langle S'', \Sigma_{\mathcal{F''}},\rightarrow'', s''_0 \rangle$ unos sistemas de transición tales que $\Faults' \subseteq \Faults''$, y los juegos correspondientes $\mathcal{Q}_{A,A'}$, $\mathcal{Q}_{A',A''}$ y $\mathcal{Q}_{A,A''}$.
+  Entonces $\DeltaMask(A,A'') \leq \DeltaMask(A,A') + \DeltaMask(A', A'')$ y
   $\DeltaMask^W(A,A'') \leq \DeltaMask^W(A,A') + \DeltaMask^W(A', A'').$
 \end{thm}
 \begin{proof} 
-We will prove that for every node $(s,\#,s'',\Refuter)$ in $\mathcal{Q}_{A,A''}$ and  pair of nodes
-$(s,\#, s', R)$ in $\QMStrGame$ and $(s',\#,s'', R)$ in $\mathcal{Q}_{{A'},A''}$ (for any state $s'$ in $A'$), it holds that:
+Probaremos que para cualquier nodo $(s,\#,s'',\Refuter)$ en $\mathcal{Q}_{A,A''}$ y para cualquier par de nodos
+$(s,\#, s', R)$ en $\QMStrGame$ y $(s',\#,s'', R)$ en $\mathcal{Q}_{{A'},A''}$ (para cualquier estado $s'$ en $A'$), se cumple que:
 \[
 \frac{1}{\pr{0}{\delta((s,\#, s'', \Refuter))}} \leq \frac{1}{\pr{0}{(\delta(s,\#, s', R))}} + \frac{1}{\pr{0}{\delta((s',\#, s'', R))}}
 \] 
-where $\delta(v) = \min \{(i,j) \mid v \in U^i_j\}$, calculated in the corresponding game. 
-As in Theorem \ref{thm:quant_game}, we just define $\max \emptyset = (\infty, \infty)$. 
-The result follows from this fact and Theorem \ref{thm:quant_game}. The proof is by induction on $\delta((s,\#, s'', \Refuter))$.
+donde $\delta(v) = \min \{(i,j) \mid v \in U^i_j\}$, calculado en el juego correspondiente. 
+Como en el Teorema \ref{thm:quant_game}, solo definimos $\max \emptyset = (\infty, \infty)$. 
+El resultado se deduce de este hecho y el Teorema \ref{thm:quant_game}. La prueba es por inducción sobre $\delta((s,\#, s'', \Refuter))$.
 
-First, let us observe that for any node $(s, \#, s'', \Refuter)$ of game $\mathcal{Q}_{A,A''}$ we must have $\delta((s, \#, s'', \Refuter)) \geq (1,3)$.
-In fact, this node cannot be the error state, which means that $j \neq 1$. Moreover, after the movement of the Refuter we have at least one movement from the Verifier and thus $j \geq 3$. That is the base case is $\delta((s,\#, s'', \Refuter)) = (1,3)$.
+Primero, observemos que para cualquier nodo $(s, \#, s'', \Refuter)$ del juego $\mathcal{Q}_{A,A''}$ debemos tener $\delta((s, \#, s'', \Refuter)) \geq (1,3)$.
+De hecho, este nodo no puede ser el estado de error, lo cual significa que $j \neq 1$. Además, luego del movimiento del Refutador tenemos al menos un movimiento del Verificador y por lo tanto $j \geq 3$. Es decir que el caso base es $\delta((s,\#, s'', \Refuter)) = (1,3)$.
 \begin{description}
-\item [Base Case] If $\delta((s,\#, s'', \Refuter)) = (1,3)$. Assume that $(s, \#, s'', R) \in U^3_1$. This means that we have a transition 
-$((s, \#, s'', \Refuter), (w, \sigma^t, w'', \Verifier))$, where $t \in \{1,2\}$, that cannot be matched by the Verifier. 
-In case that $t=1$, then this move is a transition $((s, \#, s'', \Refuter), (w, \sigma^1, s'', \Verifier))$ from $A$. 
-Now, let $(s, \#, s', \Refuter)$ and $(s', \#, s'', \Refuter)$ be a pair of states of $\QMStrGame$ and $\mathcal{Q}_{A',A''}$, respectively. 
-By definition, we have a transition $((s, \#, s', \Refuter), (w, \sigma^1, s', \Verifier))$ in $Q_{A,A'}$. 
-In case that the Verifier cannot match this move in that game, we have that $(s, \#, s', \Refuter) \in U^3_1$. 
-This finishes the proof since $1 \leq 1 + k''$, regardless of the value of $k''$. 
-Otherwise, the Verifier chooses a matching move, that is, $((w, \sigma^1, s', \Verifier), (w, \#, w', \Refuter))$ in $\mathcal{Q}_{A,A'}$. 
-Moreover, we have a transition $((s', \#, s'', \Refuter), (w', \sigma^1, s'', \Verifier))$ in $\mathcal{Q}_{A',A''}$. 
-But, this cannot be matched due to our initial assumption. Therefore, $\delta((s', \#, s'', \Refuter))= (1,3)$, and we have that:
+\item [Caso Base] Si $\delta((s,\#, s'', \Refuter)) = (1,3)$. Asumamos que $(s, \#, s'', R) \in U^3_1$. Esto significa que tenemos una transición 
+$((s, \#, s'', \Refuter), (w, \sigma^t, w'', \Verifier))$, donde $t \in \{1,2\}$, que no puede ser emparejada por el Verificador. 
+En el caso que $t=1$, entonces este movimiento es una transición $((s, \#, s'', \Refuter), (w, \sigma^1, s'', \Verifier))$ de $A$. 
+Ahora bien, sean $(s, \#, s', \Refuter)$ y $(s', \#, s'', \Refuter)$ un par de estados de $\QMStrGame$ y $\mathcal{Q}_{A',A''}$, respectivamente. 
+Por definición, tenemos una transición $((s, \#, s', \Refuter), (w, \sigma^1, s', \Verifier))$ en $Q_{A,A'}$. 
+En el caso que el Verificador no pueda emparejar este movimiento en ese juego, tenemos que $(s, \#, s', \Refuter) \in U^3_1$. 
+Esto finaliza la prueba ya que $1 \leq 1 + k''$, independientemente del valor de $k''$. 
+De lo contrario, el Verificador escoge un movimiento que empareja al de su contrincante, es decir, $((w, \sigma^1, s', \Verifier), (w, \#, w', \Refuter))$ en $\mathcal{Q}_{A,A'}$. 
+Además, tenemos una transición $((s', \#, s'', \Refuter), (w', \sigma^1, s'', \Verifier))$ en $\mathcal{Q}_{A',A''}$. 
+Pero, esta no puede ser emparejada debido a nuestro supuesto inicial. Por lo tanto, $\delta((s', \#, s'', \Refuter))= (1,3)$, y tenemos que:
 \begin{align*}
 	\frac{1}{\pr{0}{\delta((s,\#, s'', \Refuter))}}  & = 1\\
 							& \leq \frac{1}{\pr{0}{\delta((s, \#, s', \Refuter))}} + 1\\
 							& =   \frac{1}{\pr{0}{\delta((s, \#, s', \Refuter))}}  + \frac{1}{\pr{0}{\delta((s', \#, s'', \Refuter))}}
 \end{align*}
-For $t=2$,  the reasoning is similar using the transitions of $A''$. 
+Para $t=2$,  el razonamiento es similar usando las transiciones de $A''$. 
 
-\item [Induction Step] For $(i,j) > (1,3)$ the proof is as follows. 
-Assume that $\delta((s, \#, s'', \Refuter)) = (i,j)$. Because of $1<i \leq j$, we have a transition 
-$((s, \#, s'', \Refuter), (w, \sigma^t, w'', \Verifier))$ in $\mathcal{Q}_{A,A''}$. We proceed by cases.
+\item [Paso Inductivo] Para $(i,j) > (1,3)$ la prueba es como sigue. 
+Asumamos que $\delta((s, \#, s'', \Refuter)) = (i,j)$. Como $1<i \leq j$, tenemos una transición 
+$((s, \#, s'', \Refuter), (w, \sigma^t, w'', \Verifier))$ en $\mathcal{Q}_{A,A''}$. vamos a proceder por casos.
 
-  Case $\sigma^t = F^2$ for some $F \in \Faults''$. Since $\delta((s, \#, s'', \Refuter)) > (1,3)$,
-we must have a transition $((s, F^2, w'', \Verifier), (s, \#, w'', \Refuter)) \in Q_{A,A''}$ and $\delta((s, \#, w'', \Refuter)) = (i-1,j-2)$. 
-Thus, by definition of $\mathcal{Q}_{A',A''}$, we have a transition 
-$((s', \#, s'', \Refuter), (s', F^2, w'', \Verifier))$ in $\mathcal{Q}_{A',A''}$. 
-In case that $F \in \Faults'$, then $F \in \Sigma_{\Faults'}$. 
-If it cannot be matched, then:
+  En el caso $\sigma^t = F^2$ para algún $F \in \Faults''$. Como $\delta((s, \#, s'', \Refuter)) > (1,3)$,
+debemos tener una transición $((s, F^2, w'', \Verifier), (s, \#, w'', \Refuter)) \in Q_{A,A''}$ y $\delta((s, \#, w'', \Refuter)) = (i-1,j-2)$. 
+Por lo tanto, por definición de $\mathcal{Q}_{A',A''}$, tenemos una transición 
+$((s', \#, s'', \Refuter), (s', F^2, w'', \Verifier))$ en $\mathcal{Q}_{A',A''}$. 
+En el caso de que $F \in \Faults'$, entonces $F \in \Sigma_{\Faults'}$. 
+Si no puede ser emparejada, entonces:
 \begin{align*}
 \frac{1}{\pr{0}{\delta((s,\#, s'', \Refuter))}}  & \leq 1	\\
 							     &= \frac{1}{\pr{0}{\delta((s', \#, s'', \Refuter))}}  \\
 							     &\leq  \frac{1}{\pr{0}{\delta((s, \#, s', \Refuter))}} +  \frac{1}{\pr{0}{\delta((s', \#, s'', \Refuter))}}   
 \end{align*}
-and the result follows.  Otherwise, we have a collection of transitions  $((s', F^2, w'', \Verifier), (w', \#, w'', \Refuter))$ in $\mathcal{Q}_{A',A''}$. 
-So, in game $\QMStrGame$, we have at least an edge $((s, \#, s', \Refuter), (s, F^2, w', \Verifier))$. 
-Then, since $((s, F^2, w'', \Verifier), (s, \#, w'', \Refuter)) \in Q_{A,A''}$, we also have  a transition $((s, F^2, w', \Verifier), (s, \#, w', \Refuter))$ in $Q_{A,A'}$. 
-By induction hypothesis, we have $\delta((s, \#, w', \Refuter))= i'$ and $\max \{ \delta(v) \mid v \in \post((s', F^2, w'', \Verifier)) \}=i''$ such that:
+y el resultado se deduce. De lo contrario, tenemos una colección de transiciones  $((s', F^2, w'', \Verifier), (w', \#, w'', \Refuter))$ en $\mathcal{Q}_{A',A''}$. 
+Así que, en el juego $\QMStrGame$, tenemos al menos un arco $((s, \#, s', \Refuter), (s, F^2, w', \Verifier))$. 
+Entonces, como $((s, F^2, w'', \Verifier), (s, \#, w'', \Refuter)) \in Q_{A,A''}$, también tenemos una transición $((s, F^2, w', \Verifier), (s, \#, w', \Refuter))$ en $Q_{A,A'}$. 
+Por hipótesis inductiva, tenemos $\delta((s, \#, w', \Refuter))= i'$ y $\max \{ \delta(v) \mid v \in \post((s', F^2, w'', \Verifier)) \}=i''$ tal que:
 \begin{equation}\label{eq:hi1}
 \frac{1}{i-1} \leq \frac{1}{i'} + \frac{1}{i''}.
 \end{equation} 
-and thus:
+y por lo tanto:
 \begin{equation}\label{eq:hi1a}
 \frac{1}{i} \leq \frac{1}{i'+1} + \frac{1}{i''}.
 \end{equation}
-Furthermore, note that $\delta((s, F^2, w', \Verifier)) \geq (i'+1,j'+1)$ and we have a unique (masking) transition from $(s, F^2, w', \Verifier)$. 
-Thereby, 
+Además, notemos que $\delta((s, F^2, w', \Verifier)) \geq (i'+1,j'+1)$ y tenemos una transición (de masking) única desde $(s, F^2, w', \Verifier)$. 
+De este modo, 
 \begin{equation}\label{eq:hi2}
 	\delta((s, \#, s', \Refuter)) \geq (i'+1,j'+2)
 \end{equation}
-Similarly, since $F \in \Sigma_{\Faults'}$ we have that:
+De manera similar, como $F \in \Sigma_{\Faults'}$ tenemos que:
 \begin{equation}\label{eq:hi3}
 	\delta((s', \#, s'', \Refuter)) \geq (i'',j'+2)
 \end{equation}
-Hence, taking into account inequations \ref{eq:hi1a}, \ref{eq:hi2} and \ref{eq:hi3}, we 
-obtain:
+Por esto, teniendo en cuenta las inecuaciones \ref{eq:hi1a}, \ref{eq:hi2} y \ref{eq:hi3}, obtenemos:
 \begin{align*}
-	\frac{1}{\pr{0}{\delta((s,\#, s'', \Refuter))}} & = \frac{1}{i} & \text{(Assumption)} \\
+	\frac{1}{\pr{0}{\delta((s,\#, s'', \Refuter))}} & = \frac{1}{i} & \text{(Suposición)} \\
 									      & \leq \frac{1}{i'+1} + \frac{1}{i''} & \text{Ineq.~\ref{eq:hi1a}} \\
 									      &  = \frac{1}{\pr{0}{\delta((s, \#, s', \Refuter))}} +  \frac{1}{\pr{0}{\delta((s', \#, s'', \Refuter))}} &
 \end{align*}
-	If $F \notin \Faults'$, we must also have a transition $((s', F^2, w'', \Verifier), (s', \#, w'', \Refuter))$ in $\mathcal{Q}_{A',A''}$. 
-Now, by induction hypothesis, we have $\delta((s, \#, s', \Refuter)) = (i',j')$ and $\delta((s', \#, w'', \Refuter)) = (i'',j'')$ such that 
-$\frac{1}{i-1} \leq \frac{1}{i'} + \frac{1}{i''}$. Thereby, $\delta((s', \#, s'', \Refuter)) = (i''+1, j''+2)$ and similarly as above the result follows.
+	Si $F \notin \Faults'$, entonces debemos tener una transición $((s', F^2, w'', \Verifier), (s', \#, w'', \Refuter))$ en $\mathcal{Q}_{A',A''}$. 
+Ahora bien, por hipótesis inductiva, tenemos $\delta((s, \#, s', \Refuter)) = (i',j')$ y $\delta((s', \#, w'', \Refuter)) = (i'',j'')$ tal que 
+$\frac{1}{i-1} \leq \frac{1}{i'} + \frac{1}{i''}$. De este modo, $\delta((s', \#, s'', \Refuter)) = (i''+1, j''+2)$ y de forma similar a lo previo, el resultado se deduce.
 
-	Case $\sigma^t \neq F^2$. If $t=1$, then we have a transition $((s, \#, s'', R), (w, \sigma^1, s'', V))$ in $\mathcal{Q}_{A,A''}$, and 
-	since $\delta((s, \#, s'', \Refuter)) > (1,3)$,
-we must have a transition $((s, \sigma^1, w'', \Verifier), (w, \#, w'', \Refuter))$ in $Q_{A,A''}$ such that $\delta((s, \#, w'', \Refuter)) = (i,j-2)$. 
-By definition of game $Q_{A, A'}$, we have a transition
-$((s, \#, s', \Refuter), (w, \sigma^1, s', \Verifier))$. In case that it cannot be matched, 
-then it leads to the desired result. Otherwise, let us define $(i',j') = \max \{\delta(v) \mid v \in \post((w, \sigma^1, s', \Verifier)) \}$. 
-Since $\post((w, \sigma^1, s', \Verifier)) \neq \{\ErrorSt\}$, there must be also a transition $((s', \#, s'', R), (w', \sigma^1, s'', V))$ in $Q_{A',A''}$. 
-In case that this cannot be matched, then we have $\delta((s', \#, s'', R)) = (1,3)$ and the proof finishes. 
-In other case, let us define $i'' = \max \{\delta(v) \mid v \in \post((w', \sigma^1, s'', V)) \}$ where by induction hypothesis we have
+	En el caso $\sigma^t \neq F^2$. Si $t=1$, entonces tenemos una transición $((s, \#, s'', R), (w, \sigma^1, s'', V))$ en $\mathcal{Q}_{A,A''}$, y 
+	como $\delta((s, \#, s'', \Refuter)) > (1,3)$,
+debemos tener una transición $((s, \sigma^1, w'', \Verifier), (w, \#, w'', \Refuter))$ en $Q_{A,A''}$ tal que $\delta((s, \#, w'', \Refuter)) = (i,j-2)$. 
+Por definición del juego $Q_{A, A'}$, tenemos una transición
+$((s, \#, s', \Refuter), (w, \sigma^1, s', \Verifier))$. En el caso que no pueda ser emparejada, entonces esta lleva al resultado que buscamos. De lo contrario, vamos a definir $(i',j') = \max \{\delta(v) \mid v \in \post((w, \sigma^1, s', \Verifier)) \}$. 
+Como $\post((w, \sigma^1, s', \Verifier)) \neq \{\ErrorSt\}$, también debe existir una transición $((s', \#, s'', R), (w', \sigma^1, s'', V))$ en $Q_{A',A''}$. 
+En el caso que esta no pueda ser emparejada, entonces tenemos $\delta((s', \#, s'', R)) = (1,3)$ y la prueba finaliza. 
+En otro caso, definamos $i'' = \max \{\delta(v) \mid v \in \post((w', \sigma^1, s'', V)) \}$ donde por hipótesis inductiva tenemos
 \begin{equation}
 	\frac{1}{i} \leq \frac{1}{i'} + \frac{1}{i''}
 \end{equation}	
-	Hence, 
+	Por esto, 
 \begin{equation}
 	\frac{1}{\pr{0}{\delta((s, \#, s'', R))}} \leq \frac{1}{\pr{0}{\delta((s, \#, s', R))}} + \frac{1}{\pr{0}{\delta((s', \#, s'', R))}}
 \end{equation}	
-	For the case $t=2$ the proof is similar.
+	Para el caso $t=2$ la prueba es similar.
 \end{description}
 
 
 \qedhere
 \end{proof}\\
 
-The proof for $\DeltaMask^W$ is similar to the $\DeltaMask$ 
-but using $\QMWeakGame$ instead of $\QMStrGame$ and by Theorem~\ref{thm:weak_thm}.
+La prueba para $\DeltaMask^W$ es similar a la de $\DeltaMask$ 
+pero utilizando $\QMWeakGame$ en lugar de $\QMStrGame$ y por el Teorema~\ref{thm:weak_thm}.
 
-Reflexivity and  triangle inequality imply that both masking distances are directed semi-metrics \cite{CharikarMM06,AlfaroMRS08}.  Moreover, it is interesting to note that the triangle inequality property has practical applications. When developing critical software is quite common to develop a first version of the software taking into account some possible anticipated faults. 
-Later, after testing and running of the system, more plausible faults could be observed. 
-Consequently, the system is modified with additional fault-tolerant capabilities to be able 
-to overcome them. 
-Theorem \ref{thm:triang_ineq} states that incrementally measuring the masking distance between these different versions of the software provides an upper bound to the actual distance between the nominal system and its last fault-tolerant version. That is, if the sum of the distances obtained between the different versions is a small number, then we can ensure that the final system will 
-exhibit an acceptable masking tolerance to faults w.r.t. the nominal system.
+Las propiedades de reflexividad y desigualdad triangular implican que ambas distancias de masking son semi-métricas dirigidas \cite{CharikarMM06,AlfaroMRS08}. Además, es interesante destacar que la propiedad de desigualdad triangular tiene aplicaciones practicas interesantes. Al momento de desarrollar software critico es bastante común desarrollar una primera versión del software teniendo en cuenta algunas posibles fallas anticipadas. 
+Luego, después de una fases de testing y de la ejecución misma del sistema, es posible que mas fallas puedan ser observadas. En consecuencia, el sistema es modificado con nuevos mecanismos de tolerancia a fallas para tolerar estas nuevas fallas observadas. 
+El Teorema \ref{thm:triang_ineq} establece que ir midiendo la distancia de masking de estas diferentes versiones del software de manera incremental provee una cota superior de la distancia entre el sistema nominal y la ultima versión de su implementación tolerante a fallas. Esto significa que, si la suma de las distancias obtenidas entre diferentes versiones es un numero pequeño, entonces podemos asegurar que la versión final del sistema exhibirá una masking-tolerancia a fallas aceptable con respecto al sistema nominal.
 
 
 
 
 
-\section{Related Work} \label{sec:related_work}
+\section{Trabajo Relacionado} \label{sec:related_work}
 
 This article is a revised and expanded version of a conference paper presented at 
 TACAS 2019 \cite{CastroDDP18b} and it extends it as follows:  
@@ -1176,16 +1133,12 @@ non-deterministic systems; (3) it includes a more efficient implementation
 of the \MaskD~tool; and (4) it proposes a more thorough experimental analysis, including more 
 instances for each case study and a new case study (Raft).
 
-In recent years, there has been a growing interest in the quantitative 
-generalizations of the boolean notion of correctness and the 
-corresponding quantitative verification questions \cite{BokerCHK14,CernyHR12,Henzinger10,Henzinger13}.
-The framework described in \cite{CernyHR12} is the closest related work to our approach. 
-The authors generalize the traditional notion of 
-simulation relation to three different versions of simulation distance: \emph{correctness}, \emph{coverage}, and \emph{robustness}.
-These are defined using quantitative games with \emph{discounted-sum} 
-and \emph{mean-payoff} objectives, two well-known cost functions.
-Similarly to that work, we also consider distances between purely 
-discrete (non-probabilistic, untimed) systems.
+En los últimos años, se ha incrementado el interés en generalizaciones cuantitativas de la noción booleana de correctitud y sus interrogantes correspondientes en verificación cuantitativa \cite{BokerCHK14,CernyHR12,Henzinger10,Henzinger13}.
+El framework descrito en \cite{CernyHR12} es el trabajo mas cercanamente relacionado a nuestro enfoque. 
+Los autores generalizan la noción tradicional de relación de simulación a tres versiones diferentes de distancia de simulación: \emph{correctitud}, \emph{cobertura}, y \emph{robustez}.
+Estas están definidas utilizando juegos cuantitativos con objetivos \emph{discounted-sum} 
+y \emph{mean-payoff}, dos funciones de costo bien conocidas.
+Similarmente a ese trabajo, también consideramos distancias entre sistemas puramente discretos (no probabilistas y sin tiempo.
 
 Correctness and coverage distances are concerned with the nominal part of the systems, 
 and so faults play no role on them. On the other hand, robustness distance measures how many unexpected errors can be performed by the implementation in such a way that the resulting behavior is tolerated by the specification. So, it can be used to analyze the resilience of the implementation. Note that, robustness
