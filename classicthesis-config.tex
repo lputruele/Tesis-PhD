@@ -16,16 +16,17 @@
 
 % General useful packages
 \usepackage[spanish, es-tabla, es-noquoting]{babel}
-\usepackage{amsmath,amsthm,amssymb,verbatim}
+\usepackage{amsmath,amsfonts,amsthm,amssymb,verbatim}
 \usepackage{graphicx}
 \usepackage{caption}
+\usepackage{enumerate}
 \usepackage{subcaption}
 \usepackage{alltt}
 \renewcommand{\ttdefault}{txtt}
 \usepackage{mathrsfs}
 \usepackage{stmaryrd}
 %\usepackage[hidelinks]{hyperref}
-\usepackage{enumitem}
+\usepackage[shortlabels]{enumitem}
 \usepackage{proof}
 \usepackage{lscape}
 \usepackage{booktabs}
@@ -33,6 +34,20 @@
 \usepackage[T1]{fontenc}
 \usepackage[colorinlistoftodos]{todonotes}
 
+
+\usepackage{microtype}
+\usepackage{url}
+\usepackage{hyperref}
+\usepackage{wrapfig}
+\usepackage{pgfplots}
+\usepackage{multirow}
+\usepackage{extarrows}
+\usepackage{mathtools}
+\usepackage[algoruled,vlined,linesnumbered]{algorithm2e}
+%\SetKwInOut{Input}{input}
+\usepackage{algorithmic}
+%\usepackage[title]{appendix}
+\usepackage{marginnote}
 
 %citations
 \usepackage[hyperpageref]{backref}
@@ -47,21 +62,34 @@
 
 % listings
 \usepackage{listings}
-\definecolor{lightgray}{gray}{.60}
-\definecolor{Lightgray}{gray}{.98}
-\definecolor{bordegray}{gray}{.70}
-\definecolor{gray}{gray}{.3}
+%\definecolor{lightgray}{gray}{.60}
+%\definecolor{Lightgray}{gray}{.98}
+%\definecolor{bordegray}{gray}{.70}
+%\definecolor{gray}{gray}{.3}
 
 % Hyperreferences
-\hypersetup{%
+%\hypersetup{%
     %draft,	% = no hyperlinking at all (useful in b/w printouts)
-    colorlinks=true, linktocpage=true, pdfstartpage=3, pdfstartview=FitV,%
+%    colorlinks=true, linktocpage=true, pdfstartpage=3, pdfstartview=FitV,%
     % uncomment the following line if you want to have black links (e.g., for printing)
     %colorlinks=false, linktocpage=false, pdfborder={0 0 0}, pdfstartpage=3, pdfstartview=FitV,% 
-    breaklinks=true, pdfpagemode=UseNone, pageanchor=true, pdfpagemode=UseOutlines,%
-    plainpages=false, bookmarksnumbered, bookmarksopen=true, bookmarksopenlevel=1,%
-    hypertexnames=true, pdfhighlight=/O,%nesting=true,%frenchlinks,%
-    urlcolor=webbrown, linkcolor=RoyalBlue, citecolor=gray!20!RoyalBlue %webgreen, %pagecolor=RoyalBlue,%
+%    breaklinks=true, pdfpagemode=UseNone, pageanchor=true, pdfpagemode=UseOutlines,%
+%    plainpages=false, bookmarksnumbered, bookmarksopen=true, bookmarksopenlevel=1,%
+%    hypertexnames=true, pdfhighlight=/O,%nesting=true,%frenchlinks,%
+%    urlcolor=webbrown, linkcolor=RoyalBlue, citecolor=gray!20!RoyalBlue %webgreen, %pagecolor=RoyalBlue,%
     %urlcolor=Black, linkcolor=Black, citecolor=Black, %pagecolor=Black,%
-}
+%}
 
+
+%\usepackage{paralist}
+
+\usepackage{wasysym}
+
+\usepackage{xcolor,colortbl}
+%\usetikzlibrary{positioning,shadows.blur}
+%\usetikzlibrary{arrows,automata}
+\usepackage{pifont}
+\usepackage{hhline}
+\usepackage{xspace}
+
+\input{macros}

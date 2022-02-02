@@ -72,39 +72,6 @@ Todos los casos de estudio mencionados son ejemplos típicos de sistemas toleran
 %
 %Full details and proofs can be found in \cite{CastroDDP18}.
 
-
-\section{Preliminares} \label{sec:background}
-
-Vamos a introducir algunas definiciones y resultados básicos sobre teoría de juegos que serán necesarios a lo largo del articulo, el lector interesado puede ver \cite{AptG11}.
-
-Un sistema de transición etiquetado (o TS) es una tupla $A =\langle S, \Sigma, \rightarrow, \InitState \rangle$, donde $S$ es un conjunto finito de estados, $\Sigma$ es un alfabeto finito,  $\rightarrow \subseteq S \times \Sigma \times S$ es un conjunto de transiciones etiquetadas, y $s_0$ es el estado inicial. A partir de ahora, denotaremos $s \xrightarrow{e} s'$ en lugar de $(s,e,s') \in \rightarrow$ cuando creamos conveniente.
-
-Con $|S|$ y $|{\rightarrow}|$ denotamos la cantidad de estados y arcos, respectivamente. Definimos $\post(s) = \{s' \in S \mid s \xrightarrow{e} s' \}$ como el conjunto de sucesores de $s$. Similarmente,  $\pre(s') = \{s \in S \mid s \xrightarrow{e} s' \}$ denota el conjunto de predecesores de $s'$.
-Además, $\post^{*}(s)$ denota los estados alcanzables desde $s$.
-Sin perder generalidad, requerimos que todo estado $s$ tenga un sucesor, i.e., $\forall s \in S : \post(s) \neq \emptyset$. Decimos que un TS es \emph{determinista} si, para toda terna de estados  $s,t, t'$ y para toda etiqueta $e$, $s \xrightarrow{e} t$ y $s \xrightarrow{e} t'$ implica $t=t'$. 
-
-Una \emph{corrida} en un sistema de transición de estados $A$ es un camino infinito $\rho = \rho_0 \sigma_0 \rho_1 \sigma_1  \rho_2 \sigma_2 \dots \in (S \cdot \Sigma)^{w}$ 
-donde $\rho_0 = \InitState$ y para todo $i$, $\rho_i \xrightarrow{\sigma_i} \rho_{i+1}$. De ahora en mas, dada una tupla $(x_0,\dots,x_n)$, denotaremos a $x_i$ con  $\pr{i}{x_0,\dots,x_n}$.
-
-Un \emph{grafo de juego} $G$ es una tupla $G = \langle V, V_1, V_2, E, \InitVertex \rangle$ donde $V$ es un conjunto de vértices, $E\subseteq V \times V$ es un conjunto de arcos, $\InitVertex$ es el vértice inicial del juego, y $(V_1, V_2)$ es una partición de $V$. Intuitivamente, el grafo representa un juego entre dos jugadores, donde un token se coloca inicialmente en el vértice inicial, y luego sigue por rondas. Si el token esta en un vértice $v \in V_1$, entonces el jugador $1$ elige un arco $(v, w) \in E$ y mueve el token al vértice $w$. En caso de que el token este en un vértice $v \in V_2$, entonces la elección es del jugador $2$.
-
-Un \emph{grafo de juego con costos} es un grafo de juego mas una función de costo (o recompensa) $\reward^G:V \rightarrow \mathbb{R}$. Un camino maximal en el grafo de juego $G$ se denomina una \emph{jugada}. El conjunto de todas las jugadas se denota con $\Omega$. Los \emph{grafos de juego deterministas} se definen de la misma manera que en sistemas de transición de estados. Además, utilizaremos la notación $\post(v)$ para denotar los sucesores del vértice $v$, y $\pre(v)$ para denotar a los predecesores del vértice $v$.
-
-Dado un grafo de juego $G$, una \emph{estrategia} para el jugador $1$ es una función $\pi: V^{*} V_1 \rightarrow V$ tal que para todo  $\rho_0  \rho_1 \dots \rho_i \in V^{*} V_1$, tenemos que si $\pi(\rho_0  \rho_1\dots \rho_i) = \rho $, entonces $(\rho_i, \rho) \in E$. Una estrategia para el jugador $2$ se define similarmente. El conjunto de todas las estrategias para el jugador $p$ (para $p \in \{1,2\}$) se denota por $\Pi_{p}$.
-Una estrategia para el jugador $p$ se dice \emph{sin memoria} (o posicional) si puede ser definida por un mapping $f:V_p \rightarrow V$, de tal forma que si $v \in V_p$ entonces $(v, f(v)) \in E$.
-A grandes rasgos, estas estrategias no necesitan memoria del historial de movimientos. Además, una jugada $\rho_0 \rho_1 \rho_2 \dots$ se conforma a una estrategia $\pi$ del jugador $p$ si $\forall i \geq 0: (\rho_i \in V_p) \Rightarrow  \pi(\rho_0 \rho_1 \dots \rho_i) = \rho_{i+1}$. El \emph{resultado} de una estrategia $\pi_{1}$ del jugador $1$ y una estrategia $\pi_{2}$ del jugador $2$ es la jugada única, denominada $\out(\pi_1, \pi_2)$, que se conforma tanto a $\pi_1$ como a $\pi_2$.
-
-Un \emph{juego} se compone de un grafo de juego y un objetivo booleano o cuantitativo. Un \emph{objetivo booleano} es una función $\Phi: \Omega \rightarrow \{0, 1\}$ y la meta del jugador $1$ en un juego con un objetivo $\Phi$ es seleccionar una estrategia de tal forma que el resultado del juego sea $1$, independientemente de lo que haga el jugador $2$. Por el contrario, la meta del jugador $2$ es asegurarse que el resultado sea $0$. Dado un objetivo booleano $\Phi$, una jugada $\rho$ es \emph{ganadora} para el jugador $1$ (resp. jugador $2$) si  $\Phi(\rho) = 1$ (resp. $\Phi(\rho) = 0$). Una estrategia $\pi$ es una \emph{estrategia ganadora} para el jugador $p$ si toda jugada que se conforme a $\pi$ es ganadora para el jugador $p$. Decimos que un juego con objetivo booleano esta \emph{determinado} si algún jugador tiene una estrategia ganadora, y decimos que está \emph{determinado sin memoria} si esa estrategia ganadora es sin memoria. Los juegos de alcanzabilidad son aquellos juegos cuyos objetivos están definidos como $\Phi(\rho_0 \rho_1 \rho_2 \dots) = (\exists i : \rho_i \in B)$ para algún conjunto $B \subseteq V$, un resultado estándar de los juegos de alcanzabilidad es que son determinados sin memoria.
-
-Un \emph{objetivo cuantitativo} esta dado por una función de \emph{payoff} $f: \Omega \rightarrow \mathbb{R}$ y la meta del jugador $1$ es maximizar el valor $f$ de la jugada, mientras que la meta del jugador $2$ es minimizar este valor. Para un objetivo cuantitativo $f$, el valor del juego para la estrategia $\pi_1$ del jugador $1$, denotado por $v_1(\pi_1)$, se define como el ínfimo sobre todos los valores resultantes de estrategias del jugador $2$, i.e., $v_1(\pi_1) = \inf_{\pi_2 \in \Pi_2} f(\out(\pi_1, \pi_2))$. El valor del juego para el jugador $1$ se define como el supremo de los valores de todas las estrategias del jugador $1$, i.e., $\sup_{\pi_1 \in \Pi_1} v_1(\pi_1)$. Análogamente, el valor del juego para una estrategia $\pi_2$ del jugador $2$ y el valor del juego para el jugador $2$ se definen como $v_2(\pi_2) = \Sup_{\pi_1 \in \Pi_1} f(\out(\pi_1, \pi_2))$ 
-y $\inf_{\pi_2 \in \Pi_2} v_2(\pi_2)$, respectivamente.
-Una estrategia es \emph{optimal} para un jugador si el valor de la estrategia para ese jugador es igual al valor del juego para ese jugador. Decimos que un juego esta determinado si los valores del juego para ambos jugadores es igual, es decir:
-$\sup_{\pi_1 \in \Pi_1} v_1(\pi_1) = \inf_{\pi_2 \in \Pi_2} v_2(\pi_2)$. En este caso denotamos con $\val(\mathcal{G})$ al valor del juego $\mathcal{G}$.
-    El siguiente resultado de \cite{Martin98} caracteriza un conjunto grande de juegos determinados.
-    \begin{thm} Cualquier juego con una función cuantitativa $f$ que esté acotada y sea Borel-medible esta determinado.
-\end{thm}
-
-
 \section{Simulación de Masking} \label{sec:masking_dist}
 Empezamos definiendo la simulación de masking. En \cite{DemasiCMA17}, se definió una simulación basada en estados para la masking-tolerancia a fallas, aquí reutilizamos esta definición usando sistemas de transición etiquetados. Primero, vamos a introducir algunos conceptos que son necesarios para definir masking-tolerancia a fallas. Para todo vocabulario $\Sigma$, y todo conjunto de etiquetas $\Faults = \{F_0, \dots, F_n\}$ no pertenecientes a $\Sigma$, consideramos 
 $\SigmaF = \Sigma \cup \Faults$, donde $\Faults \cap \Sigma = \emptyset$. Intuitivamente, los elementos de $\Faults$ indican la ocurrencia de una falla en una implementación defectuosa. Además, a veces sera útil considerar el conjunto $\Sigma^i = \{ e^i \mid e \in \Sigma\}$, que contiene los elementos de $\Sigma$ indexados con el superíndice $i$.
@@ -112,7 +79,7 @@ $\SigmaF = \Sigma \cup \Faults$, donde $\Faults \cap \Sigma = \emptyset$. Intuit
 %, $\Sigma^i = \{\sigma^i \mid \sigma \in \Sigma\}$.
 
 \subsection{Simulación de Masking fuerte}
-\begin{defi} \label{def:masking_rel}
+\begin{definition} \label{def:masking_rel}
   Sean $A =\langle S, \Sigma, \rightarrow, s_0\rangle$ y $A' =\langle S', \SigmaF, \rightarrow', s_0' \rangle$ dos sistemas de transición etiquetados.
   $A'$ es \emph{fuertemente masking-tolerante a fallas} con respecto a $A$ si existe una relación 
 $\M \subseteq S \times S'$ entre $A$ y $A'$ tal que:
@@ -136,7 +103,7 @@ $\M \subseteq S \times S'$ entre $A$ y $A'$ tal que:
 \end{enumerate}
 
 Si tal relación existe decimos que $A'$ es una \emph{implementación fuertemente masking-tolerante a fallas} de $A$, denotado como $A \Masking A'$. 
-\end{defi}
+\end{definition}
 
  Intuitivamente, la definición establece que, partiendo de $s'$, las fallas pueden ser enmascaradas de tal forma que el comportamiento exhibido es el mismo que el observado al partir de $s$ ejecutando transiciones sin fallas. 
  En otras palabras, una relación de masking asegura que cualquier comportamiento defectuoso en la implementación puede ser simulado por la especificación. Mas específicamente, note que las condiciones (A), (B.1) y (B.2) implican que tenemos una bisimulación cuando $A$ y $A'$ no exhiben comportamientos defectuosos.
@@ -171,7 +138,7 @@ $s\xRightarrow{e}s'$ es equivalente a $s\xrightarrow{e}s'$ y por lo tanto
 no se permite ningún paso $\tau$ antes o después de la transición $e$.
 
 
-\begin{defi} \label{def:weak_mask}
+\begin{definition} \label{def:weak_mask}
   Sean $A =\langle S, \Sigma, \rightarrow, \InitState \rangle$ y $A' =\langle S',
   \SigmaF, \rightarrow', \InitStatePrime \rangle$ dos sistemas de transición etiquetados con $\Sigma$
   conteniendo $\tau$ posiblemente.  $A'$ es \emph{débilmente masking-tolerante a fallas}
@@ -199,11 +166,11 @@ no se permite ningún paso $\tau$ antes o después de la transición $e$.
 %
 Si tal relación existe, decimos que $A'$ es una \emph{implementación débilmente masking-tolerante a fallas} de
 $A$, denotado por $A \WeakMasking A'$.
-\end{defi}
+\end{definition}
 
 El siguiente teorema conecta la simulación de masking fuerte y débil. El teorema establece que la simulación de masking débil se vuelve una simulación de masking fuerte cuando la transición $\xrightarrow{}$ es reemplazada por $\xRightarrow{}$ en la estructura original.
 
-\begin{thm} \label{thm:weak_thm}
+\begin{theorem} \label{thm:weak_thm}
   Sean
 $A =\langle S, \Sigma, \rightarrow, \InitState \rangle$ y $A' =\langle S', \SigmaF, \rightarrow', \InitStatePrime \rangle$. 
 $\M \subseteq S \times S'$ entre $A$ y $A'$ es una simulación de masking débil si y solo si:
@@ -225,7 +192,7 @@ $\M \subseteq S \times S'$ entre $A$ y $A'$ es una simulación de masking débil
   \end{enumerate}
 \end{enumerate}
 
-\end{thm}
+\end{theorem}
 
 \noindent
 \begin{proof}
@@ -247,7 +214,7 @@ $\Rightarrow$, tenemos que $s' \xrightarrow{F} t'$ y por Def.~\ref{def:weak_mask
  
 Una forma natural de verificar bisimilitud débil es por medio de \emph{saturar}
 el sistema de transición  \cite{FernandezM91,Milner89} y lucho verificar bisimilitud fuerte sobre el sistema de transición saturado.
-Similarmente, el Theorem~\ref{thm:weak_thm} nos permite computar la simulación de masking débil al reducir este problema a simulación de masking fuerte. Note que $\xRightarrow{e}$ puede ser alternativamente definida por medio de las siguientes reglas:
+Similarmente, el Teorema~\ref{thm:weak_thm} nos permite computar la simulación de masking débil al reducir este problema a simulación de masking fuerte. Note que $\xRightarrow{e}$ puede ser alternativamente definida por medio de las siguientes reglas:
 
 \[
 \dfrac{p \xrightarrow{e} q}{p\xRightarrow{e} q} \hspace{2cm} 
@@ -255,8 +222,9 @@ Similarmente, el Theorem~\ref{thm:weak_thm} nos permite computar la simulación 
 \dfrac{p\xRightarrow{\tau} p_1 \xRightarrow{e} q_1 \xRightarrow{\tau} q}{p\xRightarrow{e} q}~(e \notin \Faults)
 \]
 	En lo que sigue utilizamos el teorema \ref{thm:weak_thm} para probar propiedades de masking débil, vale la pena recalcar que la mayoría de propiedades de masking fuerte pueden ser también probadas para masking débil recurriendo a este resultado.
+
 	
-\begin{exa}
+\begin{example}
 Consideremos el siguiente ejemplo, consideramos una celda de memoria que almacena un bit de información y soporta operaciones de lectura y escritura, presentado en forma basada en estados en \cite{DemasiCMA17}. Un estado en este sistema mantiene el valor corriente de la celda de memoria ($m=i$, para $i=0,1$), escribir le permite a uno cambiar este valor, y leer retorna el valor almacenado.  
 Obviamente, en este sistema el resultado de una lectura va a depender del valor almacenado en la celda. 
 Por lo tanto, una propiedad que uno podría asociar a este modelo es que el valor leído de la celda coincida con el de la ultima escritura que se haya ejecutado en el sistema.
@@ -271,7 +239,7 @@ Además, el estado $\text{t}_2$ se alcanza cuando uno de los bits cambió de val
 En  $A''$, el estado $\text{t}_3$ se alcanza después de que cambia un segundo bit ($011$, $101$ o $110$) empezando del estado $\text{t}_0$.
 \begin{figure}[h] 
 \begin{center}
-    \includegraphics[scale=0.45]{images/example_1_cell_mem.eps} 
+    \includegraphics[scale=0.45]{Figs/example_1_cell_mem.eps} 
    % \vspace{-1cm}
     \caption{Sistemas de transición para la celda de memoria.}
     %\vspace{-0.8cm}
@@ -281,13 +249,13 @@ En  $A''$, el estado $\text{t}_3$ se alcanza después de que cambia un segundo b
 \sloppy Es directo de ver que existe una relación de masking'tolerancia a fallas entre $A$ y $A'$, teniendo como testigo la relación $\M = \{(\text{s}_0, \text{t}_0), (\text{s}_1, \text{t}_1), (\text{s}_0, \text{t}_2)\}$. Es sencillo verificar que $\M$ satisface las condiciones de la Def.~\ref{def:masking_rel}.
 
 Por otro lado, no existe una relación de masking entre $A$ y $A''$ ya que el estado $\text{t}_3$ necesita estar relacionado con el estado $\text{s}_0$ en cualquier relación de masking entre estos modelos. Este estado solo puede ser alcanzado con la ejecución de fallas, las cuales son necesariamente enmascaradas por pasos en si mismo. Sin embargo, note que, en el estado $\text{t}_3$, se puede leer el valor $1$ (la transición $\text{t}_3 \xrightarrow{\text{R}_1} \text{t}_3$) mientras que, en el estado $\text{s}_0$, solo se puede leer el valor $0$.
-\end{exa}
+\end{example}
  
 \subsection{Juego de Simulación de Masking} \label{subsec:mask_sim_game}
 	Vamos a definir un juego de simulación de masking para dos sistemas de transición (la especificación del sistema nominal y su implementación tolerante a fallas) que captura la masking-tolerancia a fallas. Primero definimos el grafo de juego de masking para dos jugadores, los cuales denominaremos como \emph{Refutador} ($\Refuter$) y \emph{Verificador}
 ($\Verifier$).
 
-\begin{defi} \label{def:strong_masking_game_graph}
+\begin{definition} \label{def:strong_masking_game_graph}
   Sean $A=\langle S, \Sigma, \rightarrow, \InitState \rangle$ y $A'=\langle S',
   \SigmaF, \rightarrow', \InitStatePrime \rangle$ dos sistemas de transición.
   % and $M \notin \Sigma \cup \SigmaF$.
@@ -319,7 +287,7 @@ y $E^G$ es el conjunto minimal que satisface que:
   \item Si no hay transiciones que salgan de algún estado $v$, entonces, adicionalmente asumimos que $(v, \ErrorSt) \in E^G$ y $(\ErrorSt, \ErrorSt) \in E^G$.
 \end{itemize}
 
-\end{defi}
+\end{definition}
 
 La intuición de este juego es lo siguiente. 
 El Refutador elige transiciones de la especificación o de la implementación y hace su movimiento, luego el Verificador trata de igualar el movimiento de su contrincante, esto es similar al juego de bisimulación \cite{Stirling99}. 
@@ -339,10 +307,10 @@ Entonces, el estado $\ErrorSt$ es alcanzado y el Refutador gana.
 Como es de esperarse, hay una simulación de masking fuerte entre $A$ y $A'$
 si y solo si el Verificador tiene una estrategia ganadora en $\StrMaskGG$.
 
-\begin{thm} \label{thm:wingame_strat}
+\begin{theorem} \label{thm:wingame_strat}
   Sean $A=\langle S, \Sigma, \rightarrow, \InitState \rangle$ y $A'=\langle S', \SigmaF, \rightarrow', \InitStatePrime \rangle$ dos sistemas de transición.
   Entonces, $A \Masking A'$ si y solo si el Verificador tiene una estrategia ganadora para el grafo de juego de masking fuerte $\StrMaskGG$.
-\end{thm}
+\end{theorem}
 \begin{proof} 
 	``solo si'': Supongamos que existe una simulación de masking $\M \subseteq S \times S'$.
 La estrategia del Verificador (denominada $\pi^*$) se construye de la siguiente forma:  para los estados $(t, \sigma^1, s', V)$ (resp. $(s, \sigma^2, t', V)$) tal que el conjunto $\{ z' \in \post(s'): t \M z' \}$
@@ -392,16 +360,16 @@ $(s,\#,t',\Refuter)$. Por lo tanto, $s \Masking t'$, y el resultado se deduce.
 
 Por el teorema ~\ref{thm:weak_thm}, el resultado también vale para juegos de masking débiles lo cual esta establecido en el siguiente teorema.
 
-\begin{thm} \label{thm:weak_wingame_strat}
+\begin{theorem} \label{thm:weak_wingame_strat}
   Sean $A=\langle S, \Sigma \cup \{\tau\}, \rightarrow, \InitState \rangle$ y
   $A'=\langle S', \SigmaF \cup \{\tau\}, \rightarrow', \InitStatePrime \rangle$.
   $A \WeakMasking A'$ si y solo si el Verificador tiene una estrategia ganadora para el grafo de juego de masking débil $\WeakMaskGG$.
-\end{thm}
+\end{theorem}
 
-\begin{thm}\label{th:game-determined}
+\begin{theorem}\label{thm:game-determined}
   Para cualquier $A$ y $A'$, el grafo de juego de masking fuerte (resp.\ débil) 
   $\StrMaskGG$ (resp.\ $\WeakMaskGG$) puede ser determinado en tiempo $\BigO(|E^G|)$ (resp.\ $\BigO(|E_W^G|)$).
-\end{thm}
+\end{theorem}
 \begin{proof}
 	El conjunto de estados ganadores para el Refutador puede ser computado utilizando una búsqueda primero en ancho de abajo hacia arriba(bottom-up breadth-first) desde el estado de error, como en juegos de alcanzabilidad \cite{Jurd11}. 
 Este procedimiento inspecciona cada arco, en el peor caso. Esto significa que el tiempo de ejecución de este algoritmo es $\BigO(|E^G|)$ para el caso de masking fuerte, y $\BigO(|E_W^G|)$ para el caso débil. Para este ultimo caso, hay que tener en cuenta que computar  
@@ -412,7 +380,7 @@ $\Rightarrow$ a partir de $\rightarrow$ toma un tiempo polinomial.
 \begin{center}
     %\vspace{-0.5cm}
    % \includegraphics[scale=0.5]{ex1_cell_mem_game_graph_two_faults.eps} 
-    \includegraphics[scale=0.5]{images/ex1_cell_mem_game_graph_two_faults.eps} 
+    \includegraphics[scale=0.5]{Figs/ex1_cell_mem_game_graph_two_faults.eps} 
   %  \vspace{-0.7cm}
     \caption{Parte del grafo de juego de masking para la celda de memoria con dos fallas}
     \label{figure:exam_2_mem_cell_gg_two_faults}
@@ -422,7 +390,7 @@ $\Rightarrow$ a partir de $\rightarrow$ toma un tiempo polinomial.
 
 	Se puede solucionar juegos de alcanzabilidad computando conjuntos $\text{Reach}_0$ (estados ganadores para el Refutador) como un punto fijo de conjuntos $\text{Reach}^i_0$  \cite{Jurd11}.
 	Estas ideas pueden ser adaptadas a nuestro contexto para tener en cuenta la cantidad de fallas. Esto sera útil en las próximas secciones, donde la cantidad de fallas es importante para razonar sobre la versión cuantitativa de los juegos de masking.
-\begin{defi}\label{def:U} Dado un grafo de juego de masking fuerte $\StrMaskGG$, 
+\begin{definition}\label{def:U} Dado un grafo de juego de masking fuerte $\StrMaskGG$, 
 los conjuntos $\setsUs$ (para $i,j \geq 0$) se definen de la siguiente manera:
 \begin{align*}
   U^0_i =& U^j_0 = \emptyset,  \label{def:of:Uji} \\
@@ -441,12 +409,12 @@ los conjuntos $\setsUs$ (para $i,j \geq 0$) se definen de la siguiente manera:
     \{v' \mid  v' \in V_\Verifier \wedge \post(v') \subseteq \bigcup_{i'\leq i, j' \leq j}U_{i'}^{j'} \wedge \post(v') \cap \setsUs \neq \emptyset \wedge \pr{1}{v'} \in \Faults \}
 \end{align*}
 Además, $U^k = \bigcup_{i \geq 0} U_i^k$ y $U = \bigcup_{k \geq 0} U^k$.
-\end{defi}
+\end{definition}
 Intuitivamente, el subíndice $i$ en $U^k_i$ indica que $\ErrorSt$ es alcanzado después de que hayan ocurrido a lo sumo $i-1$ fallas y $k$ pasos.
 El siguiente lema se demuestra de forma directa utilizando técnicas estándar de juegos de alcanzabilidad \cite{AlfaroHK07}.
 	Note que estos conjuntos también pueden ser computados para juegos débiles de forma similar utilizando la relación $\Rightarrow$.
-\begin{lem} \label{lemma:RefWinStrat} El Refutador tiene una estrategia ganadora en $\mathcal{G}_{A, A'}$ (o $\mathcal{G}^W_{A, A'}$) si y solo si $\InitVertex^G \in U^k$, para algún $k$.
-\end{lem}
+\begin{lemma} \label{lemma:RefWinStrat} El Refutador tiene una estrategia ganadora en $\mathcal{G}_{A, A'}$ (o $\mathcal{G}^W_{A, A'}$) si y solo si $\InitVertex^G \in U^k$, para algún $k$.
+\end{lemma}
 \begin{proof} 
 	``solo si'': La prueba utiliza resultados estándar de juegos de alcanzabilidad. Mas específicamente, considere el conjunto $V^G \setminus U$, este conjunto es una trampa para el Refutador, es decir, si $(s,\sigma, s', \Verifier) \in V^G \setminus U$, entonces existe un $v \in \post((s,\sigma, s', \Verifier))$ tal que 
 $v \in V^G \setminus U$, sino
@@ -483,7 +451,7 @@ Por el teorema \ref{thm:weak_thm}, esta prueba también aplica al juego de maski
 En esta sección, extendemos el juego de simulación de masking fuerte (resp. débil) introducido anteriormente con objetivos cuantitativos para así definir la noción de distancia de masking-tolerancia a fallas.
 % In practice, fault-tolerance appears with a quantitative flavor, that is, fault-tolerant systems have %degrees of tolerance. This is particularly true when techniques like redundancy and voting are used.  %take this into account. 
 Es importante remarcar que utilizamos el atributo  ``cuantitativo'' en un sentido no probabilista.
-\begin{defi}  
+\begin{definition}  
   %Let $A=\langle S, \Sigma, E, s_0\rangle$ and $A'=\langle S', \Sigma_{\Faults}, E', s'_0 \rangle$.  T
   Para los sistemas de transición $A$ y $A'$, el \emph{grafo de juego de masking cuantitativo fuerte} 
   $\QMStrGame = \langle V^G, V_\Refuter, V_\Verifier, E^G,  \InitVertex^G,  \reward^G \rangle$ se define de la siguiente manera:
@@ -497,7 +465,7 @@ Es importante remarcar que utilizamos el atributo  ``cuantitativo'' en un sentid
 \end{itemize}
 %
 donde $\chi_{\Faults}$ es la función característica sobre el conjunto $\Faults$, devolviendo $1$ si $\sigma \in \Faults$ y $0$ de otro modo, y $\chi_{\ErrorSt}$ es la función característica sobre el singleton $\{\ErrorSt\}$.
-\end{defi}
+\end{definition}
 Note que la función de recompensa retorna un par de números en lugar de un solo numero. Es directo codificar al par como un único numero pero no lo hacemos por claridad. Remarcamos que el
 \emph{grafo de juego de masking cuantitativo débil} $\QMWeakGame$
 se define de la misma forma que el grafo de juego definido arriba pero utilizando el grafo de juego de masking débil $\mathcal{G}^W_{A, A'}$ en lugar de 
@@ -524,23 +492,23 @@ Por el contrario, el Verificador quiere evitar $\ErrorSt$ y entonces tratará de
 Mas precisamente, el valor del juego de masking cuantitativo fuerte para el Refutador se define como $\val_\Refuter(\QMStrGame) = \Sup_{\pi_\Refuter \in \Pi_\Refuter} \; \Inf_{\pi_\Verifier \in \Pi_\Verifier} \FMask(\out(\pi_\Refuter, \pi_\Verifier))$. Análogamente, el valor del juego para el Verificador se define como $\val_\Verifier(\QMStrGame) = \Inf_{\pi_\Verifier \in \Pi_\Verifier} \; \Sup_{\pi_\Refuter \in \Pi_\Refuter} \FMask(\out(\pi_\Refuter, 
 \pi_\Verifier))$. Entonces, definimos el valor del juego de masking cuantitativo fuerte, denotado por $\val(\QMStrGame)$, como el valor del juego del Refutador o del Verificador, i.e., $\val(\QMStrGame) = \val_\Refuter(\QMStrGame) = \val_\Verifier(\QMStrGame)$. Esto es posible debido a que los juegos de masking cuantitativos fuertes están determinados como lo probaremos mas abajo en el Teorema~\ref{thm:mask_game_det}. \\
 
-\begin{defi} \label{def:mask_dist}
+\begin{definition} \label{def:mask_dist}
  Sean $A$ y $A'$ unos sistemas de transición. 
 La \emph{distancia de masking fuerte} entre $A$ y $A'$, denotada por $\DeltaMask(A, A')$ se define de la siguiente manera:
 $\DeltaMask(A, A') = \val(\QMStrGame).$
-\end{defi}
+\end{definition}
 
 	Nos gustaría remarcar que la \emph{distancia de masking débil} $\DeltaMask^W$ se de fine de la misma forma para el grafo de juego de masking cuantitativo débil $\QMWeakGame$.  A grandes rasgos, estamos interesados en medir la cantidad de fallas que pueden ser enmascaradas. El valor del juego está esencialmente determinado por las transiciones de falla en el grafo de juego y como los jugadores pueden encontrar una estrategia que lleve a (o evite) el estado $\ErrorSt$, independientemente de la existencia de acciones silenciosas.
 
 A continuación, estableceremos algunas propiedades básicas de este tipo de juegos. 
 Como ya anticipamos, los juegos de masking cuantitativos fuertes están determinados.
 
-\begin{thm} \label{thm:mask_game_det}
+\begin{theorem} \label{thm:mask_game_det}
   Para cualquier grafo de juego de masking cuantitativo fuerte $\QMStrGame$ con función de payoff $\FMask$:
 %  \vspace{-0.3cm}
   \[\textstyle
   \Inf_{\pi_\Verifier \in \Pi_\Verifier} \; \Sup_{\pi_\Refuter \in \Pi_\Refuter} \FMask(\out(\pi_\Refuter, \pi_\Verifier)) = \Sup_{\pi_\Refuter \in \Pi_\Refuter} \;  \Inf_{\pi_\Verifier \in \Pi_\Verifier} \FMask(\out(\pi_\Refuter, \pi_\Verifier))\]
-\end{thm}
+\end{theorem}
 \begin{proof} Para demostrar que la función de payoff de masking $\FMask$ está determinada tenemos que probar que es acotada y Borel-medible (teorema de Martin \cite{Martin98}). Primero, $\FMask$ está acotada por definición. Segundo, para ver que $\FMask$ es Borel-medible note que $\FMask(\Omega) \subseteq [0,1]$, y entonces es suficiente para probar que, para cada racional $x$, $\FMask^{-1}((-\infty, x])$ es Borel en la topología de Cantor de ejecuciones infinitas. 
 Considere $\FMask^{-1}([-\infty,x])$ para un $x$ arbitrario, esto es lo mismo que $\FMask^{-1}([0, \frac{1}{a}])$ para un $a$ dado. Pero, $\FMask^{-1}([0, \frac{1}{a}]) = \bigcup_{b \geq a} A_b$ donde
 $A_b = \bigcup_{i >0} A^i_b$ para $A^i_b = \{ \rho_0 \rho_1 \dots \mid \rho_i = \ErrorSt \wedge \sum^{i-1}_{j=0} \chi_{\Faults}(\pr{1}{\rho_j}) =b\}$. Note que 
@@ -558,14 +526,14 @@ En esta subsección presentamos los algoritmos para computar la distancia de mas
 
 Comenzamos presentando el próximo teorema que establece como se calcula el valor de un juego de masking cuantitativo fuerte dado.
 %
-\begin{thm} \label{thm:quant_game}
+\begin{theorem} \label{thm:quant_game}
   Sea $\QMStrGame$ un grafo de juego de masking cuantitativo fuerte.
   \sloppy Entonces, $\val(\QMStrGame) = \frac{1}{\pr{0}{\delta(\InitVertex^G)}}$, con
   $\delta(\InitVertex^G) = \min \{ (i,j) \mid  \InitVertex^G \in \setsUs \}$, siempre que
   $\InitVertex^G \in U$, y $\val(\QMStrGame)=0$ de otro modo, donde los conjuntos
    $\setsUs$ y $U$ están definidos en Def.~\ref{def:U}.
 
-\end{thm}
+\end{theorem}
 \begin{proof} La prueba es por casos:
 	
 	Si $\InitVertex^G \notin U$, entonces definimos la siguiente estrategia para el Verificador. Si $v \in V_\Verifier \setminus U$, entonces $\pi^*_\Verifier(v)=v'$ 
@@ -637,7 +605,7 @@ Entonces, $\val(\QMStrGame) = \inf_{\pi_\Verifier \in \Pi_\Verifier} \sup_{\pi_\
 \end{proof} \\
 
 	Interesantemente, el valor del juego para juegos deterministas está dado por el camino más corto (si existe) hacia el estado de error, como se muestra en el siguiente teorema.
-\begin{thm}\label{theorem:det-games} Sea  $\QMStrGame = \langle V^G, V_\Refuter,V_\Verifier, E^G, \InitVertex^G, \reward^G \rangle$ un grafo de juego de masking cuantitativo fuerte determinista,
+\begin{theorem}\label{thm:det-games} Sea  $\QMStrGame = \langle V^G, V_\Refuter,V_\Verifier, E^G, \InitVertex^G, \reward^G \rangle$ un grafo de juego de masking cuantitativo fuerte determinista,
 y sea  $G_{\QMStrGame} = \langle V^G,  E^G, \InitVertex^G, w \rangle$ su grafo con pesos subyacente, con la función de peso $w$ 
 definida como:
 \[
@@ -651,7 +619,7 @@ hacia el estado de error en $G_{\QMStrGame}$, y $k$ es la cantidad de fallas que
 \[
 	\val(\QMStrGame) = \frac{1}{1+k}
 \]
-\end{thm}
+\end{theorem}
 \begin{proof}
 	Definamos la estrategia $\pi_\Refuter \in \Pi_\Refuter$ para el Refutador tal que:
 \[
@@ -694,22 +662,22 @@ Pero, seria un camino mas corto en el grafo subyacente, lo cual es una contradic
 \qedhere
 \end{proof} \\
 
-	Notemos que los teoremas~\ref{thm:mask_game_det}, \ref{thm:quant_game} y \ref{theorem:det-games} aplican también a 
+	Notemos que los teoremas~\ref{thm:mask_game_det}, \ref{thm:quant_game} y \ref{thm:det-games} aplican también a 
 $\QMWeakGame$.
-	El teorema~\ref{theorem:det-games} nos permite proveer procedimientos eficientes para decidir juegos cuantitativos en el caso de sistemas deterministas. Para el caso de sistemas no deterministas, el procedimiento es mas costoso computacionalmente (en términos de tiempo y memoria) que para el caso de sistemas deterministas, ya que los conjuntos $\setsUs$ (Def.~\ref{def:U}) deben ser computados. \\
+	El teorema~\ref{thm:det-games} nos permite proveer procedimientos eficientes para decidir juegos cuantitativos en el caso de sistemas deterministas. Para el caso de sistemas no deterministas, el procedimiento es mas costoso computacionalmente (en términos de tiempo y memoria) que para el caso de sistemas deterministas, ya que los conjuntos $\setsUs$ (Def.~\ref{def:U}) deben ser computados. \\
 
 Es importante destacar que, para sistemas no deterministas, el camino mas corto no siempre determina estrategias ganadoras. Esto se puede observar a través de un ejemplo simple a continuación. Consideremos los dos sistemas de transición que se muestran en la figura ~\ref{fig:two-nondet-systems}.
 
 \begin{figure} [h]
 \begin{center}
-    \includegraphics[scale=0.5]{images/nondeterm.eps} 
+    \includegraphics[scale=0.5]{Figs/nondeterm.eps} 
     \caption{Dos sistemas no deterministas}
     \label{figure:nondeterm}\label{fig:two-nondet-systems}
 \end{center}
 \end{figure}
 \begin{figure} [h]
 \begin{center}
-    \includegraphics[scale=0.5]{images/nondeterm-game.eps} 
+    \includegraphics[scale=0.5]{Figs/nondeterm-game.eps} 
     \caption{El juego cuantitativo para los sistemas $M$ y $M'$}
     \label{figure:nondeterm-game}
 \end{center}
@@ -807,8 +775,8 @@ Los pasos principales del algoritmo se detallan a continuación:
 
 	 Vamos a demostrar que el algoritmo termina y que es correcto.
 
-\sloppy \begin{thm}\label{th:alg-termination}  \textbf{(Terminación)} El Algoritmo \ref{Alg:MainAlg} termina.
-\end{thm}
+\sloppy \begin{theorem}\label{thm:alg-termination}  \textbf{(Terminación)} El Algoritmo \ref{Alg:MainAlg} termina.
+\end{theorem}
 \begin{proof}
 	Probemos que un vértice no puede ser añadido una cantidad no acotada de veces a $\Q$. 
 Primero, note que las lineas \ref{Alg:LoopBPre} y \ref{Alg:R-STB-Update} del Algoritmo  \ref{Alg:MainAlg} implican que los vértices del Refutador solo se agregan una vez a la cola. 
@@ -828,9 +796,9 @@ En resumen, ningún nodo se puede agregar un numero no acotado de veces a la col
 la cola eventualmente se vacía y el algoritmo termina.
 \qedhere
 \end{proof} 
-\sloppy \begin{thm}\label{th:alg-correctness} \textbf{(Correctitud)} Al terminar, el Algoritmo \ref{Alg:MainAlg} 
+\sloppy \begin{theorem}\label{thm:alg-correctness} \textbf{(Correctitud)} Al terminar, el Algoritmo \ref{Alg:MainAlg} 
 retorna el valor del grafo juego cuantitativo de masking fuerte (respec. débil) $\QMStrGame$.
-\end{thm}
+\end{theorem}
 \begin{proof}
 	Consideremos la función  $\delta(v) = \min \{(i,j) \mid v \in \setsUs\}$, donde $\min \emptyset = (\infty, \infty)$.
 También consideramos la extensión de esta función a conjuntos, es decir, $\delta(W) = \{\delta(w) \mid w \in W \}$. 
@@ -943,9 +911,9 @@ El siguiente teorema establece cual es la complejidad de determinar el valor de 
 %
 %\noindent
 %Finally, winning regions (and strategies) can be computed in lineal time.  
-\sloppy \begin{thm}\label{th:qgame-determined} Cualquier grafo de juego cuantitativo de masking fuerte (resp. débil) 
+\sloppy \begin{theorem}\label{thm:qgame-determined} Cualquier grafo de juego cuantitativo de masking fuerte (resp. débil) 
 $\QMStrGame = \langle V^G, V_\Refuter, V_\Verifier, E^G, \InitVertex^G, \reward^G \rangle$ puede ser determinado en tiempo $\BigO(|E^G|*\log |V^G|)$ (resp. $\BigO(|E_W^G|*\log |V^G|)$).
-\end{thm}
+\end{theorem}
 \begin{proof}
 	Notemos que el ciclo de la linea \ref{Alg:LoopBPre} inspecciona los arcos del grafo. Además, notemos que, ningún arco $(v, v')$ se puede inspeccionar dos veces:
 	si $v'$ es un vértice del Refutador, entonces sera agregado a $\STB$ y el arco no puede ser procesado nuevamente. 
@@ -958,22 +926,22 @@ $\QMStrGame = \langle V^G, V_\Refuter, V_\Verifier, E^G, \InitVertex^G, \reward^
 \end{proof} \\
 % TBD similar for weak games
 
-Los teoremas \ref{th:game-determined} y \ref{th:qgame-determined} describen la complejidad de resolver los juegos de masking estándar y cuantitativos respectivamente. Sin embargo, en la practica, uno necesita tener en cuenta que $|V^G| = |S|*|S'|$ y $|E^G| = |{\rightarrow}|+|{\rightarrow'}|$, así que construir el juego toma 
+Los teoremas \ref{thm:game-determined} y \ref{thm:qgame-determined} describen la complejidad de resolver los juegos de masking estándar y cuantitativos respectivamente. Sin embargo, en la practica, uno necesita tener en cuenta que $|V^G| = |S|*|S'|$ y $|E^G| = |{\rightarrow}|+|{\rightarrow'}|$, así que construir el juego toma 
 $\BigO(|S|^2*|S'|^2)$ pasos en el peor caso. Adicionalmente, para juegos débiles, la clausura transitiva del modelo original necesita ser computada, lo cual cuesta $\BigO(\max(|S|,|S'|)^{2.3727})$ para el mejor algoritmo conocido \cite{Wil12}.
 
-	Es interesante destacar que los juegos deterministas pueden ser resueltos en tiempo lineal utilizando el hecho demostrado en el Teorema \ref{theorem:det-games}.
-\begin{thm}\label{th:deterministic-qgame-complexity} 
+	Es interesante destacar que los juegos deterministas pueden ser resueltos en tiempo lineal utilizando el hecho demostrado en el Teorema \ref{thm:det-games}.
+\begin{theorem}\label{thm:deterministic-qgame-complexity} 
   Cualquier juego de masking determinista fuerte (resp. débil) puede ser resuelto en tiempo $\BigO(|E^G|)$ (resp. $\BigO(|E_W^G|)$).
-\end{thm}
-\begin{proof} Por el Teorema \ref{theorem:det-games}, el valor del juego está dado por el camino mas corto hacia el estado de error en el grafo de juego donde la función de peso asigna $1$ a las fallas, y $0$ a otras transiciones. El algoritmo de Dial \cite{Dial69} puede ser utilizado para obtener el camino mas corto en este grafo, el cual tiene complejidad $\BigO(|E^G|)$  (resp. $\BigO(|E^G_W|)$ en el caso de los juegos débiles).
+\end{theorem}
+\begin{proof} Por el Teorema \ref{thm:det-games}, el valor del juego está dado por el camino mas corto hacia el estado de error en el grafo de juego donde la función de peso asigna $1$ a las fallas, y $0$ a otras transiciones. El algoritmo de Dial \cite{Dial69} puede ser utilizado para obtener el camino mas corto en este grafo, el cual tiene complejidad $\BigO(|E^G|)$  (resp. $\BigO(|E^G_W|)$ en el caso de los juegos débiles).
 \qedhere
 \end{proof} 
 
 Observemos que al utilizar los conjuntos $\setsUs$ podemos definir estrategias óptimas para el Refutador y el Verificador, sin tener en cuenta la historia de la jugada. Esto significa que podemos dar el siguiente teorema.
  
-\begin{thm} \label{thm:memoryless} Sea $\QMStrGame$ un grafo de juego cuantitativo de masking fuerte.
+\begin{theorem} \label{thm:memoryless} Sea $\QMStrGame$ un grafo de juego cuantitativo de masking fuerte.
   Los jugadores $\Refuter$ y $\Verifier$ tienen estrategias óptimas sin memoria para $\QMStrGame$.
-\end{thm}
+\end{theorem}
 \begin{proof} Para un juego dado podemos computar los conjuntos $\setsUs$ utilizando el Algoritmo~\ref{Alg:MainAlg}.
 Por esto, se puede definir de forma directa una estrategia óptima para el Refutador. 
 Para un nodo dado $v$, si este pertenece a algún $\setsUs$, entonces el Refutador elige algún nodo en $U^{j'}_{i'}$ donde: 
@@ -991,17 +959,17 @@ Al utilizar $\QMWeakGame$ en lugar de $\QMStrGame$ en la
 Def.~\ref{def:mask_dist}, podemos definir la \emph{distancia de masking débil} $\DeltaMask^W$. El próximo teorema establece que $A$ y
 $A'$ están a distancia $0$ si y solo si existe una simulación de masking fuerte (o débil) entre ellos.
 
-\begin{thm}\label{theorem:ref}
+\begin{theorem}\label{thm:ref}
   Para cualquier par de sistemas de transición $A = \langle S, \Sigma, \rightarrow, \InitState \rangle$ y $A' = \langle S', \Sigma_{\mathcal{F'}}, \rightarrow', \InitStatePrime \rangle$, vale que:
   \begin{enumerate}[(i)]
   \item  $\DeltaMask(A,A') = 0$ si y solo si $A \Masking A'$, y
    \item $\DeltaMask^W(A,A') = 0$ si y solo si $A \WeakMasking A' $.
   \end{enumerate}
-\end{thm}
+\end{theorem}
 %
 Esto se deduce del Teorema \ref{thm:quant_game}.
 %That is, the masking distance between two systems is $0$ if and only if there is a masking simulation between them.
-Si notamos que $A \Masking A$ (y $A \WeakMasking A$) para cualquier sistema de transición $A$, obtenemos que $\DeltaMask(A,A)=0$ (resp.\ $\DeltaMask^W(A,A)=0$) por el Teorema \ref{theorem:ref}, i.e., 
+Si notamos que $A \Masking A$ (y $A \WeakMasking A$) para cualquier sistema de transición $A$, obtenemos que $\DeltaMask(A,A)=0$ (resp.\ $\DeltaMask^W(A,A)=0$) por el Teorema \ref{thm:ref}, i.e., 
 las dos distancias son reflexivas.
 
 Para nuestro ejemplo de la celda de memoria, la distancia de masking es de $1/3$ 
@@ -1010,11 +978,11 @@ Esto significa que solo una falla pudo ser enmascarada de forma exitosa por esta
 
 Podemos probar una versión de la desigualdad triangular para nuestra noción de distancia.
 %
-\begin{thm} \label{thm:triang_ineq}
+\begin{theorem} \label{thm:triang_ineq}
   Sean $A = \langle S, \Sigma, \rightarrow, s_0 \rangle$, $A' = \langle S', \Sigma_{\mathcal{F'}}, \rightarrow', s'_0 \rangle$,  y  $A'' = \langle S'', \Sigma_{\mathcal{F''}},\rightarrow'', s''_0 \rangle$ unos sistemas de transición tales que $\Faults' \subseteq \Faults''$, y los juegos correspondientes $\mathcal{Q}_{A,A'}$, $\mathcal{Q}_{A',A''}$ y $\mathcal{Q}_{A,A''}$.
   Entonces $\DeltaMask(A,A'') \leq \DeltaMask(A,A') + \DeltaMask(A', A'')$ y
   $\DeltaMask^W(A,A'') \leq \DeltaMask^W(A,A') + \DeltaMask^W(A', A'').$
-\end{thm}
+\end{theorem}
 \begin{proof} 
 Probaremos que para cualquier nodo $(s,\#,s'',\Refuter)$ en $\mathcal{Q}_{A,A''}$ y para cualquier par de nodos
 $(s,\#, s', R)$ en $\QMStrGame$ y $(s',\#,s'', R)$ en $\mathcal{Q}_{{A'},A''}$ (para cualquier estado $s'$ en $A'$), se cumple que:
@@ -1140,15 +1108,9 @@ Estas están definidas utilizando juegos cuantitativos con objetivos \emph{disco
 y \emph{mean-payoff}, dos funciones de costo bien conocidas.
 Similarmente a ese trabajo, también consideramos distancias entre sistemas puramente discretos (no probabilistas y sin tiempo.
 
-Correctness and coverage distances are concerned with the nominal part of the systems, 
-and so faults play no role on them. On the other hand, robustness distance measures how many unexpected errors can be performed by the implementation in such a way that the resulting behavior is tolerated by the specification. So, it can be used to analyze the resilience of the implementation. Note that, robustness
-distance can only be applied to correct implementations, that is, implementations that preserve the behavior of the specification but perhaps do not cover all its behavior. As noted in~\cite{CernyHR12}, bisimilarity sometimes implies a distance of $1$. In this sense a greater grade of robustness (as defined in~\cite{CernyHR12}) is achieved by pruning critical points from the specification. Furthermore, the  errors considered in that work are transitions mimicking the original ones but with different labels. In contrast to this, 
- in our approach we consider that faults are injected into the fault-tolerant 
- implementation, where their behaviors are not restricted by the nominal system. 
- This follows the idea of model extension in fault-tolerance where faulty behavior is added 
- to the nominal system. Further, note that when no faults are present, the masking distance between the specification and the implementation is $0$ when they are bisimilar, and it is $1$ otherwise.
-It is useful to note that robustness distance of~\cite{CernyHR12} is not reflexive. We believe that all these definitions of distance between systems capture different notions useful for software development, and they can be used together, in a complementary way, to obtain an in-depth
-evaluation of fault-tolerant implementations.
+Las distancias de correctitud y cobertura se concentran en la parte nominal de los sistemas, y por lo tanto las fallas no cumplen un rol en estas distancias. Por otro lado, la distancia de robustez mide cuantos errores inesperados pueden ocurrir en la implementación de tal forma que el comportamiento resultante es tolerado por la especificación. Entonces, esta distancia puede ser utilizada para analizar la resiliencia de la implementación. Notemos que, la distancia de robustez solo puede ser aplicada a implementaciones correctas, es decir, implementaciones que preserven el comportamiento de la especificación pero tal vez no cubre todo su comportamiento. 
+ Como ha sido notado en~\cite{CernyHR12}, la bisimilitud a veces implica una distancia de $1$. En este sentido, un grado mayor de robustez (como está definido en~\cite{CernyHR12}) se logra al recortar puntos críticos de la especificación. Además, los errores considerados en ese trabajo son transiciones que imitan a las originales pero con diferentes etiquetas. En contraste con esto, nuestro enfoque considera que las fallas son inyectadas en la implementación tolerante a fallas, donde sus comportamientos no son restringidos por el sistema nominal. Esto sigue la idea de la extensión de modelos en tolerancia a fallas donde se agrega comportamiento defectuoso al sistema nominal. Además, notemos que cuando no ocurren fallas, la distancia de masking entre la especificación y la implementación es $0$ cuando son bisimilares, y es  $1$ en caso contrario.
+Es útil destacar que la distancia de robustez de~\cite{CernyHR12} no es reflexiva. Creemos que todas estas definiciones de distancia entre sistemas capturan diferentes nociones útiles para el desarrollo de software, y pueden ser utilizadas en conjunto, de forma complementaria, para obtener una evaluación profunda de implementaciones tolerantes a fallas.
 
 
 

@@ -10,7 +10,6 @@
 \titlespacing*{\paragraph}   {0pt}{3.25ex plus 1ex minus .2ex}{1em}
 \babelhyphenation[spanish]{Node-Caching-Linked-List}
 
-\input{macros}
 
 \begin{document}
 \frenchspacing
@@ -18,10 +17,10 @@
 
 % ********************************************************************
 % Frontmatter
-\pagenumbering{roman}
+%\pagenumbering{roman}
 \pagestyle{plain}
 %\include{titlepage}
-\include{titlepage-famaf}
+\input{titlepage-famaf}
 
 \cleardoublepage\null
 \include{resumen}
@@ -31,10 +30,10 @@
 \tableofcontents
 \cleardoublepage
 \listoffigures
-%\cleardoublepage
+\cleardoublepage
 \listoftables
 \pagestyle{scrheadings}
-%\cleardoublepage
+\cleardoublepage
 % ********************************************************************
 % Mainmatter
 \lstset{basicstyle=\ttfamily,showstringspaces=false}
@@ -47,6 +46,7 @@
 \include{chapter3}
 \include{chapter4}
 \include{chapter5}
+\include{chapter6}
 \include{conclusiones}
 \include{trabajosfuturos}
 

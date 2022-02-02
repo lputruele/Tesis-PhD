@@ -86,8 +86,7 @@
 
 
 % Proof env
-\renewenvironment{proof}{\noindent\textbf{Proof.}}{\hfill$\diamond$}
-
+\renewenvironment{proof}{\noindent\textbf{Demostración.}}{\hfill$\diamond$}
 
 
 
@@ -128,4 +127,175 @@
 \newcommand{\hrmkPC}[1]{\highlightedremark{darkblue}{lightblue}{PC}{#1}}
 \newcommand{\hrmkRD}[1]{\highlightedremark{darkgreen}{lightgreen}{RD}{#1}}
 \newcommand{\hrmkLP}[1]{\highlightedremark{darkpurple}{lightpurple}{LP}{#1}}
+
+\newtheorem{definition}{Definición}
+\newtheorem{theorem}{Teorema}
+\newtheorem{corollary}{Corolario}
+\newtheorem{lemma}{Lema}
+\newtheorem{example}{Ejemplo}
+
+
+
+
+
+
+
+%PAPER SINTESIS
+% Definitions
+
+% the rewards function
+\def\Rewards{\textit{rew}}
+
+% Probabilistic player
+
+\def\Probabilistic{\mathsf{P}}
+
+
+% Supremo
+%\def\Sup{\mbox{sup}}
+\def\Sup{\sup}
+% infimo
+%\def\Inf{\mbox{inf}}
+\def\Inf{\inf}
+% max brp
+\def\MaxBRP{M}
+%SigmaF
+\def\SigmaF{\Sigma_{\mathcal{F}}}
+%SigmaM
+\def\SigmaM{\Sigma_{\mathcal{M}}}
+%val for teh value of games
+\def\val{\mathit{val}}
+% for polynomial function in big oh notation
+\def\poly{\mathit{poly}}
+% for the size of a DP
+\def\size{\mathit{size}}
+%\newcommand{\rmin}{\mathbin{\mathcal{R}_{\textit{min}}}}
+%Mean payoff 
+\def\MP{\mathit{MP}}
+
+% for the support set of a dist.
+\def\support#1{\mathit{Supp}(#1)}
+% for hte image og a function
+\def\image#1{\mathit{Im}(#1)}
+\def\FP{\mathit{FP}}
+\def\UP{\mathit{UP}}
+\def\RFP{\mathit{RFP}}
+%\def\inf{\mathop{inf}}
+%\def\equations#1{\mathit{Eq}(#1)}
+%\def\equationsbin#1#2{\mathit{Eq}(#1)(#2)}
+%\def\post#1{\mathit{post}(#1)}
+%\def\outputbin#1#2{\mathit{out}(#1,#2)}
+%\def\output#1#2#3{\mathit{out}_{#1}(#2,#3)}
+% Probability for stochastic games, take two parameters: the strategies
+\def\Prob#1#2{\mathit{Prob}^{#1, #2}}
+% Probability for MDP, only one parameter
+\def\MDPProb#1{\mathit{Prob}^{#1}}
+% Probability for Markov Chain
+\def\MCProb{\mathit{Prob}}
+\def\GamePaths{\mathit{Paths}}
+\def\FinGamePaths{\mathit{FPaths}}
+
+% the sets of paths for a pair of strategies
+\def\Paths#1#2{\mathit{Paths}^{#1,#2}}
+% The sets of paths for MDP
+\def\FinPaths#1#2{\mathit{FPaths}^{#1,#2}}
+% the sets of paths for a pair of strategies
+\def\MDPPaths#1{\mathit{Paths}^{#1}}
+% The sets of paths for MDP
+\def\MDPFinPaths#1{\mathit{FPaths}^{#1}}
+% and for Markov chain
+\def\MCPaths{\mathit{Paths}}
+% The sets of paths for MDP
+\def\MCFinPaths#1{\mathit{FPaths}}
+% TO define a MDP
+\def\MDP#1{\mathcal{#1}}
+% to define a MC
+\def\MC#1{\mathcal{#1}}
+% to define an end component
+\def\EC#1{\mathcal{#1}}
+% set of ending components
+\def\EndComp{\mathit{EC}}
+
+\def\couplings#1#2{\mathbb{C}(#1,#2)}
+\def\vertices#1{\mathbb{V}(#1)}
+% the projection operator
+\def\pr#1#2{\operatorname{pr}_{#1}(#2)}
+\DeclareMathOperator*{\argmin}{argmin}
+\DeclareMathOperator*{\argmax}{argmax}
+
+% Probabilistic macros
+%Dist
+%\def\Dist{\textsf{Dist}}
+%R-respecting coupling
+\def\RelCoupling{R^{\#}}
+%M-respecting coupling
+\newcommand{\MaskCoup}{\mathbin{\mathbf{M^{\#}}}} 
+% Expectation 
+\def\Expect#1#2{\mathbb{E}^{#1, #2}}
+\def\ExpectMDP#1{\mathbb{E}^{#1}}
+\def\ExpectMC{\mathbb{E}}
+% Symbolic Graph 
+\def\SymbG{\mathcal{SG}}
+% Stochastic Masking Game Graph 
+\def\StochG{\mathcal{G}}
+%\def\StochM{\mathcal{M}}
+% Milostone Stochastic Masking Game Graph 
+\def\MilestoneG{\mathcal{MG}}
+\def\post{\mathit{post}}
+\def\pre{\mathit{pre}}
+\def\Apre{\forall\mathit{Pre}}
+\def\Epre{\exists\mathit{Pre}}
+\def\AFairpre{\forall\mathit{Pre}_f}
+\def\EFairpre{\exists\mathit{Pre}_f}
+\def\SymbAFairpre{\forall\mathit{Pre}^S_f}
+\def\SymbEFairpre{\exists\mathit{Pre}^S_f}
+\def\Eq{\mathit{Eq}}
+\def\out{\mathit{out}}
+%\def\Dist{\mathit{Dist}}
+\def\Dist{\mathcal{D}}
+\def\reward{\mathit{r}}
+\def\LP{\mathit{LP}}
+\def\tuple#1{{\langle{#1}\rangle}}
+\def\prefix{\mathit{pref}}
+\def\frontier{\mathit{Frontier}}
+\def\cone{\mathit{cyl}}
+\def\cylinder#1{\mathit{cyl}(#1)}
+
+% strategies for player 1
+\def\strat#1{\pi_{#1}}
+\def\stratprime#1{\pi'_{#1}}
+\def\starredstrat#1{\pi^*_{#1}}
+\def\hatstrat#1{\hat{\pi}_{#1}}
+\def\limit{\mathit{limit}}
+
+
+% strategies for player 2
+\def\Strategies#1{\Pi_{#1}}
+\def\MemorylessStrats#1{\Pi^{\textit{M}}_{#1}}
+\def\FairStrats#1{\Pi^{\mathcal{F}}_{#1}}
+\def\MemorylessFairStrats#1{\Pi^{\textit{M}\mathcal{F}}_{#1}}
+\def\SemiMarkovFairStrats#1{\Pi^{\textit{S}\mathcal{F}}_{#1}}
+\def\SemiMarkovStrats#1{\Pi^{\textit{S}}_{#1}}
+\def\DetMemorylessStrats#1{\Pi^{\textit{MD}}_{#1}}
+\def\DetMemorylessFairStrats#1{\Pi^{\textit{MD}\mathcal{F}}_{#1}}
+\def\DetStrats#1{\Pi^{\textit{D}}_{#1}}
+\def\uniformstrat#1{\pi^{\mathrm{u}}_{#1}}
+
+\def\dedrule#1#2{\frac{\textstyle #1}{\textstyle #2}}
+\def\U{\mathbin{\textsf{U}}}
+\def\UpperBound{\mathbf{U}}
+\def\StandardBellman{\Gamma}
+\def\Bellman{\Gamma^*}
+\def\LTL{\textsf{LTL}}
+\def\PCTL{\textsf{PCTL}}
+\def\Prism{\textsf{PRISM}}
+\def\PrismGames{\textsf{PRISM-games}}
+
+
+\newcommand{\postmin}{\post^{\min}}
+\newcommand{\disttoT}[1]{{\lVert{#1}\rVert}}
+
+\newenvironment{claim}[1]{\par\noindent\underline{Claim:}\space#1}{}
+\newenvironment{proofofclaim}[1]{\par\noindent\underline{Proof:}\space#1}{\hfill $\blacksquare$}
+
 
