@@ -8,25 +8,23 @@
 \newcolumntype{g}{>{\columncolor{Gray}}c}
 \newcolumntype{h}{>{\columncolor{Gray2}}c}
 
-In order to evaluate the viability of our approach we have  extended the model checker {\Prism}~\cite{DBLP:conf/cav/KwiatkowskaN0S20,DBLP:conf/cav/KwiatkowskaNP11} with an operator to compute the expected rewards for stochastic games that stop under fairness. The prototype also allows one to check whether a game is stopping under fairness.
-%implemented a prototype tool named \textsf{SynthFairy} (available at \cite{SynthFairy})
-%and run it on two different sets of examples. %\footnote{Available at \cite{SynthFairy}}. 
-The tool takes as input a model describing the game in {\Prism} notation and returns as output 
-the optimal expected total reward  for a given  initial state as well as the synthesized optimal controller strategy (under fairness assumptions). 
-%The input models are specified using a language resembling {\Prism} notation \cite{DBLP:conf/cav/KwiatkowskaNP11}. 
-The experimental  evaluation shows that our approach can cope with non-trivial  case studies. For computing these values we set a relative error of at most $\varepsilon = 10^{-6}$.
+Para evaluar la viabilidad de nuestro enfoque, hemos ampliado sobre el model checker {\Prism}~\cite{DBLP:conf/cav/KwiatkowskaN0S20,DBLP:conf/cav/KwiatkowskaNP11} con un operador para calcular las recompensas esperadas de los juegos estocásticos terminantes bajo fairness. El prototipo de esta herramienta también permite verificar si un juego se detiene bajo fairness.
+%implementó una herramienta prototipo llamada \textsf{SynthFairy} (disponible en \cite{SynthFairy})
+% y ejecútelo en dos conjuntos diferentes de ejemplos. %\footnote{Disponible en \cite{SynthFairy}}.
+La herramienta toma como entrada un modelo que describe el juego en notación {\Prism} y devuelve como salida
+la recompensa total esperada óptima para un estado inicial dado, así como la estrategia de controlador óptima sintetizada (bajo supuestos de fairness sobre el ambiente).
+%Los modelos de entrada se especifican usando un lenguaje parecido a la notación {\Prism} \cite{DBLP:conf/cav/KwiatkowskaNP11}.
+La evaluación experimental muestra que nuestro enfoque puede hacer frente a estudios de casos no triviales. Para calcular estos valores establecemos un error relativo de como máximo $\varepsilon = 10^{-6}$.
 
 
 %We have considered variations of two examples:
 %For the model presented in Sec.~\ref{sec:mot_example}, the expected total reward when $\verb"P"=0.1$ and $\verb"Q"=0$ is $5.55$. Moreover, 
 %the non-trivial part of the synthesized strategy is illustrated with the black arrows in Fig.~\ref{fig:robot_game_grid}.
 
-\paragraph{Roborta vs. the Fair Light.}  Table~\ref{table:resultsRobot} shows the results of the example introduced in Sec.~\ref{sec:mot_example} 
-for multiple configurations. 
-We considered three variants of the case study: version A (the light does not fail), version B (the light can only fail when trying to signal a green light), and version C (the light can fail when trying to signal any kind of light). 
-We assumed that, when Roborta  fails,  she cannot move (this is beneficial to Roborta since she can re-collect the reward);
-when the light fails, the robot can freely move into any allowed direction. 
-The grid configuration (movement restrictions and rewards) are randomly generated.  For each setting, Table~\ref{table:resultsRobot} describes the results for three different scenarios generated starting at different seeds.  For the grid configuration shown in Sec.~\ref{sec:mot_example} with  parameters $P=0.1$ and $Q=0$, the tool derived the optimal strategy depicted in Fig.~\ref{fig:robot_game_grid} and reports an expected total reward of $5.55$. 
+Consideramos tres variantes del caso de estudio: versión A (la luz no falla), versión B (la luz solo puede fallar cuando intenta dar una luz verde) y versión C (la luz puede fallar cuando intenta señalar cualquier tipo de luz).
+Asumimos que, cuando Roborta falla, no puede moverse (esto es beneficioso para Roborta ya que puede recuperar la recompensa);
+cuando falla la luz, el robot puede moverse libremente en cualquier dirección permitida.
+La configuración de la matriz (restricciones de movimiento y recompensas) se genera aleatoriamente. Para cada configuración, la Tabla~\ref{table:resultsRobot} describe los resultados para tres escenarios diferentes generados a partir de semillas diferentes. Para la configuración de matriz que se muestra en Sección~\ref{sec:mot_example} con parámetros $P=0.1$ y $Q=0$, la herramienta derivó la estrategia óptima representada en la Figura~\ref{fig:robot_game_grid} e informa una recompensa total esperada de $5.55$.
 
 %We explain Table~\ref{table:resultsRobot} with an example.  Take the case of the grid $A \mid {60{\times}8} \mid \text{seed } 1$, with the robot fault probability being $0.1$, the optimal expected total reward is $26.66$ and the number of decisions made by the robot when both players play optimally is $2$.  We consider a decision as a choice resolution introduced when the yellow light is on on a cell without movement restrictions or if the light is off. We use this number to give us an idea that resolutions are not trivial, and to hint a different resolution for closely related instances.
 %Indeed, notice that for the case mentioned above, when the fault probability is set to $0.9$ (instead of $0.1$), the number of decisions changes to $0$. 
@@ -41,31 +39,31 @@ The grid configuration (movement restrictions and rewards) are randomly generate
 \centering
 \includegraphics[scale=0.60]{Figs/uav.eps}\hspace{1.5em}\mbox{}
 \vspace{-10mm}
-\caption{UAV Network for ISR missions adapted from \cite{DBLP:conf/iccps/FengWHT15}} \label{fig:uav_game_map}
+\caption{Red UAV para misiones ISR adaptado de \cite{DBLP:conf/iccps/FengWHT15}} \label{fig:uav_game_map}
 %\caption{A robot game on a $4 \times 4$ grid starting on location (0,0). Each location has an assigned positive reward. The sideway movement restrictions are depicted as white arrows on the bottom-right of each location. The best strategy for the robot when the light is yellow is shown in black arrows on the top-right of the locations without movement restrictions. The path taken by the robot to achieve the goal is highlighted in yellow} \label{fig:robot_game_grid}
 \end{wrapfigure}
 %
-\paragraph{Autonomous UAV vs. Human Operator.} We adapted the case study analyzed in  \cite{DBLP:conf/iccps/FengWHT15}. A remotely controlled Unmanned Aerial Vehicle (UAV) is used to perform intelligence, surveillance, and reconnaissance (ISR) missions over a road network. The UAV performs piloting functions autonomously (selecting a path to fly between \emph{waypoints}). The human operator (environment) controls the onboard sensor to capture imagery at a waypoint as well as the piloting functions on certain waypoints (called checkpoints). Note that an operator can continuously try to get a better image by making the UAV loiter around a certain waypoint, this may lead to an unfair behavior.
-%We assign rewards to a successful capture of an unvisited waypoint.
-Each successful capture from an unvisited waypoint grants a reward.
-% 
-Fig.~\ref{fig:uav_game_map} shows an example of road network consisting of six surveillance waypoints labeled $w_0,w_2,...,w_5$, the edges represent connecting paths, a red-dashed line means that the path is dangerous enough to make the UAV stop working with probability $1$, while on any other path, this probability is $S$. Checkpoints are depicted as pink nodes, therein the operator can still delegate the piloting task to the UAV with probability $D$. Each node is annotated with three possible rewards. For instance,  for $S=0.3$ and $D=0.5$ and the leftmost reward values in each triple, the synthesized strategy for the UAV tries to follow the optimal circuit $w_0,w_1,w_2,w_3,w_4,w_5$. While for  the middle and  rightmost reward values, the optimal circuits to follow are $w_0,w_5,w_0,w_1,w_2,w_3,w_4$ and $w_0,w_5,w_4,w_1,w_2,w_3$, respectively.   Table~\ref{table:resultsUAV} shows the results obtained for  this game for several randomly generated road networks.
+\paragraph{UAV autónomo vs. Operador humano.} Adaptamos el caso de estudio analizado en \cite{DBLP:conf/iccps/FengWHT15}. Se utiliza un vehículo aéreo no tripulado (UAV) controlado a distancia para realizar misiones de inteligencia, vigilancia y reconocimiento (ISR) en una red de carreteras. El UAV realiza funciones de pilotaje de forma autónoma (seleccionando una ruta para volar entre \emph{puntos de referencia}). El operador humano (entorno) controla el sensor a bordo para capturar imágenes en un punto de ruta, así como las funciones de pilotaje en ciertos puntos de ruta (llamados puntos de control). Tenga en cuenta que un operador puede tratar continuamente de obtener una mejor imagen haciendo que el UAV merodee alrededor de un determinado punto de referencia, lo que puede conducir a un comportamiento injusto.
+%Asignamos recompensas a una captura exitosa de un waypoint no visitado.
+Cada captura exitosa de un punto de referencia no visitado otorga una recompensa.
+%
+La Figura~\ref{fig:uav_game_map} muestra un ejemplo de red de carreteras que consta de seis puntos de referencia de vigilancia etiquetados $w_0,w_2,...,w_5$, los bordes representan rutas de conexión, una línea discontinua roja significa que la ruta es lo suficientemente peligrosa como para hacer que el UAV deje de funcionar con una probabilidad de $1$, mientras que en cualquier otro camino, esta probabilidad es de $S$. Los puntos de control se representan como nodos rosas, en los que el operador aún puede delegar la tarea de pilotaje al UAV con probabilidad $D$. Cada nodo está anotado con tres posibles recompensas. Por ejemplo, para $S=0.3$ y $D=0.5$ y los valores de recompensa más a la izquierda en cada tripla, la estrategia sintetizada para el UAV intenta seguir el circuito óptimo $w_0,w_1,w_2,w_3,w_4,w_5$. Mientras que para los valores de recompensa del medio y más a la derecha, los circuitos óptimos a seguir son $w_0,w_5,w_0,w_1,w_2,w_3,w_4$ y $w_0,w_5,w_4,w_1,w_2,w_3$, respectivamente. La Tabla~\ref{table:resultsUAV} muestra los resultados obtenidos para este juego para varias redes de carreteras generadas aleatoriamente.
 
-Tables~\ref{table:resultsRobot} and~\ref{table:resultsUAV} do not report the time taken to compute the results,   but in all cases the output was computed in less than 400 seconds.All the experiments were run on a MacBook Air with Intel Core i5 at 1.3 GHz and 4 Gb of RAM. %The tool and case studies are available in the tool repository.
+Las tablas~\ref{table:resultsRobot} y~\ref{table:resultsUAV} no informan el tiempo necesario para calcular los resultados, pero en todos los casos la salida se calculó en menos de 400 segundos. Todos los experimentos se realizaron en un MacBook Air con Intel Core i5 a 1,3 GHz y 4 Gb de RAM.%The tool and case studies are available in the tool repository.
 %\remarkPRD{Poner aqu'i un comentario sobre el desempe\~no de la herramienta respecto del tiempo}
 
 \begin{table}[tp]
   \centering\noindent%
   %\vspace{-0.5cm}
-  \caption{Results for Roborta vs. Light Game.  First column describes the grid size.  Second column indicates  the fault probability for the robot ($P$) and light ($Q$). 
-  The other columns describe the size of the model, the expected total reward for the optimal strategy, and the number of iterations performed, respectively,
-  for three different randomly generated grid configurations.}
+  \caption{Resultados del juego Roborta vs. la Luz Justa. La primera columna describe el tamaño de la matriz. La segunda columna indica la probabilidad de fallo del robot ($P$) y la luz ($Q$).
+  Las otras columnas describen el tamaño del modelo, la recompensa total esperada para la estrategia óptima y el número de iteraciones realizadas, respectivamente.
+  para tres configuraciones diferentes generadas aleatoriamente.}
   \label{table:resultsRobot}
   %\vspace{-0.8cm}
   \scalebox{0.9}{
     \begin{tabular}{|c|c|c|c|c|c|g|h|c|g|h|c|}
       \hline
-      \multirow{2}{*}{Version} & \multicolumn{2}{c|}{Fault prob.} & \multicolumn{3}{c|}{Size (States/Transitions)} & \multicolumn{3}{c|}{Opt.\ Expect.\ Total Rew.} & \multicolumn{3}{c|}{Iterations}\\ \hhline{|~|-|-|-|-|-|-|-|-|-|-|-|}
+      \multirow{2}{*}{Versión} & \multicolumn{2}{c|}{Prob.Falla} & \multicolumn{3}{c|}{Tamaño (Estados/Transiciones)} & \multicolumn{3}{c|}{Rec.\ Total.\ Esp. Opt.} & \multicolumn{3}{c|}{Iteraciones}\\ \hhline{|~|-|-|-|-|-|-|-|-|-|-|-|}
       & $P$ & $Q$ &  \cellcolor{white}s.\ 1 & \cellcolor{white}s.\ 2 & \cellcolor{white}s.\ 3 & \cellcolor{white}\makebox[3.4em][c]{s.\ 1} & \cellcolor{white}\makebox[3.4em][c]{s.\ 2} & \cellcolor{white}\makebox[3.4em][c]{s.\ 3} & \cellcolor{white}\makebox[1.8em][c]{s.\ 1} & \cellcolor{white}\makebox[1.8em][c]{s.\ 2} & \cellcolor{white}\makebox[1.8em][c]{s.\ 3}  \\  
       \hline
        \multirow{2}{3em}{\centering $A$ \\ $60{\times}8$}
@@ -109,14 +107,14 @@ Tables~\ref{table:resultsRobot} and~\ref{table:resultsUAV} do not report the tim
 \begin{table}[tp]
   \centering\noindent%
   %\vspace{-0.5cm}
-  \caption{Results for the UAV vs. Operator Game. First column describes the number of waypoints used.  Second column indicates probability of delegation ($D$), and the probability that the UAV stops working ($S$). 
-  The other columns show the size of the model, the expected total reward for the optimal strategy, and the number of iterations performed, respectively, for three different randomly generated roadmap configurations.}
+  \caption{Resultados del juego UAV vs. Operador. La primera columna describe el número de puntos de referencia utilizados. La segunda columna indica la probabilidad de delegación ($D$) y la probabilidad de que el UAV deje de funcionar ($S$).
+  Las otras columnas muestran el tamaño del modelo, la recompensa total esperada para la estrategia óptima y el número de iteraciones realizadas, respectivamente, para tres configuraciones diferentes de mapas de ruta generadas aleatoriamente.}
   \label{table:resultsUAV}
   %\vspace{-0.8cm}
   \scalebox{0.9}{
     \begin{tabular}{|c|c|c|c|c|c|g|h|c|g|h|c|}
       \hline
-      \multirow{2}{*}{Version} & \multicolumn{2}{c|}{Prob.} & \multicolumn{3}{c|}{Size(States/Transitions)} & \multicolumn{3}{c|}{Opt.\ Expect.\ Total Rew.} & \multicolumn{3}{c|}{Iterations} \\ \hhline{|~|-|-|-|-|-|-|-|-|-|-|-|}
+      \multirow{2}{*}{Versión} & \multicolumn{2}{c|}{Prob.} & \multicolumn{3}{c|}{Tamaño(Estados/Transiciones)} & \multicolumn{3}{c|}{Rec.\ Total.\ Esp. Opt.} & \multicolumn{3}{c|}{Iteraciones} \\ \hhline{|~|-|-|-|-|-|-|-|-|-|-|-|}
       & $D$ & $S$ &  \cellcolor{white}s.\ 1 & \cellcolor{white}s.\ 2 & \cellcolor{white}s.\ 3 & \cellcolor{white}\makebox[3.4em][c]{s.\ 1} & \cellcolor{white}\makebox[3.4em][c]{s.\ 2} & \cellcolor{white}\makebox[3.4em][c]{s.\ 3} & \cellcolor{white}\makebox[1.8em][c]{s.\ 1} & \cellcolor{white}\makebox[1.8em][c]{s.\ 2} & \cellcolor{white}\makebox[1.8em][c]{s.\ 3} \\  
       \hline
        \multirow{4}{3em}{\centering UAV \\ $6w.$}
