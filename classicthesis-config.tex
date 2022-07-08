@@ -1,18 +1,5 @@
-\usepackage[parts]{classicthesis} 
-
-%\usepackage[left=1.5in,right=1.5in,top=1.5in,bottom=1.5in]{geometry} %configure margins
-%\usepackage[left=3.65cm,right=3.65cm,bindingoffset=0.5cm]{geometry} %raul config
-
-%%Options: Sonny, Lenny, Glenn, Conny, Rejne, Bjarne, Bjornstrup
-%\usepackage[Bjarne]{fncychap}
-
+\usepackage[parts,pdfspacing]{classicthesis} 
 \usepackage[T1]{fontenc}
-% manual chapter style
-%\newcommand\mychapterNumber{\normalfont\fontfamily{pplj}\fontsize{35}{36}\selectfont}
-%\titleformat{\chapter}[block]%
-%  {\vspace*{-2cm}}{\color{halfgray}\mychapterNumber\thechapter}{1em}
-%  {\raggedright\spacedallcaps}[\normalsize\vspace*{.8\baselineskip}\color{halfgray}{\titlerule[2pt]}]%
-
 
 % General useful packages
 \usepackage[spanish, es-tabla, es-noquoting]{babel}
@@ -25,7 +12,6 @@
 \renewcommand{\ttdefault}{txtt}
 \usepackage{mathrsfs}
 \usepackage{stmaryrd}
-%\usepackage[hidelinks]{hyperref}
 \usepackage[shortlabels]{enumitem}
 \usepackage{proof}
 \usepackage{lscape}
@@ -34,7 +20,7 @@
 \usepackage[T1]{fontenc}
 \usepackage[colorinlistoftodos]{todonotes}
 
-
+\usepackage{rotating}
 \usepackage{microtype}
 \usepackage{url}
 \usepackage{hyperref}
@@ -46,13 +32,17 @@
 \usepackage[algoruled,vlined,linesnumbered]{algorithm2e}
 %\SetKwInOut{Input}{input}
 \usepackage{algorithmic}
+%\usepackage{algorithm}
+%\makeatletter
+%\renewcommand{\ALG@name}{Algoritmo}
+%\makeatother
 %\usepackage[title]{appendix}
 \usepackage{marginnote}
 
 %citations
 \usepackage[hyperpageref]{backref}
 \usepackage{cite}
-\renewcommand\citepunct{; }
+%\renewcommand\citepunct{; }
 
 %paragraph space
 \setlength{\parskip}{.2cm}%\baselineskip}
@@ -62,34 +52,35 @@
 
 % listings
 \usepackage{listings}
-%\definecolor{lightgray}{gray}{.60}
-%\definecolor{Lightgray}{gray}{.98}
-%\definecolor{bordegray}{gray}{.70}
-%\definecolor{gray}{gray}{.3}
+\definecolor{lightgray}{gray}{.60}
+\definecolor{Lightgray}{gray}{.98}
+\definecolor{bordegray}{gray}{.70}
+\definecolor{gray}{gray}{.3}
 
-% Hyperreferences
-%\hypersetup{%
+\hypersetup{%
     %draft,	% = no hyperlinking at all (useful in b/w printouts)
-%    colorlinks=true, linktocpage=true, pdfstartpage=3, pdfstartview=FitV,%
+    colorlinks=true, linktocpage=true, pdfstartpage=3, pdfstartview=FitV,%
     % uncomment the following line if you want to have black links (e.g., for printing)
     %colorlinks=false, linktocpage=false, pdfborder={0 0 0}, pdfstartpage=3, pdfstartview=FitV,% 
-%    breaklinks=true, pdfpagemode=UseNone, pageanchor=true, pdfpagemode=UseOutlines,%
-%    plainpages=false, bookmarksnumbered, bookmarksopen=true, bookmarksopenlevel=1,%
-%    hypertexnames=true, pdfhighlight=/O,%nesting=true,%frenchlinks,%
-%    urlcolor=webbrown, linkcolor=RoyalBlue, citecolor=gray!20!RoyalBlue %webgreen, %pagecolor=RoyalBlue,%
+    breaklinks=true, pdfpagemode=UseNone, pageanchor=true, pdfpagemode=UseOutlines,%
+    plainpages=false, bookmarksnumbered, bookmarksopen=true, bookmarksopenlevel=1,%
+    hypertexnames=true, pdfhighlight=/O,%nesting=true,%frenchlinks,%
+    urlcolor=webbrown, linkcolor=RoyalBlue, citecolor=gray!20!RoyalBlue %webgreen, %pagecolor=RoyalBlue,%
     %urlcolor=Black, linkcolor=Black, citecolor=Black, %pagecolor=Black,%
-%}
-
-
-%\usepackage{paralist}
+}
 
 \usepackage{wasysym}
 
 \usepackage{xcolor,colortbl}
-%\usetikzlibrary{positioning,shadows.blur}
-%\usetikzlibrary{arrows,automata}
 \usepackage{pifont}
 \usepackage{hhline}
 \usepackage{xspace}
+
+
+
+
+\usepackage[spanish]{cleveref}
+\usepackage{lmodern}
+\usepackage[utf8]{inputenc}
 
 \input{macros}

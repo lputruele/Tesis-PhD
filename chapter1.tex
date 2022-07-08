@@ -2,47 +2,72 @@
 \chapter{Introducci\'on}
 \label{cap:introduccion}
 
-a.    
-
+La investigación en sistemas distribuidos tolerantes a fallas tiene como objetivo hacer que estos sistemas sean más confiables a la hora de manejar fallas en entornos informáticos complejos. Además, la creciente dependencia de la sociedad de equipos bien diseñados y sistemas informáticos que funcionen correctamente
+condujo a una creciente demanda de sistemas confiables, sistemas con propiedades de confiabilidad cuantificables. La necesidad de
+dicha cuantificación es especialmente evidente en entornos de misión crítica como sistemas de control de vuelo o software para controlar plantas de energía nuclear. Hasta los primeros años de la década de 1990, el trabajo en computación tolerante a fallas
+se centró en tecnologías y aplicaciones específicas, lo que resultó en subdisciplinas aparentemente no relacionadas con terminologías y metodologías distintas.
+Desde entonces, se ha avanzado mucho al ver el área de una manera más
+manera abstracta y formal. Esto ha llevado a
+una comprensión más clara de los problemas inherentes y esenciales en el campo y
+muestra lo que se puede hacer para aprovechar la
+complejidad de los sistemas que contrarrestan
+fallas. Esta tesis adopta esta visión y se concentra en extender nociones de verificación de software tolerante a fallas utilizando conceptos que provienen de teoría de juegos.
 
 \section{Motivaci\'on y Objetivos}
 \label{sec:intro.objetivos}
 
-a. 
+La tolerancia a fallas es una característica importante del software crítico, y puede ser definida como la capacidad de un sistema para lidiar con eventos inesperados, que pueden ser causados por bugs de programación, interacciones con un ambiente poco cooperativo, mal funcionamiento de hardware, etcétera.
+
+Se pueden encontrar ejemplos de sistemas tolerantes a fallas en casi cualquier parte: protocolos de comunicación, circuitos de hardware, sistemas aviónicas, cripto-monedas, etcétera.
+
+Por lo tanto, el incremento en la relevancia del software crítico en la vida cotidiana ha llevado a que se renueve el interés en la verificación automática de propiedades de tolerancia a fallas. Sin embargo, una de las dificultades principales a la hora de razonar sobre estos tipos de propiedades se da en su naturaleza cuantitativa, lo cual vale incluso en sistemas no probabilistas.
+Un ejemplo simple se da con la introducción de redundancia en sistemas críticos. Esta es, sin lugar a dudas, una de las técnicas más utilizadas en tolerancia a fallas.
+En la práctica, se sabe que al añadir más redundancia en un sistema incrementa su fiabilidad. Medir este incremento de fiabilidad es un problema central a la hora de evaluar software tolerante a fallas. Por otro lado, no hay un método \emph{de-facto} para caracterizar formalmente propiedades tolerantes a fallas, y por ello se suelen codificar utilizando mecanismos \emph{ad-hoc} como parte del diseño general.
+
+La Teoría de Juegos \cite{MorgensternNeuman42} ofrece una teoría matemática elegante y profunda. 
+En las ultimas décadas, ha recibido gran atención de computólogos ya que tiene importantes aplicaciones en la verificación y síntesis de software. 
+La analogía es atractiva, la operación de un sistema bajo un ambiente no cooperativo (hardware defectuoso, agentes maliciosos, canales de comunicación poco confiables, etc.) puede ser modelada como un juego entre dos jugadores (el sistema y el ambiente), en el cual el sistema trata de alcanzar ciertos objetivos, mientras que el ambiente pretende prevenir que esto suceda. 
+Esta visión es particularmente útil para \emph{síntesis de controladores}, i.e., generación automática de políticas de toma de decisiones a partir de una especificación de alto nivel. 
+Por lo tanto, sintetizar un controlador consiste de computar las estrategias óptimas para un juego dado. Al mismo tiempo, la teoría de juegos permite desarrollar métricas que pueden ser útiles para razonar sobre el nivel de tolerancia a fallas de un sistema dado.
+En esta tesis nos enfocamos en juegos de dos jugadores, cero-suma, por turnos y de información perfecta con recompensas (no negativas)\cite{FilarV96}. 
 
 \subsubsection*{Los objetivos planteados son los siguientes}
 %Esto nos lleva a nuestros objetivos:
 
 \paragraph{A}
-a. 
+Desarrollar técnicas que permitan medir el grado de tolerancia a fallas exhibido por un sistema distribuido.
 
 \paragraph{B}
-b.
+Demostrar que dichas técnicas son correctas y factibles de implementar en la práctica.
 
 \paragraph{C}
-c.
+Implementar dichas técnicas en herramientas de software de código abierto que puedan ayudar a un ingeniero a diseñar sistemas tolerantes a fallas y evaluar su nivel de tolerancia.
 
 
 \section{Contribuciones}
 \label{sec:intro.contribuciones}
 
 %Se pueden mencionar papers publicados
-
-a:
+%El trabajo de esta tesis dio fruto a tres artículos en conferencias de primer nivel \cite{CastroDDP18b} \cite{PutrueleDCD22} \cite{?}.
+%A su vez se derivan de aquí múltiples trabajos que aún están bajo revisión y que no se presentan en esta tesis.
+A continuación se enumeran las contribuciones de esta tesis:
 
 \begin{enumerate}
-	\item a.
+	\item Presentamos una noción de distancia de masking-tolerancia a fallas entre sistemas bajo la caracterización a través de relaciones de simulación y representaciones de juegos con objetivos cuantitativos. 
+    Utilizando esta distancia, es posible medir la tolerancia de una implementación dada y compararla con otras para así seleccionar la más adecuada \cite{CastroDDP18b}.
 	
-	\item b.
+	\item Desarrollamos una herramienta automática diseñada para medir el nivel de tolerancia a fallas entre componentes de software, descritos por medio de un lenguaje de comandos con guarda. La herramienta se enfoca en medir componentes masking-tolerantes a fallas, es decir, programas que enmascaran fallas de tal manera que no puedan ser observadas por el ambiente\cite{PutrueleDCD22}. 
 
-    \item c.
-
-    \item d. 
+    \item Investigamos las propiedades de los juegos estocásticos con payoff de recompensa total bajo la suposición de un entorno fair. Bajo este escenario, mostramos que se preserva la determinación y que los jugadores poseen estrategias óptimas sin memoria y deterministas, además, mostramos que el valor del juego puede  ser calculado en tiempo polinomial. Por último, validamos los resultados con una evaluación experimental\cite{?}.  %
  
 \end{enumerate}
 
-\section{Organizaci\'on}
+\section{Organización}
 \label{sec:intro.organizacion}
-a.
+El resto de la tesis está estructurada como se detalla a continuación. 
+En el capítulo \ref{cap:preliminares}, se introducen conceptos preliminares necesarios a lo largo de la tesis.
+Presentamos en el capítulo \ref{cap:maskingMeasure} la noción de distancia de masking entre sistemas tolerantes a fallas, y luego se introduce una herramienta de software de código abierto que implementa estas nociones en el capítulo \ref{cap:maskD}.
+En el capítulo \ref{cap:fairAdversaries} describimos resultados sobre juegos estocásticos que asumen un entorno fair y evaluamos los mismos en una herramienta prototipo.
+Finalmente, discutimos conclusiones y direcciones para trabajo futuro en \ref{cap:conclusiones}.
 
 

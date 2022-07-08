@@ -1,7 +1,7 @@
 \chapter{Jugando contra adversarios justos en juegos estocásticos}
 \label{cap:fairAdversaries}
 
-En este capitulo investigamos juegos estocásticos suma-cero por turnos de dos jugadores en donde un jugador tiene como objetivo maximizar el monto de recompensas obtenidas durante una jugada, mientras que el otro jugador intenta minimizar tal valor. Particularmente nos enfocamos en juegos donde el minimizador juega de forma justa. Creemos que este tipo de juegos poseen aplicaciones interesantes en verificación de software, donde el maximizador juega el rol de un sistema que intenta maximizar la cantidad de "metas" logradas, y el minimizador representa el comportamiento de un ambiente no cooperativo pero justo.
+En este capítulo investigamos juegos estocásticos suma-cero por turnos de dos jugadores en donde un jugador tiene como objetivo maximizar el monto de recompensas obtenidas durante una jugada, mientras que el otro jugador intenta minimizar tal valor. Particularmente nos enfocamos en juegos donde el minimizador juega de forma justa. Creemos que este tipo de juegos poseen aplicaciones interesantes en verificación de software, donde el maximizador juega el rol de un sistema que intenta maximizar la cantidad de "metas" logradas, y el minimizador representa el comportamiento de un ambiente no cooperativo pero justo.
 %%
 Normalmente, para estudiar propiedades de recompensa total, se requiere que los juegos sean terminantes (i.e., alcanzan un estado terminal con probabilidad 1). 
 Relajaremos esta propiedad para requerir que el juego sea terminante solo cuando el minimizador juega de forma justa. La suposición de justicia (fairness) sobre el ambiente ha sido útil en las ciencias de la computación, particularmente al razonar sobre propiedades de liveness y ambientes falibles.
@@ -14,7 +14,7 @@ Probamos que estos juegos son determinantes, i.e., cada estado del juego tiene u
 	Esta visión es particularmente útil para \emph{síntesis de controladores}, i.e., generación automática de políticas de toma de decisiones a partir de una especificación de alto nivel. 
 	Por lo tanto, sintetizar un controlador consiste de computar las estrategias óptimas para un juego dado.
 		
-	Nos enfocamos en juegos estocásticos de dos jugadores, cero-suma, por turnos y de información perfecta con recompensas (no negativas)\cite{FilarV96}. 
+	Nos enfocamos en juegos estocásticos de dos jugadores, suma-cero, por turnos y de información perfecta con recompensas (no negativas)\cite{FilarV96}. 
 	Intuitivamente, estos juegos son jugados en un grafo por dos jugadores que mueven un token por turnos. Algunos vértices son probabilistas, en el sentido que, si un token está puesto en un vértice probabilista, entonces el próximo vértice a donde se mueve el token se selecciona aleatoriamente. Además, los jugadores deben seleccionar sus movimientos utilizando estrategias. Se asocia una recompensa a cada vértice, el cuál se asume que no es negativo en este trabajo. El objetivo del Jugador $1$ es maximizar la cantidad esperada de recompensa recolectada a lo largo del juego, mientras que el Jugador $2$ intentará minimizar este valor.
 	
 	Esto es lo que~\cite{SvorenovaKwiatkowska16} denomina \emph{objetivo de recompensa total}.
@@ -54,7 +54,7 @@ Es importante señalar que la mayoría de las propiedades discutidas en este cap
 Sin embargo, estas condiciones abarcan una gran clase de escenarios, donde el sistema pretende maximizar la recompensa total recolectada y el entorno tiene el objetivo opuesto.
 
 %\paragraph{Contributions.} 
-En resumen, las contribuciones de este artículo son las siguientes: (1) introducimos la noción de juego estocástico terminante bajo fairness, una generalización de los juegos terminantes que tiene en cuenta entornos justos; (2) probamos que se puede decidir en tiempo polinomial si un juego es terminante bajo fairness; (3) mostramos que este tipo de juegos están determinados y que ambos jugadores poseen estrategias estacionarias óptimas, que se pueden calcular usando las ecuaciones de Bellman; y (4) implementamos estas ideas en una herramienta prototipo integrada en el conjunto de herramientas {\PrismGames}~\cite{DBLP:conf/cav/KwiatkowskaN0S20}, que usamos para evaluar la viabilidad de nuestro enfoque a través de casos de estudio prácticos.
+En resumen, las contribuciones de este capítulo son las siguientes: (1) introducimos la noción de juego estocástico terminante bajo fairness, una generalización de los juegos terminantes que tiene en cuenta entornos justos; (2) probamos que se puede decidir en tiempo polinomial si un juego es terminante bajo fairness; (3) mostramos que este tipo de juegos están determinados y que ambos jugadores poseen estrategias estacionarias óptimas, que se pueden calcular usando las ecuaciones de Bellman; y (4) implementamos estas ideas en una herramienta prototipo integrada en el conjunto de herramientas {\PrismGames}~\cite{DBLP:conf/cav/KwiatkowskaN0S20}, que usamos para evaluar la viabilidad de nuestro enfoque a través de casos de estudio prácticos.
 
 %\paragraph{Structure.}
 
@@ -217,7 +217,7 @@ También tenga en cuenta que hay juegos que no son terminantes, pero se vuelven 
 %\remarkPRD{Considerar agregar un ejemplo con \textbf{Roborta}}
 
 %\subsection{Checking the stopping criteria}
-\paragraph{Verificación de criterios de parada.}
+\subsection{Verificación de criterios de parada.}
 
 Esta sección está dedicada a la
 caracterización efectiva de los juegos que se detienen bajo fairness.
@@ -356,9 +356,9 @@ Por el Lema \ref{lemma:memoryless-strat}, podemos asumir de forma segura que $\s
 Por lo tanto, al fijar $\strat{1}'$, obtenemos un proceso de decisión de Markov (finito) denotado por $\StochG^{\strat{1}'}$.
 Por asunción, tenemos que
 $\inf_{\strat{2} \in \FairStrats{2}} \MDPProb{\strat{2}}_{\StochG^{\strat{1}'},v}(\Diamond T) < 1 $. Adicionalmente, por el Teorema 10.133 en \cite{BaierK08}, tenemos que $\inf_{ \strat{2} \in \FairStrats{2}}\MDPProb{\strat{2}}_{\StochG^{\strat{1}'},v}(\Diamond T) = 1 - \sup_{\strat{2} \in \FairStrats{2}} \MDPProb{\strat{2}}_{\StochG^{\strat{1}'},v}(\neg T \U U)$, donde $T$ es el conjunto de estados terminales,  $\neg T$ es su complemento, y
-$U = \bigcup \{ V' \mid (V', \delta') \in \EndComp(\StochG^{\strat{1}'}) \text{ and }  T \cap V' = \emptyset\}$.
+$U = \bigcup \{ V' \mid (V', \delta') \in \EndComp(\StochG^{\strat{1}'}) \text{ y }  T \cap V' = \emptyset\}$.
 %Furthermore, in \cite{BaierK08} it is shown how we can define a fair strategy that maximizes the probabilities. 
-Sea $\strat{2}''$ ls estrategia justa que maximiza el valor de $\MDPProb{\strat{2}''}_{\StochG^{\strat{1}'},v}(\neg T \U U)$, el cual existe como se ha demostrado en la prueba del Teorema 10.133 en \cite{BaierK08}.
+Sea $\strat{2}''$ la estrategia justa que maximiza el valor de $\MDPProb{\strat{2}''}_{\StochG^{\strat{1}'},v}(\neg T \U U)$, el cual existe como se ha demostrado en la prueba del Teorema 10.133 en \cite{BaierK08}.
 Entonces tenemos que $\MDPProb{\strat{2}''}_{\StochG^{\strat{1}'},v}(\neg T \U U) > 0$ y por lo tanto existe
 un camino $v_0 v_1 \dots v_n$ con probabilidad positiva tal que $v_i \notin T$ y $v_n$ pertenece a un componente final $\EC{C} = (V'', \delta'')$
 tal que $T \cap V'' = \emptyset$. Como $\strat{2}''$ es justa, por nuestra definición de estrategia justa, el componente final $\EC{C}$ contiene todas las transiciones en $\StochG^{\strat{1}'}$ cuando se lo restringe a $V''$.
@@ -419,8 +419,8 @@ estándar, como se muestra en la siguiente definición:
   %% \AFairpre(C) \ = \ {}&\{ v \in V_2\cup V_\Probabilistic \mid \delta(v,C)>0\} \\
   %%                      &\cup \ \{ v \in  V_1 \mid \forall v' \in V : \delta(v,v') > 0 \Rightarrow v' \in C \}
   \EFairpre(C) = {}&\{ v \in V \mid \delta(v,C) > 0\} \\
-  \AFairpre(C) = {}&\{ v \in V_2{\cup} V_\Probabilistic \mid \delta(v,C)>0\} 
-                       \cup \{ v \in  V_1 \mid \forall v' {\in} V : \delta(v,v') > 0 \Rightarrow v' {\in} C \}
+  \AFairpre(C) = {}&\{ v \in V_2{\cup} V_\Probabilistic \mid \delta(v,C)>0\} \\ 
+                       &\cup \{ v \in  V_1 \mid \forall v' {\in} V : \delta(v,v') > 0 \Rightarrow v' {\in} C \}
 \end{align*}
 %% \remarkPC{Esta parte confunde a los reviewers, no entiende para que es necesaria dada que ya trnasformandolo a un MDP podemos usar teoria de MDPs}
 Como de costumbre, consideramos las clausuras transitivas de estos operadores, denotados $\EFairpre^*$ y $\AFairpre^*$, respectivamente.
@@ -490,7 +490,7 @@ Como de costumbre, consideramos las clausuras transitivas de estos operadores, d
 %	One main property in game theory is determinacy. Intuitively, if a game is determined each vertex has a value for the players. Another intuitive reading of determinacy is that the prior knowledge of the opponent's strategy gives us no advantage. 
 	
 %\subsection{Determinacy of Stopping Games under Fairness}
-\paragraph{Determinación de Juegos Terminantes bajo Fairness.}
+\subsection{Determinación de Juegos Terminantes bajo Fairness.}
 %	As briefly mentioned in the introduction, the determinacy of a large class of games was established by  Martin in \cite{Martin98}, in particular, the determinacy of stochastic games with payoff functions that are Borel and bounded follows from Martin's results. The objective  function $\Rewards$ is unbounded, so Martin's theorems cannot be applied to these kinds of functions. In \cite{FilarV96}, the determinacy of stopping stochastic games with total rewards objective functions is proven for stopping games, but note that here we restrict the class of strategies that Player $2$ can use, and thus the value of the game  may change. In the following we prove that this restriction does not affect the determinacy of the  games.
 
 %As briefly mentioned in the introduction, t
@@ -501,7 +501,23 @@ En \cite{PatekBertsekas99} los autores clasifican las estrategias del jugador $2
 %\remarkPC{Quizas estos comentarios puedan ir en related work, sino podríamos agregar algo the shortest stochastic games.}\remarkPRD{A mi me parece que est\'a bien que se diga aqu\'i aunque se repita en el related work}
 %
 A continuación demostramos que restringir a jugadas justas no afecta la determinación de los juegos.
+%ADD ROADMAP TO PROOFS
+\begin{figure}
+  \centering
+  \includegraphics[scale=0.5]{Figs/roadmap.pdf}
+  \caption{Una guía para la prueba de los teoremas~\ref{th:reduce-to-memoryless} y~\ref{th:game-determinacy}}\label{fig:roadmap}
+\end{figure}
 
+
+La Figura~\ref{fig:roadmap} muestra las dependencias de los lemas que eventualmente llevan a nuestros resultados principales, específicamente, el Teorema~\ref{th:reduce-to-memoryless}, el cual establece que el problema general queda delimitado a estrategias deterministas sin memoria, y el Teorema~\ref{th:game-determinacy}, el cual establece la determinación y la corrección de la solución algorítmica a través de las ecuaciones de Bellman-
+Para demostrar el Teorema~\ref{th:reduce-to-memoryless} utilizamos la noción intermedia de estrategias \emph{semi-Markovianas} \cite{FilarV96} y un primer paso para esta reducción se presenta en el Lema~~\ref{lm:semmimarkov2}.
+Los Lemas~\ref{lemma:bound-prob-stationary-strats}
+y~\ref{lm:games-are-bounded} aseguran las características transitorias de los problemas que paran bajo fairness.  Estos lemas son esenciales para probar que cada recompensa total posible tiene solución
+(Lema~\ref{lm:memoryless-strat-p2-bounded-expectation}).  Ya acercándonos al Teorema~\ref{th:reduce-to-memoryless},
+El Lema~\ref{lm:infima-in-dmf} establece que siempre existe una estrategia minimizadora justa que es estacionaria y determinista, y
+el Lema~\ref{lm:semimarkov-to-detmemoryless} ayuda a reducir el problema del dominio de las estrategias semi-Markovianas al dominio de las estrategias sin memoria deterministas.  Utilizando el Teorema~\ref{th:reduce-to-memoryless}
+y la Proposición~\ref{pn:continuity}, la cual establece que las ecuaciones de Bellman se comportan bien en el retículo de soluciones,
+El Teorema~\ref{th:game-determinacy} finalmente queda demostrado.
 La noción de estrategias \emph{semi-Markov} \cite{FilarV96} será importante para los teoremas de esta sección. Intuitivamente, una estrategia semi-Markov solo tiene en cuenta la longitud de una jugada, el estado inicial y el estado actual para seleccionar el siguiente paso en la jugada.
 %In some sense, it possesses a very limited memory, a counter.
         
@@ -515,7 +531,7 @@ Observemos que, al fijar un estado inicial $v$, una estrategia semi-Markov $\str
 
 El conjunto de todas las estrategias semi-Markov (resp. semi-Markov justas) para el jugador $i$ se denomina $\SemiMarkovStrats{i}$ (resp. $\SemiMarkovFairStrats{i}$). La importancia de las estrategias semi-Markov radica en el hecho de que, cuando el jugador $2$ juega una estrategia semi-Markov, la estrategia de cualquier jugador $1$ puede ser imitada por una estrategia semi-Markov como se establece en el siguiente teorema.
 
-\begin{theorem}\label{th:semmimarkov2}
+\begin{lemma}\label{lm:semmimarkov2}
   Sea $\StochG$ un juego estocástico bajo fairness,  y sea
   $\strat{2} \in \SemiMarkovFairStrats{2}$ una estrategia semi-Markov
   justa. Entonces, para toda $\strat{1} \in \Strategies{1}$, existe una estrategia
@@ -523,7 +539,7 @@ El conjunto de todas las estrategias semi-Markov (resp. semi-Markov justas) para
   tal que
   $\Expect{\strat{1}}{\strat{2}}_{\StochG, v}[\Rewards] =
   \Expect{\starredstrat{1}}{\strat{2}}_{\StochG, v}[\Rewards]$.
-\end{theorem}
+\end{lemma}
 %
 \iffalse
 \begin{proof}[Sketch]
@@ -571,7 +587,7 @@ El conjunto de todas las estrategias semi-Markov (resp. semi-Markov justas) para
   \Expect{\strat{1}}{\strat{2}}_{\StochG,v}[\Rewards]   &  = \sum^\infty_{N=0} \sum_{\hat{\omega} \in V^{N+1}} \Prob{\strat{1}}{\strat{2}}_{\StochG,v}(\hat{\omega})\reward(\hat{\omega}_N)
    = \sum^\infty_{N=0} \sum_{v' \in V} \Prob{\strat{1}}{\strat{2}}_{\StochG,v}(\Diamond^N v')\reward(v') \\
   & =  \sum^\infty_{N=0} \sum_{v' \in V} \Prob{\starredstrat{1}}{\strat{2}}_{\StochG,v}(\Diamond^N v')\reward(v') 
-   = \Expect{\starredstrat{1}}{\strat{2}}_{\StochG,v}[\Rewards] \tag*{\qed}
+   = \Expect{\starredstrat{1}}{\strat{2}}_{\StochG,v}[\Rewards] \tag*{\qedhere}
   \end{align*}
 
 %\qed
@@ -789,7 +805,7 @@ visto como un \emph{juego transitorio} de un solo jugador (como se define en
   \qedhere
 \end{proof}
 
-\begin{theorem}\label{th:games-are-bounded}
+\begin{lemma}\label{lm:games-are-bounded}
   Sea $\StochG$ un juego estocástico que es terminante bajo fairness
   y sea $T$ el conjunto de estados terminales. Adicionalmente, sea
   $\strat{1} \in \Strategies{1}$ una estrategia para el Jugador $1$ y
@@ -797,7 +813,7 @@ visto como un \emph{juego transitorio} de un solo jugador (como se define en
   %\[
   $\sum^\infty_{N=0} \sum_{\hat{\omega} \in v(V \setminus T)^N} \Prob{\strat{1}}{\strat{2}}_{\StochG,v}(\hat{\omega}) < \infty$.
   %\]
-\end{theorem}
+\end{lemma}
 
 \begin{proof}
   En lugar de realizar las reducciones apropiadas para aplicar el Teorema
@@ -832,7 +848,7 @@ visto como un \emph{juego transitorio} de un solo jugador (como se define en
   Como $\mu \Gamma'(v_n)$ es el valor óptimo para un vértice dado $v_{n}$ tenemos que:
  % \remarkPRD{para que esto sea cierto me parece que se necesita que la primera l\'inea en la definici\'on de $\Gamma'$ sea $1+\sum_{v' \in \post(v)} \delta^{\strat{2}}(v,v')  f(v')$}
   %
-  \begin{equation}\label{eq:th:games-are-bounded-eq1}
+  \begin{equation}\label{eq:lm:games-are-bounded-eq1}
     \mu \Gamma'(v_n) \geq 1 + \sum_{v_{n+1} \in \post(v_n)} \delta^{\strat{1}^n, \strat{2}}(v_n, v_{n+1}) \mu \Gamma'(v_{n+1})
   \end{equation}
   %
@@ -841,13 +857,13 @@ visto como un \emph{juego transitorio} de un solo jugador (como se define en
   %
   Tomemos cualquier secuencia $\hat{\omega} = v_0 \dots v_n$ con
   $\hat{\omega}_n = v_n$ y multipliquemos
-  (\ref{eq:th:games-are-bounded-eq1}) por
+  (\ref{eq:lm:games-are-bounded-eq1}) por
   $\prod^{n-1}_{i=0} \delta^{\strat{1}^i, \strat{2}}(\hat{\omega}_i, \hat{\omega}_{i+1})$
   en ambos lados. Esto nos da
   %
   \begin{align}
     \prod^{n-1}_{i=0} \delta^{\strat{1}^i, \strat{2}}(\hat{\omega}_i, \hat{\omega}_{i+1}) \mu \Gamma'(\hat{\omega}_n)  \hspace{-6.5em}& \notag\\
-    \geq \ & \prod^{n-1}_{i=0} \delta^{\strat{1}^i, \strat{2}}(\hat{\omega}_i, \hat{\omega}_{i+1}) \label{eq:th:games-are-bounded-eq2} \\
+    \geq \ & \prod^{n-1}_{i=0} \delta^{\strat{1}^i, \strat{2}}(\hat{\omega}_i, \hat{\omega}_{i+1}) \label{eq:lm:games-are-bounded-eq2} \\
     & + \ \prod^{n-1}_{i=0} \delta^{\strat{1}^i, \strat{2}}(\hat{\omega}_i, \hat{\omega}_{i+1})\sum_{v_{n+1} \in \post(v_n)} \delta^{\strat{1}^n, \strat{2}}(v_n, v_{n+1}) \mu \Gamma'(v_{n+1}) \notag
   \end{align}
   %
@@ -856,44 +872,44 @@ visto como un \emph{juego transitorio} de un solo jugador (como se define en
   para el caso en que $n=0$.
   
   Considerando todas las secuencias de longitud $n+1$ en $v(V \setminus T)^n$,
-  a partir de (\ref{eq:th:games-are-bounded-eq2}), y reescribiendo la última linea de la desigualdad, obtenemos
+  a partir de (\ref{eq:lm:games-are-bounded-eq2}), y reescribiendo la última linea de la desigualdad, obtenemos
   %
   \begin{align}
     \sum_{\hat{\omega} \in v(V \setminus T)^n}\prod^{n-1}_{i=0} \delta^{\strat{1}^i, \strat{2}}(\hat{\omega}_i, \hat{\omega}_{i+1}) \mu \Gamma'(\hat{\omega}_n)  \hspace{-5.5em}& \notag\\
-    \geq \ & \sum_{\hat{\omega} \in v(V \setminus T)^n}\prod^{n-1}_{i=0} \delta^{\strat{1}^i, \strat{2}}(\hat{\omega}_i, \hat{\omega}_{i+1}) \label{eq:th:games-are-bounded-eq3}\\
+    \geq \ & \sum_{\hat{\omega} \in v(V \setminus T)^n}\prod^{n-1}_{i=0} \delta^{\strat{1}^i, \strat{2}}(\hat{\omega}_i, \hat{\omega}_{i+1}) \label{eq:lm:games-are-bounded-eq3}\\
     & + \ \sum_{\hat{\omega} \in v(V \setminus T)^{n+1}}(\prod^{n}_{i=0} \delta^{\strat{1}^i, \strat{2}}(\hat{\omega}_i, \hat{\omega}_{i+1}) \mu \Gamma'(\hat{\omega}_{n+1})) \notag
   \end{align}
   %
   Sumando todas las posibles secuencias hasta $N$ obtenemos
   \begin{align}
     \sum^{N}_{n=0}\sum_{\hat{\omega} \in v(V \setminus T)^n}\prod^{n-1}_{i=0} \delta^{\strat{1}^i, \strat{2}}(\hat{\omega}_i, \hat{\omega}_{i+1}) \mu \Gamma'(\hat{\omega}_n)   \hspace{-6.5em}& \notag\\
-    \geq \ & \sum^{N}_{n=0} \sum_{\hat{\omega} \in v(V \setminus T)^n}\prod^{n-1}_{i=0} \delta^{\strat{1}^i, \strat{2}}(\hat{\omega}_i, \hat{\omega}_{i+1}) \label{eq:th:games-are-bounded-eq4} \\
+    \geq \ & \sum^{N}_{n=0} \sum_{\hat{\omega} \in v(V \setminus T)^n}\prod^{n-1}_{i=0} \delta^{\strat{1}^i, \strat{2}}(\hat{\omega}_i, \hat{\omega}_{i+1}) \label{eq:lm:games-are-bounded-eq4} \\
     & + \ \sum^{N}_{n=0} \sum_{\hat{\omega} \in v(V \setminus T)^{n+1}}(\prod^{n}_{i=0} \delta^{\strat{1}^i, \strat{2}}(\hat{\omega}_i, \hat{\omega}_{i+1}) \mu \Gamma'(\hat{\omega}_{n+1})) \notag
   \end{align}
   %
-  (\ref{eq:th:games-are-bounded-eq4}) puede ser reescrito equivalentemente como
+  (\ref{eq:lm:games-are-bounded-eq4}) puede ser reescrito equivalentemente como
   \begin{align}
     \sum^{N}_{n=0}\sum_{\hat{\omega} \in v(V \setminus T)^n}\prod^{n-1}_{i=0} \delta^{\strat{1}^i, \strat{2}}(\hat{\omega}_i, \hat{\omega}_{i+1}) \mu \Gamma'(\hat{\omega}_n)  \hspace{-6.5em}& \notag\\
-    \geq \ & \sum^{N}_{n=0} \sum_{\hat{\omega} \in v(V \setminus T)^n}\prod^{n-1}_{i=0} \delta^{\strat{1}^i, \strat{2}}(\hat{\omega}_i, \hat{\omega}_{i+1}) \label{eq:th:games-are-bounded-eq5}\\
+    \geq \ & \sum^{N}_{n=0} \sum_{\hat{\omega} \in v(V \setminus T)^n}\prod^{n-1}_{i=0} \delta^{\strat{1}^i, \strat{2}}(\hat{\omega}_i, \hat{\omega}_{i+1}) \label{eq:lm:games-are-bounded-eq5}\\
     & + \ \sum^{N+1}_{n=1} \sum_{\hat{\omega} \in v(V \setminus T)^{n}}(\prod^{n-1}_{i=0} \delta^{\strat{1}^i, \strat{2}}(\hat{\omega}_i, \hat{\omega}_{i+1}) \mu \Gamma'(\hat{\omega}_{n})) \notag
   \end{align}
   %
   Al sustraer
   $\sum^{N+1}_{n=1} \sum_{\hat{\omega} \in v(V \setminus T)^{n}}(\prod^{n-1}_{i=0} \delta^{\strat{1}^i, \strat{2}}(\hat{\omega}_i, \hat{\omega}_{i+1}) \mu \Gamma' (v_{n}))$
   de ambos lados de la desigualdad
-  (\ref{eq:th:games-are-bounded-eq5}), obtenemos
+  (\ref{eq:lm:games-are-bounded-eq5}), obtenemos
   %
   \begin{align}
-    \label{eq:th:games-are-bounded-eq6}
+    \label{eq:lm:games-are-bounded-eq6}
     \mu \Gamma'(v)  - \sum_{\hat{\omega} \in v(V \setminus T)^{N+1}}\prod^{N}_{i=0} \delta^{\strat{1}^i, \strat{2}}(\hat{\omega}_i,\hat{\omega}_{i+1}) \mu \Gamma'(\hat{\omega}_{N+1})  \hspace{-6.5em}& \\
     \geq \ & \sum^{N}_{n=0} \sum_{\hat{\omega} \in v(V \setminus T)^n}\prod^{n-1}_{i=0} \delta^{\strat{1}^i, \strat{2}}(\hat{\omega}_i, \hat{\omega}_{i+1}) \notag
   \end{align}
   %
   Aplicando límites a ambos lados de la desigualdad
-  (\ref{eq:th:games-are-bounded-eq6}) obtenemos
+  (\ref{eq:lm:games-are-bounded-eq6}) obtenemos
   %
   \begin{align}
-    \label{eq:th:games-are-bounded-eq7}
+    \label{eq:lm:games-are-bounded-eq7}
     \mu \Gamma(v)  - \lim_{N \to \infty} \sum_{\hat{\omega} \in v(V \setminus T)^{N+1}}\prod^{N}_{i=0} \delta^{\strat{1}^i, \strat{2}}(\hat{\omega}_i,\hat{\omega}_{i+1}) \mu \Gamma'(\hat{\omega}_{N+1})  \hspace{-8.5em}& \\
     \geq \ & \lim_{N \to \infty} \sum^{N}_{n=0} \sum_{\hat{\omega} \in v(V \setminus T)^n}\prod^{n-1}_{i=0} \delta^{\strat{1}^i, \strat{2}}(\hat{\omega}_i, \hat{\omega}_{i+1}) \notag
   \end{align}
@@ -905,7 +921,7 @@ visto como un \emph{juego transitorio} de un solo jugador (como se define en
   \]
   %
   Por lo tanto, el término derecho de la desigualdad
-  (\ref{eq:th:games-are-bounded-eq7}) es un número finito.  Esto significa que
+  (\ref{eq:lm:games-are-bounded-eq7}) es un número finito.  Esto significa que
   para toda secuencia de estrategias sin memoria
   $\strat{1}^0,\strat{1}^1, \dots$ obtenemos
   %
@@ -979,13 +995,13 @@ visto como un \emph{juego transitorio} de un solo jugador (como se define en
 
 
 
-Utilizando el teorema anterior, haciendo algunos cálculos medianamente simples nos lleva al hecho de que el valor del juego de recompensa total acumulada esta bien definido para cualquier estrategia de los jugadores.
+Utilizando el lema anterior, haciendo algunos cálculos medianamente simples nos lleva al hecho de que el valor del juego de recompensa total acumulada esta bien definido para cualquier estrategia de los jugadores.
 %
 Consecuentemente, el valor del juego esta acotado por arriba para cualquier estrategia del Jugador $1$.
 %
-Esto se establece en el siguiente teorema.
+Esto se establece en el siguiente lema.
 
-\begin{theorem}\label{th:memoryless-strat-p2-bounded-expectation}
+\begin{lemma}\label{lm:memoryless-strat-p2-bounded-expectation}
   Sea $\StochG= (V, (V_1, V_2, V_\Probabilistic), \delta, \reward)$ un
   juego estocástico que es terminante bajo fairness, y sea
   $\strat{1} \in \Strategies{1}$ una estrategia para el Jugador $1$.
@@ -996,7 +1012,7 @@ Esto se establece en el siguiente teorema.
   %
   Además, para todo vértice $v \in V$,
   $\inf_{\strat{2} \in \FairStrats{2}} \Expect{\strat{1}}{\strat{2}}_{\StochG,v}[\Rewards] < \infty$.
-\end{theorem}
+\end{lemma}
 
 \begin{proof}
   Tomemos $M = \max \{r(v) \mid v \in V\}$.  Este numero esta bien definido ya que
@@ -1007,41 +1023,41 @@ Esto se establece en el siguiente teorema.
   está dado por
   %
   \begin{align}	
-    \label{th:memoryless-strat-p2-bounded-expectation-eq1-l0}
+    \label{lm:memoryless-strat-p2-bounded-expectation-eq1-l0}
     \Expect{\strat{1}}{\strat{2}}_{\StochG,v}[\Rewards]
     & = \sum^{\infty}_{N=0} \sum_{\hat{\omega} \in V^{N+1}} \Prob{\strat{1}}{\strat{2}}_{\StochG,v}(\hat{\omega})\reward(\hat{\omega}_N) \\
-    \label{th:memoryless-strat-p2-bounded-expectation-eq1-l1}	
+    \label{lm:memoryless-strat-p2-bounded-expectation-eq1-l1}	
     & = \sum^{\infty}_{N=0} \ \ \sum_{\hat{\omega} \in (V^{N+1} \cap (V \setminus T)^*T)} \Prob{\strat{1}}{\strat{2}}_{\StochG,v}(\hat{\omega})  \reward(\hat{\omega}_N) \ \ + \notag\\
     &\hspace*{4em} \sum_{\hat{\omega} \in (V^{N+1} \cap (V \setminus T)^*)} \Prob{\strat{1}}{\strat{2}}_{\StochG,v}(\hat{\omega}) \reward(\hat{\omega}_N)   \\
-    \label{th:memoryless-strat-p2-bounded-expectation-eq1-l2}
+    \label{lm:memoryless-strat-p2-bounded-expectation-eq1-l2}
     & =  \sum^{\infty}_{N=0}  (\sum_{\hat{\omega} \in V^{N+1} \cap (V \setminus T)^*} \Prob{\strat{1}}{\strat{2}}_{\StochG,v}(\hat{\omega}) \reward(\hat{\omega}_N) ) \\
-    \label{th:memoryless-strat-p2-bounded-expectation-eq1-l3}
+    \label{lm:memoryless-strat-p2-bounded-expectation-eq1-l3}
     & \leq M \sum^{\infty}_{N=0}  \sum_{\hat{\omega} \in V^{N+1} \cap (V \setminus T)^*} \Prob{\strat{1}}{\strat{2}}_{\StochG,v}(\hat{\omega})  \\
-    \label{th:memoryless-strat-p2-bounded-expectation-eq1-l4}
+    \label{lm:memoryless-strat-p2-bounded-expectation-eq1-l4}
     & < \infty 
   \end{align}
   %
-  (\ref{th:memoryless-strat-p2-bounded-expectation-eq1-l0}) es la
+  (\ref{lm:memoryless-strat-p2-bounded-expectation-eq1-l0}) es la
   definición de valor esperado.
   %
   El hecho de que $V^{N+1} \cap (V \setminus T)^*T$ y
   $V^{N+1} \cap (V \setminus T)^*$ sean disjuntos justifica
-  (\ref{th:memoryless-strat-p2-bounded-expectation-eq1-l1}).
+  (\ref{lm:memoryless-strat-p2-bounded-expectation-eq1-l1}).
   %
-  (\ref{th:memoryless-strat-p2-bounded-expectation-eq1-l2}) se deduce
+  (\ref{lm:memoryless-strat-p2-bounded-expectation-eq1-l2}) se deduce
   del supuesto de que $\reward(v) = 0$ para todo $v \in T$ y
-  (\ref{th:memoryless-strat-p2-bounded-expectation-eq1-l3}) de la
+  (\ref{lm:memoryless-strat-p2-bounded-expectation-eq1-l3}) de la
   definición de $M$.
   %
-  Finalmente, (\ref{th:memoryless-strat-p2-bounded-expectation-eq1-l4})
-  es una consecuencia del Teorema~\ref{th:games-are-bounded}.
+  Finalmente, (\ref{lm:memoryless-strat-p2-bounded-expectation-eq1-l4})
+  es una consecuencia del Lema~\ref{lm:games-are-bounded}.
   %\remarkPRD{Hay un problema aqui porque Theorem~\ref{th:games-are-bounded}
    %solo aplica al subconjunto de memoryless fair schedulers of Player 2}
   %
-  Esto prueba la primer parte del teorema.
+  Esto prueba la primer parte del lema.
 
   
-  La segunda parte del teorema se deduce al observar que para toda estrategia justa sin memoria $\strat{2}' \in \MemorylessFairStrats{2}$,
+  La segunda parte del lema se deduce al observar que para toda estrategia justa sin memoria $\strat{2}' \in \MemorylessFairStrats{2}$,
   %
   \[\inf_{\strat{2} \in \FairStrats{2}} \Expect{\strat{1}}{\strat{2}}_{\StochG,v}[\Rewards]
   \leq \inf_{\strat{2} \in \MemorylessFairStrats{2}} \Expect{\strat{1}}{\strat{2}}_{\StochG,v}[\Rewards]
@@ -1049,14 +1065,14 @@ Esto se establece en el siguiente teorema.
   %
   donde la primer desigualdad es una consecuencia de
   $\MemorylessFairStrats{2}\subseteq\FairStrats{2}$ y la ultima desigualdad
-  se deduce de la primer parte del teorema.  \qed
+  se deduce de la primer parte del lema.  \qedhere
 \end{proof}
 
-El próximo teorema es crucial y juega un papel importante en el resto del capitulo.  Intuitivamente, el teorema establece que, cuando el Jugador $1$ juega acorde a una estrategia sin memoria, el Jugador $2$ posee una estrategia justa determinista sin memoria óptima.
+El próximo lema es crucial y juega un papel importante en el resto del capitulo.  Intuitivamente, el lema establece que, cuando el Jugador $1$ juega acorde a una estrategia sin memoria, el Jugador $2$ posee una estrategia justa determinista sin memoria óptima.
 %
-Este teorema garantiza la existencia eventual de una estrategia justa determinista sin memoria para el Jugador $2$ en general.
+Este lema garantiza la existencia eventual de una estrategia justa determinista sin memoria para el Jugador $2$ en general.
 %
-\begin{theorem}\label{th:infima-in-dmf}%
+\begin{lemma}\label{lm:infima-in-dmf}%
   Sea $\StochG= (V, (V_1, V_2, V_\Probabilistic), \delta, \reward)$ un
   juego estocástico que es terminante bajo fairness y sea
   $\strat{1} \in \MemorylessStrats{1}$ una estrategia sin memora para el Jugador $1$.  Existe una estrategia justa determinista sin memoria
@@ -1069,7 +1085,7 @@ Este teorema garantiza la existencia eventual de una estrategia justa determinis
   $\inf_{\strat{2} \in \FairStrats{2}} \Expect{\strat{1}}{\strat{2}}_{\StochG,v}[\Rewards]
    =
    \Expect{\strat{1}}{\starredstrat{2}}_{\StochG,v}[\Rewards]$, para todo $v \in V$.
-\end{theorem}
+\end{lemma}
 %
 \iffalse
 \begin{proof}[Sketch]
@@ -1110,7 +1126,7 @@ Este teorema garantiza la existencia eventual de una estrategia justa determinis
   %
   To conclude the proof we show by contradiction that
   $\starredstrat{2}$ is fair.
-\qed
+\qedhere
 \end{proof}
 \fi
 \begin{proof}
@@ -1134,9 +1150,9 @@ Este teorema garantiza la existencia eventual de una estrategia justa determinis
   Para todo $v\in V$,
   sea $x_v = \inf_{\strat{2} \in \FairStrats{2}} \Expect{\strat{1}}{\strat{2}}_{\StochG,v}[\Rewards]$
   %(by Corollary~\ref{coro:inf-for-strat2-is-bounded} this value is well-defined) and,
-  (por el Teorema~\ref{th:memoryless-strat-p2-bounded-expectation} este valor está bien definido) y,
+  (por el Lema~\ref{lm:memoryless-strat-p2-bounded-expectation} este valor está bien definido) y,
   para todo $v\in V_2$, sea
-  \begin{equation}\label{th:infima-in-dmf-def-postmin}
+  \begin{equation}\label{lm:infima-in-dmf-def-postmin}
  	\postmin(v) = \{{v'\in V} \mid {\delta^{\strat{1}}(v,v')=1} \land {x_v=\reward(v)+x_{v'}}\}.
   \end{equation}
   %
@@ -1218,34 +1234,34 @@ Este teorema garantiza la existencia eventual de una estrategia justa determinis
     %
     \begin{align}	
       \ExpectMDP{\hat{\strat{2}}}_{\StochG^{\strat{1}},\hat{v}}[\Rewards] \hspace{-4em} & \notag\\
-      \label{th:infima-in-dmf-eq1-l1}
+      \label{lm:infima-in-dmf-eq1-l1}
       &= \sum_{\hat{\omega} \in (V \setminus T)^*T} \MDPProb{\hat{\strat{2}}}_{\StochG^{\strat{1}},\hat{v}}(\hat{\omega})\ \Rewards(\hat{\omega}) \\
-      \label{th:infima-in-dmf-eq1-l2}
+      \label{lm:infima-in-dmf-eq1-l2}
       &=\sum_{\hat{\omega} \in \hat{v}{V'}^*F(V \setminus T)^*T} \MDPProb{\hat{\strat{2}}}_{\StochG^{\strat{1}},\hat{v}}(\hat{\omega})\ \Rewards(\hat{\omega}) \\
-      \label{th:infima-in-dmf-l3}
+      \label{lm:infima-in-dmf-l3}
       &= \sum_{v' \in F} \sum_{\hat{\omega} \in \hat{v}{V'}^*v'} \MDPProb{\hat{\strat{2}}}_{\StochG^{\strat{1}},\hat{v}}(\hat{\omega}) \sum_{\hat{\omega}' \in v' (V \setminus T)^*T}  \MDPProb{\hat{\strat{2}}}_{\StochG^{\strat{1}},v'}(\hat{\omega}')\ \Rewards(\hat{\omega}')\\
-      \label{th:infima-in-dmf-l4}
+      \label{lm:infima-in-dmf-l4}
       &\geq \sum_{v' \in F} \sum_{\hat{\omega} \in \hat{v}{V'}^*v'} \MDPProb{\hat{\strat{2}}}_{\StochG^{\strat{1}},\hat{v}}(\hat{\omega})\ x_{v'} \\
-      \label{th:infima-in-dmf-l5}
+      \label{lm:infima-in-dmf-l5}
       &\geq \sum_{v' \in F} \sum_{\hat{\omega} \in \hat{v}{V'}^*v'} \MDPProb{\hat{\strat{2}}}_{\StochG^{\strat{1}},\hat{v}}(\hat{\omega})\ M \\
-      \label{th:infima-in-dmf-l6}
+      \label{lm:infima-in-dmf-l6}
       &= M  \sum_{v' \in F} \sum_{\hat{\omega} \in \hat{v}{V'}^*v'} \MDPProb{\hat{\strat{2}}}_{\StochG^{\strat{1}},\hat{v}}(\hat{\omega}) \\
-      \label{th:infima-in-dmf-l7}
+      \label{lm:infima-in-dmf-l7}
       &= M
     \end{align}
     %
-    (\ref{th:infima-in-dmf-eq1-l1}) es la definición de esperanza.
+    (\ref{lm:infima-in-dmf-eq1-l1}) es la definición de esperanza.
     %
-    (\ref{th:infima-in-dmf-eq1-l2}) se deduce por la observación de que cualquier camino $\hat{\omega} \in (V \setminus T)^*T$ tiene que empezar en
+    (\ref{lm:infima-in-dmf-eq1-l2}) se deduce por la observación de que cualquier camino $\hat{\omega} \in (V \setminus T)^*T$ tiene que empezar en
     $\hat{v}\in V'$ y tiene que pasar por la frontera $F$ para abandonar $\EC{C}$ y alcanzar algún estado terminal en $T$.
     %
-    (\ref{th:infima-in-dmf-l3}) se obtiene al tener en cuenta que $\reward(v) = 0$ para todo $v \in V'$.
+    (\ref{lm:infima-in-dmf-l3}) se obtiene al tener en cuenta que $\reward(v) = 0$ para todo $v \in V'$.
     %
-    (\ref{th:infima-in-dmf-l4}) se deduce del hecho de que 
+    (\ref{lm:infima-in-dmf-l4}) se deduce del hecho de que 
     $x_{v'} \leq \sum_{\hat{\omega}' \in v' (V \setminus T)^*T}  \MDPProb{\hat{\strat{2}}}_{\StochG^{\strat{1}},v'}(\hat{\omega}')\ \Rewards(\hat{\omega}')$.
     %
-    (\ref{th:infima-in-dmf-l5}) se deduce por la definición de $M$ y
-    (\ref{th:infima-in-dmf-l6}) al factorizar $M$.
+    (\ref{lm:infima-in-dmf-l5}) se deduce por la definición de $M$ y
+    (\ref{lm:infima-in-dmf-l6}) al factorizar $M$.
     %
     Finalmente, (\ref{th:infima-in-dmf-l7}) se deduce del hecho 
     $\sum_{v' \in F} \sum_{\hat{\omega} \in \hat{v}{V'}^*v'} \MDPProb{\hat{\strat{2}}}_{\StochG^{\strat{1}},\hat{v}}(\hat{\omega}) =
@@ -1352,7 +1368,7 @@ Este teorema garantiza la existencia eventual de una estrategia justa determinis
   $r_i = \reward(v_i)$.
   %
   $A$ is a square substochastic matrix
-  \todo{Necesito traducción}
+  \myworries{Necesito traducción}
   \cite{DBLP:journals/moc/Azimzadeh19} en donde existe un camino desde cualquier vértice hacia un vértice terminal.
   %
   Por lo tanto, por el Corolario 2.6 de \cite{DBLP:journals/moc/Azimzadeh19},
@@ -1642,18 +1658,18 @@ Este teorema garantiza la existencia eventual de una estrategia justa determinis
 
 
 
-Como hemos observado, las estrategias semi-Markovianas pueden pensarse como secuencias de estrategias sin memoria. El próximo teorema utiliza este hecho para mostrar que, cuando el Jugador $2$ juega acorde a una estrategia justa y sin memoria,  las estrategias semi-Markovianas no mejoran el valor que el Jugador $1$ puede obtener por medio de estrategias deterministas sin memoria. la prueba del siguiente teorema adapta ideas del Teorema 4.2.9 de \cite{FilarV96} al contexto de nuestros juegos.%\remarkPRD{considerar sacar esta \'ultima oraci\'on}
+Como hemos observado, las estrategias semi-Markovianas pueden pensarse como secuencias de estrategias sin memoria. El próximo teorema utiliza este hecho para mostrar que, cuando el Jugador $2$ juega acorde a una estrategia justa y sin memoria,  las estrategias semi-Markovianas no mejoran el valor que el Jugador $1$ puede obtener por medio de estrategias deterministas sin memoria. la prueba del siguiente lema adapta ideas del Teorema 4.2.9 de \cite{FilarV96} al contexto de nuestros juegos.%\remarkPRD{considerar sacar esta \'ultima oraci\'on}
 %A detailed proof can be found in the Appendix. 
 
-\begin{theorem}\label{th:semimarkov-to-detmemoryless} Para cualquier juego estocástico $\StochG$  que sea terminante bajo fairness, y para cualquier vértice $v$, se cumple que:
+\begin{lemma}\label{lm:semimarkov-to-detmemoryless} Para cualquier juego estocástico $\StochG$  que sea terminante bajo fairness, y para cualquier vértice $v$, se cumple que:
 \[\adjustlimits
 	\sup_{\strat{1} \in \SemiMarkovStrats{1}} \inf_{\strat{2} \in \DetMemorylessFairStrats{2}} \Expect{\strat{1}}{\strat{2}}_{\StochG,v}[\Rewards]
 	= \adjustlimits
 	\sup_{\strat{1} \in \DetMemorylessStrats{1}} \inf_{\strat{2} \in \DetMemorylessFairStrats{2}} \Expect{\strat{1}}{\strat{2}}_{\StochG,v}[\Rewards]
 \]
-\end{theorem}
+\end{lemma}
 
-Para demostrar el Teorema \ref{th:semimarkov-to-detmemoryless},  necesitamos el siguiente lema.
+Para demostrar el Lema \ref{lm:semimarkov-to-detmemoryless},  necesitamos el siguiente lema.
 
 
 
@@ -1791,7 +1807,7 @@ Para demostrar el Teorema \ref{th:semimarkov-to-detmemoryless},  necesitamos el 
     \end{equation*}
     %
     and, but summing up both sides of the $k$ equations and recalling that
-    \todo{but? supongo que es by}
+    \myworries{but? supongo que es by}
     $\sum_{i=1}^kp_i =1$, obtenemos:
     %
     \begin{equation}\label{eq:semimarkov-to-detmemoryless:step-ii}
@@ -1814,7 +1830,7 @@ Para demostrar el Teorema \ref{th:semimarkov-to-detmemoryless},  necesitamos el 
     Esto nos da que
     $\sum_{i=1}^k p_i \delta^{\strat{1}^{n,i},\strat{2}}(v, v') = \delta^{\strat{1},\strat{2}}(v, v')$
     y por (\ref{eq:semimarkov-to-detmemoryless:step-ii}) concluimos esta afirmación.
-    \hfill\emph{(Fin de la afirmación)}\qed
+    \hfill\emph{(Fin de la afirmación)}\qedhere
   \end{proofofclaim}
 
   Vamos a probar que no existe una estrategia semi-Markoviana que mejore el valor obtenido por $\starredstrat{1}$.  Sea $\strat{1}$ una estrategia semi-Markoviana arbitraria fijada para el Jugador $1$.  Por la afirmación, tenemos:
@@ -1843,7 +1859,7 @@ Para demostrar el Teorema \ref{th:semimarkov-to-detmemoryless},  necesitamos el 
 	\sum_{\hat{\omega} \in vV^{n}} \prod^{n-1}_{i=0}\delta^{\strat{1}^i,\strat{2}}(\hat{\omega}_i, \hat{\omega}_{i+1}) \Expect{\starredstrat{1}}{\strat{2}}_{\StochG,\hat{\omega}_n}[\Rewards]
   \end{align*}
   %
-  Haciendo la sumatoria desde $n=0$ hasta $N$:
+  Realizando la sumatoria desde $n=0$ hasta $N$:
   %
   \begin{align*}
     & \sum^{N}_{n=0}\sum_{\hat{\omega} \in vV^{n}} \prod^{n-1}_{i=0}\delta^{\strat{1}^i,\strat{2}}(\hat{\omega}_i,\hat{\omega}_{i+1}) \reward(\hat{\omega}_n) \\
@@ -1906,7 +1922,7 @@ Para demostrar el Teorema \ref{th:semimarkov-to-detmemoryless},  necesitamos el 
   %
   Al tomar
   $M = \max_{v\in V} \Expect{\starredstrat{1}}{\strat{2}}_{\StochG, v}[\Rewards]$,
-  el cual sabemos que existe por el Teorema~\ref{th:memoryless-strat-p2-bounded-expectation}, podemos concluir que
+  el cual sabemos que existe por el Lema~\ref{lm:memoryless-strat-p2-bounded-expectation}, podemos concluir que
   (\ref{th:semimarkov-to-memoryless-lim-eq3}).
   %
   (\ref{th:semimarkov-to-memoryless-lim-eq4}) se deriva por definición de
@@ -1931,7 +1947,7 @@ Para demostrar el Teorema \ref{th:semimarkov-to-detmemoryless},  necesitamos el 
   \Expect{\strat{1}}{\strat{2}}_{\StochG,v}[\Rewards] \leq \Expect{\starredstrat{1}}{\strat{2}}_{\StochG,v}[\Rewards].
   \]
   Por lo tanto, la estrategia semi-Markoviana arbitraria $\strat{1}$ no mejora por sobre $\starredstrat{1}$.
-  \qed
+  \qedhere
 \end{proof}
 %% SUPONGO QUE ESTA PRUEBA NO VA Y QUE LA QUE SIRVE ES LA DEL APENDICE.
 %% \begin{proof} 
@@ -2020,31 +2036,23 @@ Utilizando el teorema previo, podemos concluir que el problema de encontrar $\su
 \begin{align*}
   \adjustlimits \sup_{\strat{1} \in \Strategies{1}} \inf_{\strat{2} \in \FairStrats{2}} \Expect{\strat{1}}{\strat{2}}_{\StochG,v}[\Rewards]
   &{} \leq  \adjustlimits \sup_{\strat{1} \in \Strategies{1}} \inf_{\strat{2} \in \DetMemorylessFairStrats{2}} \Expect{\strat{1}}{\strat{2}}_{\StochG,v}[\Rewards]\\
-  &{} \leq \adjustlimits  \sup_{\strat{1} \in \SemiMarkovStrats{1}} \inf_{\strat{2} \in \DetMemorylessFairStrats{2}} \Expect{\strat{1}}{\strat{2}}_{\StochG,v}[\Rewards]
-  \leq \adjustlimits \sup_{\strat{1} \in \DetMemorylessStrats{1}} \inf_{\strat{2} \in \DetMemorylessFairStrats{2}} \Expect{\strat{1}}{\strat{2}}_{\StochG,v}[\Rewards]
+  &{} \leq \adjustlimits  \sup_{\strat{1} \in \SemiMarkovStrats{1}} \inf_{\strat{2} \in \DetMemorylessFairStrats{2}} \Expect{\strat{1}}{\strat{2}}_{\StochG,v}[\Rewards]\\
+  &{} \leq \adjustlimits \sup_{\strat{1} \in \DetMemorylessStrats{1}} \inf_{\strat{2} \in \DetMemorylessFairStrats{2}} \Expect{\strat{1}}{\strat{2}}_{\StochG,v}[\Rewards]
 \end{align*}
-%% \begin{align*}
-%% 	\sup_{\strat{1} \in \Strategies{1}} \inf_{\strat{2} \in \FairStrats{2}} \Expect{\strat{1}}{\strat{2}}_{\StochG,v}[\Rewards]&{}\leq \sup_{\strat{1} \in \Strategies{1}} \inf_{\strat{2} \in \MemorylessFairStrats{2}} \Expect{\strat{1}}{\strat{2}}_{\StochG,v}[\Rewards]\\
-%% 		&{} \leq  \sup_{\strat{1} \in \SemiMarkovStrats{1}} \inf_{\strat{2} \in \MemorylessFairStrats{2}} \Expect{\strat{1}}{\strat{2}}_{\StochG,v}[\Rewards]\\
-%% 		&{} \leq  \sup_{\strat{1} \in \MemorylessStrats{1}} \inf_{\strat{2} \in \MemorylessFairStrats{2}} \Expect{\strat{1}}{\strat{2}}_{\StochG,v}[\Rewards]
-%% \end{align*}
 
-La primera desigualdad se deriva de $\DetMemorylessFairStrats{2} \subseteq \FairStrats{2}$, la segunda desigualdad se debe al Teorema \ref{th:semmimarkov2} y al hecho de que las estrategias sin memoria son semi-Markovianas, y la última desigualdad es obtenida aplicando el Teorema \ref{th:semimarkov-to-detmemoryless}.
+La primera desigualdad se deriva de $\DetMemorylessFairStrats{2} \subseteq \FairStrats{2}$, la segunda desigualdad se debe al Teorema \ref{th:semmimarkov2} y al hecho de que las estrategias sin memoria son semi-Markovianas, y la última desigualdad se obtiene aplicando el Lema \ref{lm:semimarkov-to-detmemoryless}.
 
 Para probar la otra desigualdad, calculamos:
 %
-%% \begin{align*}
-%%  \sup_{\strat{1} \in \DetMemorylessStrats{1}} \inf_{\strat{2} \in \DetMemorylessFairStrats{2}} \Expect{\strat{1}}{\strat{2}}_{\StochG,v}[\Rewards]
-%% & {} = \sup_{\strat{1} \in \DetMemorylessStrats{1}} \inf_{\strat{2} \in \FairStrats{2}} \Expect{\strat{1}}{\strat{2}}_{\StochG,v}[\Rewards] \\
-%% & {} \leq \sup_{\strat{1} \in \Strategies{1}} \inf_{\strat{2} \in \FairStrats{2}} \Expect{\strat{1}}{\strat{2}}_{\StochG,v}[\Rewards].
-%% \end{align*}
-\[\adjustlimits \sup_{\strat{1} \in \DetMemorylessStrats{1}} \inf_{\strat{2} \in \DetMemorylessFairStrats{2}} \Expect{\strat{1}}{\strat{2}}_{\StochG,v}[\Rewards]
-=  \adjustlimits \sup_{\strat{1} \in \DetMemorylessStrats{1}} \inf_{\strat{2} \in \FairStrats{2}} \Expect{\strat{1}}{\strat{2}}_{\StochG,v}[\Rewards]
-\leq  \adjustlimits \sup_{\strat{1} \in \Strategies{1}} \inf_{\strat{2} \in \FairStrats{2}} \Expect{\strat{1}}{\strat{2}}_{\StochG,v}[\Rewards].
-\]
+ \begin{align*}
+  \sup_{\strat{1} \in \DetMemorylessStrats{1}} \inf_{\strat{2} \in \DetMemorylessFairStrats{2}} \Expect{\strat{1}}{\strat{2}}_{\StochG,v}[\Rewards]
+ & {} = \sup_{\strat{1} \in \DetMemorylessStrats{1}} \inf_{\strat{2} \in \FairStrats{2}} \Expect{\strat{1}}{\strat{2}}_{\StochG,v}[\Rewards] \\
+ & {} \leq \sup_{\strat{1} \in \Strategies{1}} \inf_{\strat{2} \in \FairStrats{2}} \Expect{\strat{1}}{\strat{2}}_{\StochG,v}[\Rewards].
+ \end{align*}
+
 %
 %% The first equality follows from Corollary \ref{th:memoryless-infima}, and the second inequality is due to suprema properties.
-  La primera igualdad es consecuencia del Teorema~\ref{th:infima-in-dmf} y la segunda desigualdad se debe a propiedades de los supremos.
+  La primera igualdad es consecuencia del Lema~\ref{lm:infima-in-dmf} y la segunda desigualdad se debe a propiedades de los supremos.
 \qedhere
 \end{proof}
 
@@ -2091,24 +2099,26 @@ la técnica estándar para probar la determinación de juegos terminantes es dem
 %
 tiene un punto fijo único. Sin embargo, en el caso de juegos terminantes bajo fairness,  $\StandardBellman$ tiene varios puntos fijos, lo cual se ilustra en el siguiente ejemplo.
 
-\begin{wrapfigure}[9]{r}{36mm}
+\begin{figure}
 %\vspace{-2ex}
 \centering
-\includegraphics[scale=0.6]{Figs/inf-fixpoints-horiz.pdf}\hspace{-2ex}
+\includegraphics[scale=0.9]{Figs/inf-fixpoints-horiz.pdf}
 \caption{Un juego con infinitos puntos fijos} \label{fig:multiple-fixpoints}
-\end{wrapfigure}
+\end{figure}
+
 \begin{example}\label{ex:several-fixpoints} Consideremos el juego (de un jugador) de la Figura~\ref{fig:multiple-fixpoints}, donde los vértices del Jugador $1$ están representados por cuadrados, los vértices del Jugador $2$ se muestran como rombos, y los vértices probabilistas son círculos. Observemos que, en este juego, el mayor punto fijo es $(1,1,1,0)$.  Sin embargo, $(0.5,0.5,1,0)$ también es un punto fijo ya que $\Gamma(0.5,0.5,1,0) = (0.5,0.5,1,0)$.  De hecho, el operador de Bellman para este juego tiene infinitos puntos fijos: cualquier $f$ de la forma $(x,x,1,0)$ con $x\in[0,1]$.
 \end{example}
 
 Por lo tanto, las técnicas tradicionales no aplican en este caso. En lugar de eso. utilizamos el máximo punto fijo para probar determinación, pero esto no se puede realizar de forma directa usando $\StandardBellman$. Una dificultad principal es que el teorema de Knaspter-Tarski no se aplica a $\StandardBellman$ ya que $(\mathbb{R}^V, \leq)$ no es un retículo completo. Usando en su lugar los reales extendidos ($(\mathbb{R} \cup \{\infty\})^V$) no es una solución, ya que en algunos casos el punto fijo más grande asignará $\infty$ a algunos vértices (p. ej., $(\infty,\infty,0)$ sería el mayor punto fijo en la cadena de Markov de la Fig.~\ref{fig:overflow}).
 Un enfoque posible es aproximar el punto fijo más grande a partir de una cota superior estimada a través del algoritmo de \emph{value iteration}. Desafortunadamente, puede que no haya una relación de orden entre $f$ y $\StandardBellman(f)$ y puede resultar que para algún vértice $v$, $\StandardBellman(f)(v)>f(v)$ antes de converger al punto fijo. Esto se muestra en el siguiente ejemplo.
 
-\begin{wrapfigure}[7]{r}{36mm}
-\vspace{-6ex}
+\begin{figure}
+%\vspace{-6ex}
 \centering
-\includegraphics[scale=0.6]{Figs/overflow-horiz.pdf}\hspace{-2ex}
+\includegraphics[scale=0.9]{Figs/overflow-horiz.pdf}
 \caption{Un juego donde el valor puede aumentar.} \label{fig:overflow}
-\end{wrapfigure}
+\end{figure}
+
 \begin{example}\label{ex:overflow}
 Consideremos el juego representado en la Fig.~\ref{fig:overflow}.
 El punto fijo (único) en este caso es $(100,90,0)$. Observemos que tenemos que $\StandardBellman(120,100,0) = (110, 108, 0)$, por lo que el valor en $v_1$ aumenta después de una iteración. Se necesitan varias iteraciones para alcanzar el mayor punto fijo. Por lo tanto, en general, la iteración del valor inicial desde un límite superior estimado no garantiza una convergencia monótona al punto fijo más grande.
@@ -2116,7 +2126,7 @@ El punto fijo (único) en este caso es $(100,90,0)$. Observemos que tenemos que 
 
     Superamos los problemas antes mencionados usando una versión modificada de $\StandardBellman$. En términos generales, modificamos el operador Bellman de tal manera que opere sobre un retículo completo.
 
-Observemos que, según el teorema~\ref{th:memoryless-strat-p2-bounded-expectation}, el valor $\Expect{\strat{1}}{\strat{2}}_{\StochG,v}[\ Recompensas]$ es finito
+Observemos que, según el Lema~\ref{lm:memoryless-strat-p2-bounded-expectation}, el valor $\Expect{\strat{1}}{\strat{2}}_{\StochG,v}[\ Recompensas]$ es finito
 para todo juego terminante bajo fairness $\StochG$ y estrategias $\strat{1} \in \DetMemorylessStrats{1}$, $\strat{2} \in \DetMemorylessFairStrats{2}$.
  Además, debido a que la cantidad de estrategias deterministas sin memoria es finita, también tenemos que el número
  $\max \{ \inf_{\strat{2} \in \DetMemorylessFairStrats{2}} \sup_{\strat{1} \in \DetMemorylessStrats{1}} \Expect{\strat{1}}{\strat{ 2}}_{\StochG,v}[\Rewards] \mid v \in V \}$ está bien definido.
@@ -2125,7 +2135,7 @@ $\Bellman: [0,\UpperBound]^V \rightarrow [0,\UpperBound]^V$ de la siguiente mane
 \[
     \Bellman(f)(v) =
     \begin{cases}
-          \min \big( \reward(v) + \sum_{v' \in \post(v)} \delta(v,v')  f(v'),  \ \UpperBound \ \big ) & \text{ si } v \in V_\Probabilistic \setminus T  \\
+          \min \big( \reward(v) + \sum_{v' \in \post(v)} \delta(v,v')  f(v'),  \ \UpperBound \ \big ) &  \text{ si } v \in V_\Probabilistic \setminus T  \\
           \min\big( \max\{\reward(v)  + f(v') \mid v' \in \post(v) \}, \ \UpperBound  \ \big)& \text{ si } v \in  V_1 \setminus T, \\
           \min\big( \min\{\reward(v)  + f(v') \mid v' \in \post(v) \}, \ \UpperBound \ \big) & \text{ si } v \in  V_2 \setminus T, \\
            0 & \text{ si } v \in T.
@@ -2152,8 +2162,8 @@ Tengamos en cuenta que $\Bellman$ es monótona, lo que puede probarse observando
 Además, $\Bellman$ también es Scott-continua (conserva los supremos de los conjuntos dirigidos), esto se puede demostrar de manera similar a \cite{DBLP:conf/memics/BrazdilKN12}. El siguiente teorema
 formaliza estas propiedades.
 %\remarkPC{Podemos agregar una peque\~na discusion de por que la funci\'on tiene varios puntos fijo, quizas un ejemplo?}
-\begin{theorem}\label{th:continuity} $\Bellman$ es monótona y Scott-continua.
-\end{theorem}
+\begin{proposition}\label{pn:continuity} $\Bellman$ es monótona y Scott-continua.
+\end{proposition}
 
 \begin{proof}
     
@@ -2162,21 +2172,21 @@ $f \leq f'$ por lo que $f(v) \leq f'(v')$ para todo $v \in V$.  La prueba es por
 
     SI $v \in V_\Probabilistic$ y $\reward(v) + \sum_{v' \in \post(v)} \delta(v,v')* f(v') < \UpperBound$:
 \begin{align}
-    \Bellman(f)(v) & = \min (\reward(v) + \sum_{v' \in \post(v)} \delta(v,v')* f(v'), \UpperBound)\label{th:continuity-eq1-l1} \\
-            & \reward(v) + \sum_{v' \in \post(v)} \delta(v,v')* f(v') \label{th:continuity-eq1-l2} \\
-           & \leq \min (\reward(v) + \sum_{v' \in \post(v)} \delta(v,v') * f'(v'), \UpperBound)          \label{th:continuity-eq1-l3} \\
+    \Bellman(f)(v) & = \min (\reward(v) + \sum_{v' \in \post(v)} \delta(v,v')* f(v'), \UpperBound)\label{pn:continuity-eq1-l1} \\
+            & \reward(v) + \sum_{v' \in \post(v)} \delta(v,v')* f(v') \label{pn:continuity-eq1-l2} \\
+           & \leq \min (\reward(v) + \sum_{v' \in \post(v)} \delta(v,v') * f'(v'), \UpperBound)          \label{pn:continuity-eq1-l3} \\
            & = \Bellman(f')(v)  
 \end{align}
-    donde la linea \ref{th:continuity-eq1-l3} se deduce por nuestras asunciones.
+    donde la linea \ref{pn:continuity-eq1-l3} se deduce por nuestras asunciones.
    
     Si $v \in V_\Probabilistic$ y $\reward(v) + \sum_{v' \in \post(v)} \delta(v,v')* f(v') \geq \UpperBound$, observemos que en este caso también $\reward(v) + \sum_{v' \in \post(v)} \delta(v,v')* f'(v') \geq \UpperBound$:
 \begin{align}
-    \Bellman(f)(v) & = \min(\reward(v) + \sum_{v' \in \post(v)} \delta(v,v')* f(v'), \UpperBound) \label{th:continuity-eq2-l1} \\
-                            & = \UpperBound                                                                  \label{th:continuity-eq2-l2} \\
-                            & = \min( \reward(v) + \sum_{v' \in \post(v)} \delta(v,v') * f'(v'), \UpperBound) \label{th:continuity-eq2-l3} \\
-                            & = \Bellman(f')(v)   \label{th:continuity-eq2-l4}
+    \Bellman(f)(v) & = \min(\reward(v) + \sum_{v' \in \post(v)} \delta(v,v')* f(v'), \UpperBound) \label{pn:continuity-eq2-l1} \\
+                            & = \UpperBound                                                                  \label{pn:continuity-eq2-l2} \\
+                            & = \min( \reward(v) + \sum_{v' \in \post(v)} \delta(v,v') * f'(v'), \UpperBound) \label{pn:continuity-eq2-l3} \\
+                            & = \Bellman(f')(v)   \label{pn:continuity-eq2-l4}
 \end{align}
-donde las lineas \ref{th:continuity-eq2-l2} y  \ref{th:continuity-eq2-l3} son debido a la definición de $\Bellman$ y la asunción de $f \leq f'$.
+donde las lineas \ref{pn:continuity-eq2-l2} y  \ref{pn:continuity-eq2-l3} son debido a la definición de $\Bellman$ y la asunción de $f \leq f'$.
     Los casos $v \in V_1$ y $v \in V_2$ son similares.
     
     La prueba de Scott-continuidad es como se detalla a continuación. Necesitamos probar que, para todo conjunto dirigido $D$, tenemos $\sup_{d \in D} \Bellman(d) =  \Bellman(\sup_{d \in D} d)$.
@@ -2211,7 +2221,7 @@ donde las lineas \ref{th:continuity-eq2-l2} y  \ref{th:continuity-eq2-l3} son de
     
 
 \end{proof}
-Observemos que $([0,\UpperBound]^V, \leq)$ es un retículo completo. Por lo tanto, por el Teorema \ref{th:continuity} y el teorema de Knaster-Tarski \cite{davey1990introduction}., el conjunto (no vacío) de puntos fijos de $\Bellman$ forman un retículo completo, y el punto fijo mayor del operador puede ser aproximado por las aplicaciones sucesivas de $\Bellman$ al elemento tope (i.e., $\UpperBound$) \cite{davey1990introduction}. A partir de aquí denotaremos por $\nu \Bellman$ al mayor punto fijo de $\Bellman$.
+Observemos que $([0,\UpperBound]^V, \leq)$ es un retículo completo. Por lo tanto, por la Proposición \ref{pn:continuity} y el teorema de Knaster-Tarski \cite{davey1990introduction}., el conjunto (no vacío) de puntos fijos de $\Bellman$ forman un retículo completo, y el punto fijo mayor del operador puede ser aproximado por las aplicaciones sucesivas de $\Bellman$ al elemento tope (i.e., $\UpperBound$) \cite{davey1990introduction}. A partir de aquí denotaremos por $\nu \Bellman$ al mayor punto fijo de $\Bellman$.
 
 %The following theorem states that game determinacy is preserved when Player 2 is restricted to play fair strategies.
 El teorema que se da a continuación establece que los juegos restringidos a estrategias justas sobre el Jugador $2$ son determinados.
@@ -2263,20 +2273,24 @@ Además, el valor del juego está dado por el máximo punto fijo de $\Bellman$.
   Finalmente, por el Teorema\ref{th:reduce-to-memoryless} obtenemos:
   %
   $\nu \Bellman(v) \leq \sup_{\strat{1} \in \Strategies{1}} \inf_{\strat{2} \in \FairStrats{2}} \Expect{\strat{1}}{\strat{2}}_{\StochG,v}[\Rewards]$.
-  \qed
+  \qedhere
 \end{proof}
 %
 %\subsection{Considerations for an algorithmic solution}
-\paragraph{Consideraciones para una solución algorítmica.} 
-El algoritmo de \emph{value iteration} \cite{Bellman57} se ha utilizado para calcular la recompensa acumulada esperada máxima/mínima en procesos de decisión de Markov, por ejemplo, en el model checker {\Prism}. Por lo general, el valor se calcula aproximando el punto fijo mínimo desde abajo utilizando las ecuaciones de Bellman \cite{Bellman57}. En~\cite{DBLP:conf/cav/Baier0L0W17}, los autores proponen acercarse a estos valores desde un límite superior e inferior (conocido como \emph{interval iteration} \cite{DBLP:journals/tcs/HaddadM18}). Para hacerlo, \cite{DBLP:conf/cav/Baier0L0W17} muestra una técnica para calcular las cotas superiores de las recompensas totales esperadas para los MDPs. Este enfoque se basa en el hecho de que, dado un MDP terminante $\StochG$, $\ExpectMDP{\strat{1}}_{\mathcal{G},v}[\Rewards] = \sum_{v' \in R(v)} \zeta_v^{\strat{1}}(v')*\reward(v')$, donde $R(v)$ denota el conjunto de estados alcanzables desde $v$, y $\zeta_v ^{\strat{1}}(v')$ denota el número esperado de veces que se visita $v'$ en la cadena de Markov
-inducida por $\strat{1}$ cuando comienza en $v$. \cite{DBLP:conf/cav/Baier0L0W17} describe cómo calcular un valor $\zeta_{v}^*(v')$, tal que $\zeta_v^*(v') \geq \sup_{\strat{ 1} \in \Strategies{1}} \zeta_v^{\strat{1}}(v')$. Por lo tanto, $\sum_{v' \in R(v)} \zeta_v^{*}(v')*\reward(v')$ da un límite superior para $\sup_{\strat{1}} \ExpectMDP {\strat{1}}_{\mathcal{G},v}[\Rewards]$.
-\begin{wrapfigure}[12]{r}{0.555\textwidth}
-    \vspace{-9.5ex}
-    \begin{minipage}{0.55\textwidth}
+\subsection{Consideraciones para una solución algorítmica.} 
+El algoritmo de \emph{value iteration} \cite{Bellman57} se ha utilizado para calcular la recompensa acumulada esperada máxima/mínima en procesos de decisión de Markov, por ejemplo, en el model checker {\Prism}. Por lo general, el valor se calcula aproximando el punto fijo mínimo desde abajo utilizando las ecuaciones de Bellman \cite{Bellman57}. En~\cite{DBLP:conf/cav/Baier0L0W17}, los autores proponen acercarse a estos valores desde un límite superior e inferior (conocido como \emph{interval iteration} \cite{DBLP:journals/tcs/HaddadM18}). Para hacerlo, \cite{DBLP:conf/cav/Baier0L0W17} muestra una técnica para calcular las cotas superiores de las recompensas totales esperadas para los MDPs. Este enfoque se basa en el hecho de que, dado un MDP terminante $\StochG$, $\ExpectMDP{\strat{1}}_{\mathcal{G},v}[\Rewards] = \sum_{v' \in R(v)} \zeta_v^{\strat{1}}(v')*\reward(v')$, donde $R(v)$ denota el conjunto de estados alcanzables desde $v$, y $\zeta_v ^{\strat{1}}(v')$ denota el número esperado de veces que se visita $v'$ en la cadena de Markov inducida por $\strat{1}$ cuando comienza en $v$. \cite{DBLP:conf/cav/Baier0L0W17} describe cómo calcular un valor $\zeta_{v}^*(v')$, tal que $\zeta_v^*(v') \geq \sup_{\strat{ 1} \in \Strategies{1}} \zeta_v^{\strat{1}}(v')$. Por lo tanto, $\sum_{v' \in R(v)} \zeta_v^{*}(v')*\reward(v')$ da un límite superior para $\sup_{\strat{1}} \ExpectMDP {\strat{1}}_{\mathcal{G},v}[\Rewards]$.
+
+\begin{figure}
+    \centering
+    %\vspace{-9.5ex}
+    \begin{minipage}{0.75\textwidth}
       \begin{algorithm}[H]
-        \caption{Algorithm for computing GFP}\label{Alg:gfp}
+      \SetAlgoLined
+      \KwIn{Juego estocástico $\StochG = \langle V, (V_1, V_2,V_\Probabilistic),\delta \rangle$}
+      \KwOut{$\nu \Bellman$}
+        \caption{Algoritmo para computar el máximo punto fijo}\label{Alg:gfp}
         \begin{algorithmic}
-          \REQUIRE $\StochG$ is a stopping under fairness game\\[1ex]
+          \REQUIRE $\StochG$ es un juego terminante bajo fairness\\[1ex]
           \STATE $\delta' \gets  \lambda (v,v') {.} (v \in V_1 {\cup} V_\Probabilistic) \mathop{?} \delta(v,v') : \frac{1}{|\post^{\mathcal{G}}(v)|}$\\[-1ex]
           \STATE  $\mathcal{G}' \gets (V, (V_1, \emptyset, V_2{\cup}V_\Probabilistic)), \delta')$
           \STATE $x' \gets \lambda v : \sum_{v' \in R(v)} : \zeta^*_v(v')*\reward(v')$
@@ -2288,10 +2302,10 @@ inducida por $\strat{1}$ cuando comienza en $v$. \cite{DBLP:conf/cav/Baier0L0W17
         \end{algorithmic}
       \end{algorithm}
     \end{minipage}
-  \end{wrapfigure}
+  \end{figure}
     Nuestro algoritmo utiliza estas ideas para proporcionar una cota superior para los juegos de dos jugadores. En términos generales, el funcional $\Bellman$ definido anteriormente presenta una forma de ecuaciones de Bellman que permite que un algoritmo de \emph{value iteration} resuelva estos juegos. Necesitamos comenzar con un vector de valor más grande que dicho punto fijo. Dado un juego terminante bajo fairness, fijamos una estrategia justa (sin memoria) para el ambiente, obteniendo así un MDP. Luego usamos las técnicas descritas anteriormente para encontrar un límite superior para este MDP, que a su vez es una cota superior en el juego original. La estrategia justa obvia a usar es la que se basa en la distribución uniforme (como en el Teorema \ref{thm:uniform-prob}). Esta idea se describe en Alg.~\ref{Alg:gfp}. Vale la pena señalar que, en lugar de usar un límite superior único para cada vértice (como en la definición de $\Bellman$), el algoritmo puede usar un límite superior diferente para cada componente del vector de valor, lo que mejora el número de iteraciones realizada por el algoritmo.
-We have implemented Alg.~\ref{Alg:gfp} as a prototype embedded in the {\PrismGames} toolset~\cite{DBLP:conf/cav/KwiatkowskaN0S20}, 
-as described in the next section. 
+Hemos implementado Alg.~\ref{Alg:gfp} como un prototipo embebido en el conjunto de herramientas {\PrismGames} ~\cite{DBLP:conf/cav/KwiatkowskaN0S20}, 
+como se describe en la próxima sección. 
 %\remarkPC{Agregar un parrafo que en vez de usar $\UpperBound$, usamos un vector.}
 %\remarkPRD{Por ah\'i yo dir\'ia \textbf{``We have implemented this algorithm as a prototype embedded in the {\Prism}-game toolset~\cite{DBLP:conf/cav/KwiatkowskaN0S20}.''} De cualquier manera, el paper \cite{DBLP:conf/cav/KwiatkowskaN0S20}. hay que referenciarlo }
    %    We have implemented these ideas in a prototype tool as described in the next section.
@@ -2309,7 +2323,7 @@ as described in the next section.
 	
 	
 
-\section{Related Work} \label{sec:related_work}
+\section{Trabajo Relacionado} \label{sec:related_work}
 
 Los juegos estocásticos con funciones de payoff han sido ampliamente investigados en la literatura. En \cite{FilarV96}, se presentan varios resultados sobre \emph{juegos transitorios},
 una versión generalizada de juegos estocásticos terminantes con payoff de recompensa total.
@@ -2332,13 +2346,13 @@ Sin embargo, de todos los operadores en ~\cite{DBLP:journals/fmsd/ChenFKPS13,Svo
   este limite superior es usado para comenzar otro proceso de value iteration destinado a computar el máximo punto fijo.
 \end{enumerate}
 %
-\begin{wrapfigure}[10]{r}{55mm}
-\vspace{-4ex}
+\begin{figure}
+%\vspace{-4ex}
 %\fontsize{6.6}{6.6}\selectfont\ttfamily
 \centering
-\includegraphics[scale=0.60]{Figs/prism-cex-1-horiz.pdf}%\hspace{1.5em}\mbox{}
+\includegraphics[scale=0.80]{Figs/prism-cex-1-horiz.pdf}%\hspace{1.5em}\mbox{}
 \caption{Un simple juego de 2 jugadores: solo se muestran las probabilidades menores a 1.} \label{fig:prism-cex-1}
-\end{wrapfigure}
+\end{figure}
 Esta heurística podría devolver aproximaciones erróneas del mayor punto fijo. Ilustramos esto con un ejemplo sencillo. Considere el juego representado en la Fig.~\ref{fig:prism-cex-1}. Para cualquier $\textsf{p}$, el valor del punto fijo más grande en el vértice $v_0$ es $2$. Sin embargo, al tomar $\textsf{p}=0.99$ y la tolerancia $\epsilon=10^{-6}$, {\Prism} devuelve un valor cercano a $39608$. %el valor $39607.955145476146$.
 Esto ocurre porque {\Prism} cambia $0$ al valor $0.02$, lo que da como resultado un límite superior extremadamente grande.
 %% Además, cada iteración solo produce una pequeña modificación en los valores %lo que arroja un valor final erróneo
@@ -2357,7 +2371,7 @@ También ejecutamos este operador en nuestros casos de estudio y observamos pequ
 
 
 
-%% \paragraph{{\Prism} Operators.} {\Prism} supports 2-player stochastic games,  therein properties are specified via the logic $\text{rPATL}$.This logic provides operators for expected rewards. Most of these operators are computed via a least fixpoint; thus, they are not comparable with our approach (they return $0$ in the case of a $0$-valued cycles).
+%% \subsection{{\Prism} Operators.} {\Prism} supports 2-player stochastic games,  therein properties are specified via the logic $\text{rPATL}$.This logic provides operators for expected rewards. Most of these operators are computed via a least fixpoint; thus, they are not comparable with our approach (they return $0$ in the case of a $0$-valued cycles).
 %% Interestingly,  the operator  $\langle \langle p_1 \rangle \rangle \ \textsf{R}_{\text{max}{=}?}[\textsf{F}v]$ \remarkPRD{cambi\'e esto. Antes dec\'ia $\langle \langle p_1 \rangle \rangle \text{min}{=}?\textsf{R}[\textsf{F}v]$. Fijense que cambi\'e ``min'' por ``max''} returns the expected accumulated reward in which infinite plays receive an infinite value~\cite{DBLP:journals/fmsd/ChenFKPS13,DBLP:conf/cav/KwiatkowskaN0S20}.  {\Prism} approximates this value by computing a greatest fixpoint.  It uses a two-phase algorithm to do so:
 %% \begin{enumerate}[(i)]
 %% \item%
@@ -2398,7 +2412,7 @@ También ejecutamos este operador en nuestros casos de estudio y observamos pequ
 
 
 
-	Los \emph{Juegos estocásticos de camino mas corto} \cite{PatekBertsekas99} son juegos estocásticos de dos jugadores con recompensas (negativas o positivas) en los que las estrategias del minimizador se clasifican en \emph{adecuadas} e \emph{impropias},
+Los \emph{Juegos estocásticos de camino mas corto} \cite{PatekBertsekas99} son juegos estocásticos de dos jugadores con recompensas (negativas o positivas) en los que las estrategias del minimizador se clasifican en \emph{adecuadas} e \emph{impropias},
 las estrategias adecuadas son las que aseguran la terminación. Como se demuestra en \cite{PatekBertsekas99}, estos juegos están determinados y ambos jugadores poseen estrategias óptimas sin memoria. Para probar estos resultados, los autores asumen que el valor esperado del juego para estrategias impropias es $\infty$, esto asegura que el funcional correspondiente es una contracción y por lo tanto tiene un punto fijo único. Por el contrario, nos restringimos a recompensas no negativas pero no hacemos suposiciones sobre estrategias injustas, como se mencionó anteriormente, la función correspondiente para nuestros juegos puede tener varios puntos fijos. Además, probamos que el valor del juego viene dado por el mayor punto fijo de $\Gamma$. En los últimos años, varios autores han investigado problemas estocásticos de camino más corto para MDPs (es decir, juegos de un solo jugador), donde se relaja la suposición sobre estrategias inadecuadas (por ejemplo, \cite{DBLP:conf/lics/Baier0DGS18}); hasta donde sabemos, estos resultados no se han extendido a los juegos de dos jugadores.
 
 %% In \cite{SvorenovaKwiatkowska16}, a logical framework is presented for the verification and synthesis of systems. This framework combines probabilistic linear temporal logic with expected total, discounted, and average reward objective functions. 	The framework is implemented in the tool \Prism~\cite{DBLP:conf/cav/KwiatkowskaNP11}. Although a vast class of properties can be expressed in this framework, fairness assumptions over the environment are not dealt with in this line of research.
@@ -2450,7 +2464,7 @@ Curiosamente, en \cite{DBLP:conf/fossacs/AsarinCV10} los autores consideran el p
 %% $v \in \EFairpre^*(V \setminus \AFairpre^*(T))$. The  result follows by Theorem \ref{sec:fair-strats}.
 %% \end{proof}
 
-\section{Experimental Validation} \label{sec:experimental_eval}
+\section{Validación Experimental} \label{sec:experimental_eval}
 
 \definecolor{Gray}{gray}{0.9}
 \definecolor{Gray2}{gray}{0.95}
@@ -2469,47 +2483,25 @@ La evaluación experimental muestra que nuestro enfoque puede hacer frente a est
 %We have considered variations of two examples:
 %For the model presented in Sec.~\ref{sec:mot_example}, the expected total reward when $\verb"P"=0.1$ and $\verb"Q"=0$ is $5.55$. Moreover, 
 %the non-trivial part of the synthesized strategy is illustrated with the black arrows in Fig.~\ref{fig:robot_game_grid}.
-
+\paragraph{Roborta vs. la Luz Justa.}
 Consideramos tres variantes del caso de estudio: versión A (la luz no falla), versión B (la luz solo puede fallar cuando intenta dar una luz verde) y versión C (la luz puede fallar cuando intenta señalar cualquier tipo de luz).
 Asumimos que, cuando Roborta falla, no puede moverse (esto es beneficioso para Roborta ya que puede recuperar la recompensa);
 cuando falla la luz, el robot puede moverse libremente en cualquier dirección permitida.
-La configuración de la matriz (restricciones de movimiento y recompensas) se genera aleatoriamente. Para cada configuración, la Tabla~\ref{table:resultsRobot} describe los resultados para tres escenarios diferentes generados a partir de semillas diferentes. Para la configuración de matriz que se muestra en Sección~\ref{sec:mot_example} con parámetros $P=0.1$ y $Q=0$, la herramienta derivó la estrategia óptima representada en la Figura~\ref{fig:robot_game_grid} e informa una recompensa total esperada de $5.55$.
+La configuración de la matriz (restricciones de movimiento y recompensas) se genera aleatoriamente. Para cada configuración, la Tabla~\ref{table:resultsRobot} describe los resultados para tres escenarios diferentes generados a partir de semillas diferentes. La primera columna describe el tamaño de la matriz. La segunda columna indica la probabilidad de fallo del robot ($P$) y la luz ($Q$).
+Las otras columnas describen el tamaño del modelo, la recompensa total esperada para la estrategia óptima y el número de iteraciones realizadas, respectivamente para tres configuraciones diferentes generadas aleatoriamente.
+Para la configuración de matriz que se muestra en Sección~\ref{sec:mot_example} con parámetros $P=0.1$ y $Q=0$, la herramienta derivó la estrategia óptima representada en la Figura~\ref{fig:robot_game_grid} e informa una recompensa total esperada de $5.55$.
+
 
 %We explain Table~\ref{table:resultsRobot} with an example.  Take the case of the grid $A \mid {60{\times}8} \mid \text{seed } 1$, with the robot fault probability being $0.1$, the optimal expected total reward is $26.66$ and the number of decisions made by the robot when both players play optimally is $2$.  We consider a decision as a choice resolution introduced when the yellow light is on on a cell without movement restrictions or if the light is off. We use this number to give us an idea that resolutions are not trivial, and to hint a different resolution for closely related instances.
 %Indeed, notice that for the case mentioned above, when the fault probability is set to $0.9$ (instead of $0.1$), the number of decisions changes to $0$. 
 %This suggests that the strategy of the environment for lower fault probabilities was not worth it anymore, thereby it finds a better strategy. 
 
-
-% Figure follows ------------------
-\begin{wrapfigure}[11]{r}{48mm}
-%\vspace{-10mm}
-\vspace{-11mm}
-%\fontsize{6.6}{6.6}\selectfont\ttfamily
-\centering
-\includegraphics[scale=0.60]{Figs/uav.eps}\hspace{1.5em}\mbox{}
-\vspace{-10mm}
-\caption{Red UAV para misiones ISR adaptado de \cite{DBLP:conf/iccps/FengWHT15}} \label{fig:uav_game_map}
-%\caption{A robot game on a $4 \times 4$ grid starting on location (0,0). Each location has an assigned positive reward. The sideway movement restrictions are depicted as white arrows on the bottom-right of each location. The best strategy for the robot when the light is yellow is shown in black arrows on the top-right of the locations without movement restrictions. The path taken by the robot to achieve the goal is highlighted in yellow} \label{fig:robot_game_grid}
-\end{wrapfigure}
-%
-\paragraph{UAV autónomo vs. Operador humano.} Adaptamos el caso de estudio analizado en \cite{DBLP:conf/iccps/FengWHT15}. Se utiliza un vehículo aéreo no tripulado (UAV) controlado a distancia para realizar misiones de inteligencia, vigilancia y reconocimiento (ISR) en una red de carreteras. El UAV realiza funciones de pilotaje de forma autónoma (seleccionando una ruta para volar entre \emph{puntos de referencia}). El operador humano (entorno) controla el sensor a bordo para capturar imágenes en un punto de ruta, así como las funciones de pilotaje en ciertos puntos de ruta (llamados puntos de control). Tenga en cuenta que un operador puede tratar continuamente de obtener una mejor imagen haciendo que el UAV merodee alrededor de un determinado punto de referencia, lo que puede conducir a un comportamiento injusto.
-%Asignamos recompensas a una captura exitosa de un waypoint no visitado.
-Cada captura exitosa de un punto de referencia no visitado otorga una recompensa.
-%
-La Figura~\ref{fig:uav_game_map} muestra un ejemplo de red de carreteras que consta de seis puntos de referencia de vigilancia etiquetados $w_0,w_2,...,w_5$, los bordes representan rutas de conexión, una línea discontinua roja significa que la ruta es lo suficientemente peligrosa como para hacer que el UAV deje de funcionar con una probabilidad de $1$, mientras que en cualquier otro camino, esta probabilidad es de $S$. Los puntos de control se representan como nodos rosas, en los que el operador aún puede delegar la tarea de pilotaje al UAV con probabilidad $D$. Cada nodo está anotado con tres posibles recompensas. Por ejemplo, para $S=0.3$ y $D=0.5$ y los valores de recompensa más a la izquierda en cada tripla, la estrategia sintetizada para el UAV intenta seguir el circuito óptimo $w_0,w_1,w_2,w_3,w_4,w_5$. Mientras que para los valores de recompensa del medio y más a la derecha, los circuitos óptimos a seguir son $w_0,w_5,w_0,w_1,w_2,w_3,w_4$ y $w_0,w_5,w_4,w_1,w_2,w_3$, respectivamente. La Tabla~\ref{table:resultsUAV} muestra los resultados obtenidos para este juego para varias redes de carreteras generadas aleatoriamente.
-
-Las tablas~\ref{table:resultsRobot} y~\ref{table:resultsUAV} no informan el tiempo necesario para calcular los resultados, pero en todos los casos la salida se calculó en menos de 400 segundos. Todos los experimentos se realizaron en un MacBook Air con Intel Core i5 a 1,3 GHz y 4 Gb de RAM.%The tool and case studies are available in the tool repository.
-%\remarkPRD{Poner aqu'i un comentario sobre el desempe\~no de la herramienta respecto del tiempo}
-
 \begin{table}[tp]
   \centering\noindent%
   %\vspace{-0.5cm}
-  \caption{Resultados del juego Roborta vs. la Luz Justa. La primera columna describe el tamaño de la matriz. La segunda columna indica la probabilidad de fallo del robot ($P$) y la luz ($Q$).
-  Las otras columnas describen el tamaño del modelo, la recompensa total esperada para la estrategia óptima y el número de iteraciones realizadas, respectivamente.
-  para tres configuraciones diferentes generadas aleatoriamente.}
-  \label{table:resultsRobot}
   %\vspace{-0.8cm}
-  \scalebox{0.9}{
+  \scalebox{0.7}{
+    \small
     \begin{tabular}{|c|c|c|c|c|c|g|h|c|g|h|c|}
       \hline
       \multirow{2}{*}{Versión} & \multicolumn{2}{c|}{Prob.Falla} & \multicolumn{3}{c|}{Tamaño (Estados/Transiciones)} & \multicolumn{3}{c|}{Rec.\ Total.\ Esp. Opt.} & \multicolumn{3}{c|}{Iteraciones}\\ \hhline{|~|-|-|-|-|-|-|-|-|-|-|-|}
@@ -2550,17 +2542,41 @@ Las tablas~\ref{table:resultsRobot} y~\ref{table:resultsUAV} no informan el tiem
       \hline
     \end{tabular}
   }
+  \caption{Resultados del juego Roborta vs. la Luz Justa.}
+  \label{table:resultsRobot}
   %\vspace{-0.8cm}
 \end{table}
 
-\begin{table}[tp]
+
+% Figure follows ------------------
+\begin{figure}
+%\vspace{-10mm}
+%\vspace{-11mm}
+%\fontsize{6.6}{6.6}\selectfont\ttfamily
+\centering
+\includegraphics[scale=0.80]{Figs/uav.eps}
+%\vspace{-10mm}
+\caption{Red UAV para misiones ISR} \label{fig:uav_game_map}
+%\caption{A robot game on a $4 \times 4$ grid starting on location (0,0). Each location has an assigned positive reward. The sideway movement restrictions are depicted as white arrows on the bottom-right of each location. The best strategy for the robot when the light is yellow is shown in black arrows on the top-right of the locations without movement restrictions. The path taken by the robot to achieve the goal is highlighted in yellow} \label{fig:robot_game_grid}
+\end{figure}
+%
+\paragraph{UAV autónomo vs. Operador humano.} Adaptamos el caso de estudio analizado en \cite{DBLP:conf/iccps/FengWHT15}. Se utiliza un vehículo aéreo no tripulado (UAV) controlado a distancia para realizar misiones de inteligencia, vigilancia y reconocimiento (ISR) en una red de carreteras. El UAV realiza funciones de pilotaje de forma autónoma (seleccionando una ruta para volar entre \emph{puntos de referencia}). El operador humano (entorno) controla el sensor a bordo para capturar imágenes en un punto de ruta, así como las funciones de pilotaje en ciertos puntos de ruta (llamados puntos de control). Tenga en cuenta que un operador puede tratar continuamente de obtener una mejor imagen haciendo que el UAV merodee alrededor de un determinado punto de referencia, lo que puede conducir a un comportamiento injusto.
+%Asignamos recompensas a una captura exitosa de un waypoint no visitado.
+Cada captura exitosa de un punto de referencia no visitado otorga una recompensa.
+
+%
+La Figura~\ref{fig:uav_game_map} muestra un ejemplo de red de carreteras que consta de seis puntos de referencia de vigilancia etiquetados $w_0,w_2,...,w_5$, los bordes representan rutas de conexión, una línea discontinua roja significa que la ruta es lo suficientemente peligrosa como para hacer que el UAV deje de funcionar con una probabilidad de $1$, mientras que en cualquier otro camino, esta probabilidad es de $S$. Los puntos de control se representan como nodos rosas, en los que el operador aún puede delegar la tarea de pilotaje al UAV con probabilidad $D$. Cada nodo está anotado con tres posibles recompensas. Por ejemplo, para $S=0.3$ y $D=0.5$ y los valores de recompensa más a la izquierda en cada terna, la estrategia sintetizada para el UAV intenta seguir el circuito óptimo $w_0,w_1,w_2,w_3,w_4,w_5$. Mientras que para los valores de recompensa del medio y más a la derecha, los circuitos óptimos a seguir son $w_0,w_5,w_0,w_1,w_2,w_3,w_4$ y $w_0,w_5,w_4,w_1,w_2,w_3$, respectivamente. 
+La Tabla~\ref{table:resultsUAV} muestra los resultados obtenidos para este juego para varias redes de carreteras generadas aleatoriamente. La primera columna describe el número de puntos de referencia utilizados. La segunda columna indica la probabilidad de delegación ($D$) y la probabilidad de que el UAV deje de funcionar ($S$).
+Las otras columnas muestran el tamaño del modelo, la recompensa total esperada para la estrategia óptima y el número de iteraciones realizadas, respectivamente, para tres configuraciones diferentes de mapas de ruta generadas aleatoriamente.
+
+Las tablas~\ref{table:resultsRobot} y~\ref{table:resultsUAV} no informan el tiempo necesario para calcular los resultados, pero en todos los casos la salida se calculó en menos de 400 segundos. Todos los experimentos se realizaron en un MacBook Air con Intel Core i5 a 1,3 GHz y 4 GB de RAM. Tanto la herramienta como los casos de estudio se encuentran disponibles en un repositorio github~\cite{FairPrism}.
+
+\begin{table}[h]
   \centering\noindent%
   %\vspace{-0.5cm}
-  \caption{Resultados del juego UAV vs. Operador. La primera columna describe el número de puntos de referencia utilizados. La segunda columna indica la probabilidad de delegación ($D$) y la probabilidad de que el UAV deje de funcionar ($S$).
-  Las otras columnas muestran el tamaño del modelo, la recompensa total esperada para la estrategia óptima y el número de iteraciones realizadas, respectivamente, para tres configuraciones diferentes de mapas de ruta generadas aleatoriamente.}
-  \label{table:resultsUAV}
   %\vspace{-0.8cm}
-  \scalebox{0.9}{
+  \scalebox{0.7}{
+    \small
     \begin{tabular}{|c|c|c|c|c|c|g|h|c|g|h|c|}
       \hline
       \multirow{2}{*}{Versión} & \multicolumn{2}{c|}{Prob.} & \multicolumn{3}{c|}{Tamaño(Estados/Transiciones)} & \multicolumn{3}{c|}{Rec.\ Total.\ Esp. Opt.} & \multicolumn{3}{c|}{Iteraciones} \\ \hhline{|~|-|-|-|-|-|-|-|-|-|-|-|}
@@ -2587,236 +2603,57 @@ Las tablas~\ref{table:resultsRobot} y~\ref{table:resultsUAV} no informan el tiem
       \hline
     \end{tabular}
   }
-  %\vspace{-0.8cm}
-\end{table}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-%TABLAS FAIRYGAMES CON TIEMPOS
-\iffalse
-\begin{table}[t]
-  \centering\noindent%
-  %\vspace{-0.5cm}
-  \caption{Results for Roborta vs. Light Game.  First column describes the grid size.  Second column indicates  the fault probability for the robot ($P$) and light ($Q$). 
-  The other columns describe the size of the model, the expected total reward for the optimal strategy, and the computation  time in seconds, respectively,
-  for three different randomly generated grid configurations.}
-  \label{table:resultsRobot}
-  %\vspace{-0.8cm}
-  \scalebox{0.9}{
-    \begin{tabular}{|c|c|c|c|c|c|g|h|c|g|h|c|g|h|c|}
-      \hline
-      \multirow{2}{*}{Version} & \multicolumn{2}{c|}{Fault prob.} & \multicolumn{3}{c|}{Size (States/Transitions)} & \multicolumn{3}{c|}{Opt.\ Expect.\ Total Rew.} & \multicolumn{3}{c|}{N.Iter.} & \multicolumn{3}{c|}{Time (in sec.)}\\ \hhline{|~|-|-|-|-|-|-|-|-|-|-|-|-|-|-|}
-      & $P$ & $Q$ &  \cellcolor{white}s.\ 1 & \cellcolor{white}s.\ 2 & \cellcolor{white}s.\ 3 & \cellcolor{white}\makebox[3.4em][c]{s.\ 1} & \cellcolor{white}\makebox[3.4em][c]{s.\ 2} & \cellcolor{white}\makebox[3.4em][c]{s.\ 3} & \cellcolor{white}\makebox[1.8em][c]{s.\ 1} & \cellcolor{white}\makebox[1.8em][c]{s.\ 2} & \cellcolor{white}\makebox[1.8em][c]{s.\ 3} & \cellcolor{white}\makebox[1.8em][c]{s.\ 1} & \cellcolor{white}\makebox[1.8em][c]{s.\ 2} & \cellcolor{white}\makebox[1.8em][c]{s.\ 3} \\  
-      \hline
-       \multirow{2}{3em}{\centering $A$ \\ $60{\times}8$}
-       & $0.1$ & $-$ & \multirow{2}{*}{\centering $\displaystyle \begin{array}{c} \text{st. }1448 \\ \text{tr. }3220 \end{array}$} & \multirow{2}{*}{\centering $\displaystyle \begin{array}{c} \text{st. }1418 \\ \text{tr. }3112 \end{array}$}  & \multirow{2}{*}{\centering $\displaystyle \begin{array}{c} \text{st. }1421 \\ \text{tr. }3132 \end{array}$}  & $26.66$ & $31.11$ & $27.77$ & $711$ & $681$ & $252$ & $3$ & $3$ & $3$\\ \hhline{|~|-|-|~|~|~|-|-|-|-|-|-|-|-|-|}
-       & $0.5$ & $-$ & & & & $48$ & $56$ & $50$ & $2253$ & $2225$ & $475$ & $7$ & $6$ & $2$\\ \hline
-
-       \multirow{2}{3em}{\centering $A$ \\ $120{\times}16$}
-       & $0.1$ & $-$ & \multirow{2}{*}{\centering $\displaystyle \begin{array}{c} \text{st. }5686 \\ \text{tr. }12586 \end{array}$} & \multirow{2}{*}{\centering $\displaystyle \begin{array}{c} \text{st. }5716 \\ \text{tr. }12658 \end{array}$}  & \multirow{2}{*}{\centering $\displaystyle \begin{array}{c} \text{st. }5716 \\ \text{tr. }12722 \end{array}$}  & $62.22$ & $55.55$ & $48.88$ & $687$ & $700$ & $685$ & $147$ & $152$ & $150$\\ \hhline{|~|-|-|~|~|~|-|-|-|-|-|-|-|-|-|}
-       & $0.5$ & $-$ & & & & $112$ & $100$ & $88$ & $2231$ & $2265$ & $2229$ & $135$ & $147$ & $176$\\ \hline
-
-       \multirow{4}{3em}{\centering $B$ \\ $60{\times}8$}
-       & \multirow{2}{*}{$0.1$} & $0.1$ & \multirow{4}{*}{\centering $\displaystyle \begin{array}{c} \text{st. }1928 \\ \text{tr. }5952 \end{array}$} & \multirow{4}{*}{\centering $\displaystyle \begin{array}{c} \text{st. }1888 \\ \text{tr. }5746 \end{array}$}  & \multirow{4}{*}{\centering $\displaystyle \begin{array}{c} \text{st. }1892 \\ \text{tr. }5785 \end{array}$}  & $42.6$ & $44.59$ & $42.23$ & $479$ & $335$ & $388$ & $4$ & $5$ & $5$\\ \hhline{|~|~|-|~|~|~|-|-|-|-|-|-|-|-|-|}
-       & & $0.5$ & & & & $130.14$ & $127.7$ & $136.22$ & $772$ & $689$ & $824$ & $5$ & $5$ & $5$\\ \hhline{|~|-|-|~|~|~|-|-|-|-|-|-|-|-|-|}
-       & \multirow{2}{*}{$0.5$} & $0.1$ & & & & $76.68$ & $80.26$ & $76.02$ & $873$ & $764$ & $909$ & $4$ & $3$ & $4$\\ \hhline{|~|~|-|~|~|~|-|-|-|-|-|-|-|-|-|}
-       & & $0.5$ & & & & $234.26$ & $229.87$ & $245.21$ & $1263$ & $1139$ & $1341$ & $5$ & $9$ & $9$\\ \hline
-
-       \multirow{4}{3em}{\centering $B$ \\ $120{\times}16$}
-       & \multirow{2}{*}{$0.1$} & $0.1$ & \multirow{4}{*}{\centering $\displaystyle \begin{array}{c} \text{st. }7576 \\ \text{tr. }23266 \end{array}$} & \multirow{4}{*}{\centering $\displaystyle \begin{array}{c} \text{st. }7616 \\ \text{tr. }23400 \end{array}$}  & \multirow{4}{*}{\centering $\displaystyle \begin{array}{c} \text{st. }7616 \\ \text{tr. }23528 \end{array}$}  & $91.19$ & $87.27$ & $80.07$ & $538$ & $544$ & $616$ & $275$ & $285$ & $241$\\ \hhline{|~|~|-|~|~|~|-|-|-|-|-|-|}
-       & & $0.5$ & & & & $281.83$ & $281.48$ & $265.33$ & $1076$ & $1118$ & $1252$ & $300$ & $336$ & $279$\\ \hhline{|~|-|-|~|~|~|-|-|-|-|-|-|-|-|-|}
-       & \multirow{2}{*}{$0.5$} & $0.1$ & & & & $164.15$ & $157.1$ & $144.13$ & $1147$ & $1223$ & $1373$ & $169$ & $238$ & $313$\\ \hhline{|~|~|-|~|~|~|-|-|-|-|-|-|-|-|-|}
-       & & $0.5$ & & & & $507.30$ & $506.67$ & $477.6$ & $1850$ & $1865$ & $2088$ & $327$ & $354$ & $313$\\ \hline
-
-       \multirow{4}{3em}{\centering $C$ \\ $60{\times}8$}
-       & \multirow{2}{*}{$0.1$} & $0.1$ & \multirow{4}{*}{\centering $\displaystyle \begin{array}{c} \text{st. }1928 \\ \text{tr. }6432 \end{array}$} & \multirow{4}{*}{\centering $\displaystyle \begin{array}{c} \text{st. }1888 \\ \text{tr. }6216 \end{array}$}  & \multirow{4}{*}{\centering $\displaystyle \begin{array}{c} \text{st. }1892 \\ \text{tr. }6256 \end{array}$}  & $46.32$ & $47.07$ & $44.87$ & $379$ & $336$ & $390$ & $6$ & $4$ & $5$\\ \hhline{|~|~|-|~|~|~|-|-|-|-|-|-|-|-|-|}
-       & & $0.5$ & & & & $143.35$ & $146.41$ & $153.98$ & $742$ & $658$ & $774$ & $6$ & $5$ & $5$\\ \hhline{|~|-|-|~|~|~|-|-|-|-|-|-|-|-|-|}
-       & \multirow{2}{*}{$0.5$} & $0.1$ & & & & $83.37$ & $84.73$ & $80.77$ & $879$ & $769$ & $914$ & $6$ & $3$ & $4$\\ \hhline{|~|~|-|~|~|~|-|-|-|-|-|-|-|-|-|}
-       & & $0.5$ & & & & $258.04$ & $263.53$ & $277.17$ & $1202$ & $1076$ & $1246$ & $7$ & $4$ & $9$\\ \hline
-
-       \multirow{4}{3em}{\centering $C$ \\ $120{\times}16$}
-       & \multirow{2}{*}{$0.1$} & $0.1$ & \multirow{4}{*}{\centering $\displaystyle \begin{array}{c} \text{st. }7576 \\ \text{tr. }25156 \end{array}$} & \multirow{4}{*}{\centering $\displaystyle \begin{array}{c} \text{st. }7616 \\ \text{tr. }25300 \end{array}$}  & \multirow{4}{*}{\centering $\displaystyle \begin{array}{c} \text{st. }7616 \\ \text{tr. }25428 \end{array}$}  & $98.25$ & $93.74$ & $88.33$ & $533$ & $544$ & $606$ & $257$ & $267$ & $236$\\ \hhline{|~|~|-|~|~|~|-|-|-|-|-|-|-|-|-|}
-       & & $0.5$ & & & & $321.18$ & $317.61$ & $311.62$ & $1002$ & $1068$ & $1188$ & $291$ & $274$ & $264$\\ \hhline{|~|-|-|~|~|~|-|-|-|-|-|-|-|-|-|}
-       & \multirow{2}{*}{$0.5$} & $0.1$ & & & & $176.85$ & $168.73$ & $158.99$ & $1147$ & $1227$ & $1365$ & $246$ & $213$ & $228$\\ \hhline{|~|~|-|~|~|~|-|-|-|-|-|-|-|-|-|}
-       & & $0.5$ & & & & $578.13$ & $571.71$ & $560.92$ & $1700$ & $1760$ & $1956$ & $339$ & $291$ & $292$\\ 
-
-      \hline
-    \end{tabular}
-  }
-  %\vspace{-0.8cm}
-\end{table}
-
-\begin{table}[t]
-  \centering\noindent%
-  %\vspace{-0.5cm}
-  \caption{Results for the UAV vs. Operator Game. First column describes the number of waypoints used.  Second column indicates probability of delegation ($D$), and the probability that the UAV stops working ($S$). 
-  The other columns show the size of the model, the expected total reward for the optimal strategy, and the computation time in seconds, respectively, for three different randomly generated roadmap configurations.}
+   \caption{Resultados del juego UAV vs. Operador.}
   \label{table:resultsUAV}
   %\vspace{-0.8cm}
-  \scalebox{0.9}{
-    \begin{tabular}{|c|c|c|c|c|c|g|h|c|g|h|c|g|h|c|}
-      \hline
-      \multirow{2}{*}{Version} & \multicolumn{2}{c|}{Prob.} & \multicolumn{3}{c|}{Size(States/Transitions)} & \multicolumn{3}{c|}{Opt.\ Expect.\ Total Rew.} & \multicolumn{3}{c|}{N.Iter.} & \multicolumn{3}{c|}{Time (in sec.)} \\ \hhline{|~|-|-|-|-|-|-|-|-|-|-|-|-|-|-|}
-      & $D$ & $S$ &  \cellcolor{white}s.\ 1 & \cellcolor{white}s.\ 2 & \cellcolor{white}s.\ 3 & \cellcolor{white}\makebox[3.4em][c]{s.\ 1} & \cellcolor{white}\makebox[3.4em][c]{s.\ 2} & \cellcolor{white}\makebox[3.4em][c]{s.\ 3} & \cellcolor{white}\makebox[1.8em][c]{s.\ 1} & \cellcolor{white}\makebox[1.8em][c]{s.\ 2} & \cellcolor{white}\makebox[1.8em][c]{s.\ 3} & \cellcolor{white}\makebox[1.8em][c]{s.\ 1} & \cellcolor{white}\makebox[1.8em][c]{s.\ 2} & \cellcolor{white}\makebox[1.8em][c]{s.\ 3}\\  
-      \hline
-       \multirow{4}{3em}{\centering UAV \\ $6w.$}
-       & \multirow{2}{*}{$0.1$} & $0.05$ & \multirow{4}{*}{\centering $\displaystyle \begin{array}{c} \text{st. }213 \\ \text{tr. }504 \end{array}$} & \multirow{4}{*}{\centering $\displaystyle \begin{array}{c} \text{st. }508 \\ \text{tr. }1368 \end{array}$} & \multirow{4}{*}{\centering $\displaystyle \begin{array}{c} \text{st. }136 \\ \text{tr. }312 \end{array}$} & $16.72$ & $12.47$ & $13.14$ & $142$ & $248$ & $22$ & $0$ & $0$ & $0$\\ \hhline{|~|~|-|~|~|~|-|-|-|-|-|-|-|-|-|}
-       & & $0.1$ & & & & $15.73$ & $11.15$ & $12.63$ & $73$ & $188$ & $22$ & $0$ & $0$ & $0$\\ \hhline{|~|-|-|~|~|~|-|-|-|-|-|-|-|-|-|}
-       & \multirow{2}{*}{$0.5$} & $0.05$ & & & & $20.49$ & $12.77$ & $17.05$ & $103$ & $133$ & $22$ & $0$ & $0$ & $0$\\ \hhline{|~|~|-|~|~|~|-|-|-|-|-|-|-|-|-|}
-       & & $0.1$ & & & & $18.87$ & $11.67$ & $15.95$ & $55$ & $70$ & $22$ & $0$ & $0$ & $0$\\ \hline
-
-       \multirow{4}{3em}{\centering UAV \\ $8w.$}
-       & \multirow{2}{*}{$0.1$} & $0.05$ & \multirow{4}{*}{\centering $\displaystyle \begin{array}{c} \text{st. }2177 \\ \text{tr. }5959 \end{array}$} & \multirow{4}{*}{\centering $\displaystyle \begin{array}{c} \text{st. }3591 \\ \text{tr. }9991 \end{array}$} & \multirow{4}{*}{\centering $\displaystyle \begin{array}{c} \text{st. }1426 \\ \text{tr. }3604 \end{array}$} & $17.88$ & $40.59$ & $24.6$ & $407$ & $332$ & $779$ & $8$ & $29$ & $4$\\ \hhline{|~|~|-|~|~|~|-|-|-|-|-|-|-|-|-|}
-       & & $0.1$ & & & & $17.11$ & $34.3$ & $21.48$ & $280$ & $233$ & $437$ & $3$ & $17$ & $3$\\ \hhline{|~|-|-|~|~|~|-|-|-|-|-|-|-|-|-|}
-       & \multirow{2}{*}{$0.5$} & $0.05$ & & & & $26$ & $42.21$ & $30.87$ & $128$ & $214$ & $257$ & $6$ & $26$ & $2$\\ \hhline{|~|~|-|~|~|~|-|-|-|-|-|-|-|-|-|}
-       & & $0.1$ & & & & $23.44$ & $36.08$ & $24.72$ & $116$ & $113$ & $194$ & $3$ & $16$ & $2$\\ \hline 
-
-       \multirow{4}{3em}{\centering UAV \\ $10w.$}
-       & \multirow{2}{*}{$0.1$} & $0.05$ & \multirow{4}{*}{\centering $\displaystyle \begin{array}{c} \text{st. }6631 \\ \text{tr. }17306 \end{array}$} & \multirow{4}{*}{\centering $\displaystyle \begin{array}{c} \text{st. }5072 \\ \text{tr. }13052 \end{array}$} & \multirow{4}{*}{\centering $\displaystyle \begin{array}{c} \text{st. }8272 \\ \text{tr. }24376 \end{array}$} & $39.76$ & $28.7$ & $19.76$ & $256$ & $377$ & $356$ & $133$ & $62$ & $264$\\ \hhline{|~|~|-|~|~|~|-|-|-|-|-|-|-|-|-|} 
-       & & $0.1$ & & & & $35.43$ & $23.36$ & $16.2$ & $136$ & $260$ & $154$ & $62$ & $43$ & $119$\\ \hhline{|~|-|-|~|~|~|-|-|-|-|-|-|-|-|-|}
-       & \multirow{2}{*}{$0.5$} & $0.05$ & & & & $42.13$ & $30.77$ & $24.56$ & $250$ & $247$ & $292$ & $126$ & $63$ & $229$\\ \hhline{|~|~|-|~|~|~|-|-|-|-|-|-|-|-|-|}
-       & & $0.1$ & & & & $37.11$ & $26.08$ & $19.27$ & $130$ & $134$ & $151$ & $59$ & $40$ & $97$\\ \hline
-
-      \hline
-    \end{tabular}
-  }
-  %\vspace{-0.8cm}
-\end{table}
-\fi
-
-
-%TABLAS SYNTHFAIRY
-\iffalse
-\begin{table}[t]
-  \centering\noindent%
-  %\vspace{-0.5cm}
-  \caption{Results for Roborta vs. Light Game.  First column describes the grid size.  Second column indicates  the fault probability for the robot ($P$) and light ($Q$). 
-  The other columns describe the size of the model, the expected total reward for the optimal strategy, and the computation  time in seconds, respectively,
-  for three different randomly generated grid configurations.}
-  \label{table:resultsRobot}
-  %\vspace{-0.8cm}
-  \scalebox{0.9}{
-    \begin{tabular}{|c|c|c|c|c|c|g|h|c|g|h|c|}
-      \hline
-      \multirow{2}{*}{Version} & \multicolumn{2}{c|}{Fault prob.} & \multicolumn{3}{c|}{Size (States/Transitions)} & \multicolumn{3}{c|}{Opt.\ Expect.\ Total Rew.} & \multicolumn{3}{c|}{Time (in sec.)} \\ \hhline{|~|-|-|-|-|-|-|-|-|-|-|-|}
-      & $P$ & $Q$ &  \cellcolor{white}s.\ 1 & \cellcolor{white}s.\ 2 & \cellcolor{white}s.\ 3 & \cellcolor{white}\makebox[3.4em][c]{s.\ 1} & \cellcolor{white}\makebox[3.4em][c]{s.\ 2} & \cellcolor{white}\makebox[3.4em][c]{s.\ 3} & \cellcolor{white}\makebox[1.8em][c]{s.\ 1} & \cellcolor{white}\makebox[1.8em][c]{s.\ 2} & \cellcolor{white}\makebox[1.8em][c]{s.\ 3} \\  
-      \hline
-       \multirow{2}{3em}{\centering $A$ \\ $60{\times}8$}
-       & $0.1$ & $-$ & \multirow{2}{*}{\centering $\displaystyle \begin{array}{c} \text{st. }2614 \\ \text{tr. }4418 \end{array}$} & \multirow{2}{*}{\centering $\displaystyle \begin{array}{c} \text{st. }2540 \\ \text{tr. }4266 \end{array}$}  & \multirow{2}{*}{\centering $\displaystyle \begin{array}{c} \text{st. }2552 \\ \text{tr. }4295 \end{array}$}  & $26.66$ & $31.11$ & $27.77$ & $10$ & $9$ & $12$\\ \hhline{|~|-|-|~|~|~|-|-|-|-|-|-|}
-       & $0.5$ & $-$ & & & & $48$ & $56$ & $50$ & $14$ & $16$ & $12$\\ \hline
-
-       \multirow{2}{3em}{\centering $A$ \\ $120{\times}16$}
-       & $0.1$ & $-$ & \multirow{2}{*}{\centering $\displaystyle \begin{array}{c} \text{st. }10161 \\ \text{tr. }17125 \end{array}$} & \multirow{2}{*}{\centering $\displaystyle \begin{array}{c} \text{st. }10217 \\ \text{tr. }17223 \end{array}$}  & \multirow{2}{*}{\centering $\displaystyle \begin{array}{c} \text{st. }10249 \\ \text{tr. }17319 \end{array}$}  & $62.22$ & $55.55$ & $48.88$ & $99$ & $116$ & $96$\\ \hhline{|~|-|-|~|~|~|-|-|-|-|-|-|}
-       & $0.5$ & $-$ & & & & $112$ & $100$ & $88$ & $133$ & $149$ & $137$\\ \hline
-
-       \multirow{4}{3em}{\centering $B$ \\ $60{\times}8$}
-       & \multirow{2}{*}{$0.1$} & $0.1$ & \multirow{4}{*}{\centering $\displaystyle \begin{array}{c} \text{st. }4724 \\ \text{tr. }8788 \end{array}$} & \multirow{4}{*}{\centering $\displaystyle \begin{array}{c} \text{st. }4586 \\ \text{tr. }8484 \end{array}$}  & \multirow{4}{*}{\centering $\displaystyle \begin{array}{c} \text{st. }4609 \\ \text{tr. }8542 \end{array}$}  & $42.6$ & $44.59$ & $42.23$ & $20$ & $24$ & $21$\\ \hhline{|~|~|-|~|~|~|-|-|-|-|-|-|}
-       & & $0.5$ & & & & $130.14$ & $127.7$ & $136.22$ & $32$ & $33$ & $30$\\ \hhline{|~|-|-|~|~|~|-|-|-|-|-|-|}
-       & \multirow{2}{*}{$0.5$} & $0.1$ & & & & $76.68$ & $80.26$ & $76.02$ & $32$ & $31$ & $32$\\ \hhline{|~|~|-|~|~|~|-|-|-|-|-|-|}
-       & & $0.5$ & & & & $234.26$ & $229.87$ & $245.21$ & $53$ & $50$ & $56$\\ \hline
-
-       \multirow{4}{3em}{\centering $B$ \\ $120{\times}16$}
-       & \multirow{2}{*}{$0.1$} & $0.1$ & \multirow{4}{*}{\centering $\displaystyle \begin{array}{c} \text{st. }18384 \\ \text{tr. }34154 \end{array}$} & \multirow{4}{*}{\centering $\displaystyle \begin{array}{c} \text{st. }18486 \\ \text{tr. }34350 \end{array}$}  & \multirow{4}{*}{\centering $\displaystyle \begin{array}{c} \text{st. }18550 \\ \text{tr. }34542 \end{array}$}  & $91.19$ & $87.27$ & $80.07$ & $260$ & $250$ & $277$\\ \hhline{|~|~|-|~|~|~|-|-|-|-|-|-|}
-       & & $0.5$ & & & & $281.83$ & $281.48$ & $265.33$ & $375$ & $366$ & $359$\\ \hhline{|~|-|-|~|~|~|-|-|-|-|-|-|}
-       & \multirow{2}{*}{$0.5$} & $0.1$ & & & & $164.15$ & $157.1$ & $144.13$ & $389$ & $378$ & $376$\\ \hhline{|~|~|-|~|~|~|-|-|-|-|-|-|}
-       & & $0.5$ & & & & $507.30$ & $506.67$ & $477.6$ & $555$ & $553$ & $535$\\ \hline
-
-       \multirow{4}{3em}{\centering $C$ \\ $60{\times}8$}
-       & \multirow{2}{*}{$0.1$} & $0.1$ & \multirow{4}{*}{\centering $\displaystyle \begin{array}{c} \text{st. }5212 \\ \text{tr. }9764 \end{array}$} & \multirow{4}{*}{\centering $\displaystyle \begin{array}{c} \text{st. }5064 \\ \text{tr. }9440 \end{array}$}  & \multirow{4}{*}{\centering $\displaystyle \begin{array}{c} \text{st. }5088 \\ \text{tr. }9500 \end{array}$}  & $46.32$ & $47.07$ & $44.87$ & $23$ & $22$ & $23$\\ \hhline{|~|~|-|~|~|~|-|-|-|-|-|-|}
-       & & $0.5$ & & & & $143.35$ & $146.41$ & $153.98$ & $34$ & $32$ & $34$\\ \hhline{|~|-|-|~|~|~|-|-|-|-|-|-|}
-       & \multirow{2}{*}{$0.5$} & $0.1$ & & & & $83.37$ & $84.73$ & $80.77$ & $36$ & $34$ & $34$\\ \hhline{|~|~|-|~|~|~|-|-|-|-|-|-|}
-       & & $0.5$ & & & & $258.04$ & $263.53$ & $277.17$ & $54$ & $51$ & $52$\\ \hline
-
-       \multirow{4}{3em}{\centering $C$ \\ $120{\times}16$}
-       & \multirow{2}{*}{$0.1$} & $0.1$ & \multirow{4}{*}{\centering $\displaystyle \begin{array}{c} \text{st. }20290 \\ \text{tr. }37966 \end{array}$} & \multirow{4}{*}{\centering $\displaystyle \begin{array}{c} \text{st. }20402 \\ \text{tr. }38182 \end{array}$}  & \multirow{4}{*}{\centering $\displaystyle \begin{array}{c} \text{st. }20466 \\ \text{tr. }38374 \end{array}$}  & $98.25$ & $93.74$ & $88.33$ & $297$ & $297$ & $331$\\ \hhline{|~|~|-|~|~|~|-|-|-|-|-|-|}
-       & & $0.5$ & & & & $321.18$ & $317.61$ & $311.62$ & $405$ & $403$ & $496$\\ \hhline{|~|-|-|~|~|~|-|-|-|-|-|-|}
-       & \multirow{2}{*}{$0.5$} & $0.1$ & & & & $176.85$ & $168.73$ & $158.99$ & $440$ & $426$ & $527$\\ \hhline{|~|~|-|~|~|~|-|-|-|-|-|-|}
-       & & $0.5$ & & & & $578.13$ & $571.71$ & $560.92$ & $606$ & $640$ & $723$\\ 
-
-      \hline
-    \end{tabular}
-  }
-  %\vspace{-0.8cm}
 \end{table}
 
-\begin{table}[t]
-  \centering\noindent%
-  %\vspace{-0.5cm}
-  \caption{Results for the UAV vs. Operator Game. First column describes the number of waypoints used.  Second column indicates probability of delegation ($D$), and the probability that the UAV stops working ($S$). 
-  The other columns show the size of the model, the expected total reward for the optimal strategy, and the computation time in seconds, respectively, for three different randomly generated roadmap configurations.}
-  \label{table:resultsUAV}
-  %\vspace{-0.8cm}
-  \scalebox{0.9}{
-    \begin{tabular}{|c|c|c|c|c|c|g|h|c|g|h|c|}
-      \hline
-      \multirow{2}{*}{Version} & \multicolumn{2}{c|}{Prob.} & \multicolumn{3}{c|}{Size(States/Transitions)} & \multicolumn{3}{c|}{Opt.\ Expect.\ Total Rew.} & \multicolumn{3}{c|}{Time (in sec.)} \\ \hhline{|~|-|-|-|-|-|-|-|-|-|-|-|}
-      & $D$ & $S$ &  \cellcolor{white}s.\ 1 & \cellcolor{white}s.\ 2 & \cellcolor{white}s.\ 3 & \cellcolor{white}\makebox[3.4em][c]{s.\ 1} & \cellcolor{white}\makebox[3.4em][c]{s.\ 2} & \cellcolor{white}\makebox[3.4em][c]{s.\ 3} & \cellcolor{white}\makebox[1.8em][c]{s.\ 1} & \cellcolor{white}\makebox[1.8em][c]{s.\ 2} & \cellcolor{white}\makebox[1.8em][c]{s.\ 3} \\  
-      \hline
-       \multirow{4}{3em}{\centering UAV \\ $6w.$}
-       & \multirow{2}{*}{$0.1$} & $0.05$ & \multirow{4}{*}{\centering $\displaystyle \begin{array}{c} \text{st. }501 \\ \text{tr. }857 \end{array}$} & \multirow{4}{*}{\centering $\displaystyle \begin{array}{c} \text{st. }1148 \\ \text{tr. }2166 \end{array}$} & \multirow{4}{*}{\centering $\displaystyle \begin{array}{c} \text{st. }302 \\ \text{tr. }508 \end{array}$} & $16.72$ & $12.47$ & $13.14$ & $8$ & $25$ & $1$\\ \hhline{|~|~|-|~|~|~|-|-|-|-|-|-|}
-       & & $0.1$ & & & & $15.73$ & $11.15$ & $12.63$ & $5$ & $14$ & $2$\\ \hhline{|~|-|-|~|~|~|-|-|-|-|-|-|}
-       & \multirow{2}{*}{$0.5$} & $0.05$ & & & & $20.49$ & $12.77$ & $17.05$ & $7$ & $22$ & $3$\\ \hhline{|~|~|-|~|~|~|-|-|-|-|-|-|}
-       & & $0.1$ & & & & $18.8$ & $11.67$ & $15.95$ & $7$ & $13$ & $2$\\ \hline
 
-       \multirow{4}{3em}{\centering UAV \\ $8w.$}
-       & \multirow{2}{*}{$0.1$} & $0.05$ & \multirow{4}{*}{\centering $\displaystyle \begin{array}{c} \text{st. }5335 \\ \text{tr. }9734 \end{array}$} & \multirow{4}{*}{\centering $\displaystyle \begin{array}{c} \text{st. }8289 \\ \text{tr. }15642 \end{array}$} & \multirow{4}{*}{\centering $\displaystyle \begin{array}{c} \text{st. }3167 \\ \text{tr. }5723 \end{array}$} & $17.88$ & $40.59$ & $24.6$ & $47$ & $183$ & $51$\\ \hhline{|~|~|-|~|~|~|-|-|-|-|-|-|}
-       & & $0.1$ & & & & $17.11$ & $34.3$ & $21.48$ & $63$ & $128$ & $31$\\ \hhline{|~|-|-|~|~|~|-|-|-|-|-|-|}
-       & \multirow{2}{*}{$0.5$} & $0.05$ & & & & $26$ & $42.21$ & $30.87$ & $67$ & $209$ & $41$\\ \hhline{|~|~|-|~|~|~|-|-|-|-|-|-|}
-       & & $0.1$ & & & & $23.44$ & $36.08$ & $24.72$ & $51$ & $114$ & $27$\\ \hline
 
-       \multirow{4}{3em}{\centering UAV \\ $10w.$}
-       & \multirow{2}{*}{$0.1$} & $0.05$ & \multirow{4}{*}{\centering $\displaystyle \begin{array}{c} \text{st. }15775 \\ \text{tr. }28257 \end{array}$} & \multirow{4}{*}{\centering $\displaystyle \begin{array}{c} \text{st. }11212 \\ \text{tr. }20624 \end{array}$} & \multirow{4}{*}{\centering $\displaystyle \begin{array}{c} \text{st. }21153 \\ \text{tr. }39348 \end{array}$} & $39.76$ & $28.7$ & $19.76$ & $659$ & $656$ & $892$\\ \hhline{|~|~|-|~|~|~|-|-|-|-|-|-|}
-       & & $0.1$ & & & & $35.43$ & $23.36$ & $16.2$ & $389$ & $261$ & $586$\\ \hhline{|~|-|-|~|~|~|-|-|-|-|-|-|}
-       & \multirow{2}{*}{$0.5$} & $0.05$ & & & & $42.13$ & $30.77$ & $24.56$ & $644$ & $421$ & $891$\\ \hhline{|~|~|-|~|~|~|-|-|-|-|-|-|}
-       & & $0.1$ & & & & $37.11$ & $26.08$ & $19.27$ & $412$ & $261$ & $592$\\ \hline
 
-      \hline
-    \end{tabular}
-  }
-  %\vspace{-0.8cm}
-\end{table}
-\fi
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -1,6 +1,7 @@
 \chapter{Medidas para Masking-tolerancia a fallas}
 \label{cap:maskingMeasure}
 
+\myworries{REVISAR PRUEBAS} \\
 Introducimos una noción de distancia de tolerancia a fallas entre sistemas de transición etiquetados. Intuitivamente, esta noción de distancia mide el grado de tolerancia a fallas exhibido por un sistema candidato.
 En la práctica, hay diferentes tipos de tolerancia a fallas, aquí nos restringimos al análisis de masking-tolerancia a fallas ya que suele ser una característica muy deseada para sistemas críticos.
 En términos generales, un sistema es masking-tolerante a fallas cuando es capaz de enmascarar las fallas completamente, sin permitir que estas fallas tengan consecuencias observables para los usuarios.
@@ -13,7 +14,7 @@ Estos algoritmos fueron implementados en una herramienta que computa de manera a
 
 \section{Introducción} \label{sec:intro}
 
-    La tolerancia a fallas es una característica importante del software crítico, y puede ser definida como la capacidad de un sistema para lidiar con eventos inesperados, que pueden ser causados por bugs de programación, interacciones con un ambiente poco cooperativo, mal funcionamiento de hardware, etcétera.
+La tolerancia a fallas es una característica importante del software crítico, y puede ser definida como la capacidad de un sistema para lidiar con eventos inesperados, que pueden ser causados por bugs de programación, interacciones con un ambiente poco cooperativo, mal funcionamiento de hardware, etcétera.
 
 Se pueden encontrar ejemplos de sistemas tolerantes a fallas en casi cualquier parte: protocolos de comunicación, circuitos de hardware, sistemas aviónicas, cripto-monedas, etcétera.
 
@@ -29,7 +30,7 @@ Hay diferentes maneras de extender el modelo nominal, el enfoque típico involuc
 En \cite{DemasiCMA17} se propone un enfoque formal alternativo para tratar con el análisis de la tolerancia a fallas. Este enfoque permite un análisis totalmente automático y distingue apropiadamente comportamientos defectuosos y normales. Además, este framework es sensible a la inyección de fallas. En ese trabajo se definen tres nociones de relaciones de simulación para caracterizar diferentes tipos de tolerancia a fallas:
 tolerancia \emph{masking}, \emph{nonmasking}, y \emph{failsafe}, originalmente definidas en \cite{Gartner99}. 
 
-    Por otro lado, en los últimos años, se ha logrando un progreso significativo en pos de definir métricas o distancias apropiadas para diversos tipos de modelos cuantitativos, incluyendo sistemas de tiempo real \cite{HenzingerMP05}, modelos probabilistas \cite{DesharnaisGJP04}, y métricas para sistemas lineales y ramificados \cite{CernyHR12,AlfaroFS09,Henzinger13,LarsenFT11,ThraneFL10}. 
+Por otro lado, en los últimos años, se ha logrando un progreso significativo en pos de definir métricas o distancias apropiadas para diversos tipos de modelos cuantitativos, incluyendo sistemas de tiempo real \cite{HenzingerMP05}, modelos probabilistas \cite{DesharnaisGJP04}, y métricas para sistemas lineales y ramificados \cite{CernyHR12,AlfaroFS09,Henzinger13,LarsenFT11,ThraneFL10}. 
 
 Algunos autores han resaltado que estas métricas pueden ser útiles para razonar sobre la robustez de un sistema, un concepto relacionado con la tolerancia a fallas. Particularmente, en \cite{CernyHR12}, la noción tradicional de relación de simulación se generaliza, y se introducen tres distancias de simulación entre sistemas, concretamente \emph{correctitud}, \emph{cobertura}, y \emph{robustez}.
 A estas distancias se las define utilizando juegos cuantitativos con objetivos \emph{discounted-sum} y \emph{mean-payoff}.
@@ -44,7 +45,7 @@ Formalmente, dado un sistema nominal $N$ y su implementación $I$ y sea $\delta$
 Por lo tanto, distinguimos efectivamente entre el modelo nominal, su versión tolerante a fallas  y el conjunto de fallas para el sistema en cuestión.
 
 Para poder medir el grado de masking-tolerancia a fallas de un sistema dado, empezamos caracterizando la masking-tolerancia a fallas por medio de relaciones de simulación entre dos sistemas, como se define en \cite{DemasiCMA17}. El primero cumple el rol de especificación del comportamiento deseado (i.e el modelo nominal) y el segundo tiene el rol de implementación tolerante a fallas (i.e. el modelo extendido con fallas y mecanismos de tolerancia).
-La existencia de una relación de masking implica que la implementación enmascara las fallas. Luego, introducimos una caracterización de la simulacion de masking en términos de juegos y enriquecemos los mismos con objetivos cuantitativos para definir así la noción de \emph{distancia de masking-tolerancia a fallas}, donde los valores posibles del juego pertenecen al intervalo  $[0,1]$. La implementación tolerante a fallas es masking-tolerante a fallas si el valor del juego es $0$. Además, mientras mayor el valor, mas lejos esta la implementación de la especificación en términos de la distancia de masking-tolerancia a fallas. De esta forma, una distancia mayor decrementa notablemente el grado de tolerancia a fallas.
+La existencia de una relación de masking implica que la implementación enmascara las fallas. Luego, introducimos una caracterización de la simulación de masking en términos de juegos y enriquecemos los mismos con objetivos cuantitativos para definir así la noción de \emph{distancia de masking-tolerancia a fallas}, donde los valores posibles del juego pertenecen al intervalo  $[0,1]$. La implementación tolerante a fallas es masking-tolerante a fallas si el valor del juego es $0$. Además, mientras mayor el valor, mas lejos esta la implementación de la especificación en términos de la distancia de masking-tolerancia a fallas. De esta forma, una distancia mayor decrementa notablemente el grado de tolerancia a fallas.
 
 Entonces, para un modelo nominal $N$ y dos implementaciones tolerantes a fallas diferentes $I_1$ y $I_2$, nuestra distancia asegura que  $\DeltaMask(N,I_1)<\DeltaMask(N,I_2)$ cuando $I_1$ tolera mas fallas que $I_2$.
 
@@ -73,7 +74,7 @@ Todos los casos de estudio mencionados son ejemplos típicos de sistemas toleran
 %Full details and proofs can be found in \cite{CastroDDP18}.
 
 \section{Simulación de Masking} \label{sec:masking_dist}
-Empezamos definiendo la simulación de masking. En \cite{DemasiCMA17}, se definió una simulación basada en estados para la masking-tolerancia a fallas, aquí reutilizamos esta definición usando sistemas de transición etiquetados. Primero, vamos a introducir algunos conceptos que son necesarios para definir masking-tolerancia a fallas. Para todo vocabulario $\Sigma$, y todo conjunto de etiquetas $\Faults = \{F_0, \dots, F_n\}$ no pertenecientes a $\Sigma$, consideramos 
+Empezamos definiendo la simulación de masking. En \cite{DemasiCMA17}, se definió una simulación basada en estados para la masking-tolerancia a fallas, aquí reformulamos esta definición usando simulación basada en transiciones. Primero, vamos a introducir algunos conceptos que son necesarios para definir masking-tolerancia a fallas. Para todo vocabulario $\Sigma$, y todo conjunto de etiquetas $\Faults = \{F_0, \dots, F_n\}$ no pertenecientes a $\Sigma$, consideramos 
 $\SigmaF = \Sigma \cup \Faults$, donde $\Faults \cap \Sigma = \emptyset$. Intuitivamente, los elementos de $\Faults$ indican la ocurrencia de una falla en una implementación defectuosa. Además, a veces sera útil considerar el conjunto $\Sigma^i = \{ e^i \mid e \in \Sigma\}$, que contiene los elementos de $\Sigma$ indexados con el superíndice $i$.
 
 %, $\Sigma^i = \{\sigma^i \mid \sigma \in \Sigma\}$.
@@ -289,7 +290,7 @@ y $E^G$ es el conjunto minimal que satisface que:
 
 \end{definition}
 
-La intuición de este juego es lo siguiente. 
+La intuición de este juego se detalla a continuación. 
 El Refutador elige transiciones de la especificación o de la implementación y hace su movimiento, luego el Verificador trata de igualar el movimiento de su contrincante, esto es similar al juego de bisimulación \cite{Stirling99}. 
 Sin embargo, cuando el Refutador escoge una falla (note que solo este jugador puede elegir fallas), el Verificador debe igualar su movimiento con un paso en si mismo.
 Esto intuitivamente se puede interpretar como un enmascaramiento de la falla por parte de la implementación tolerante a fallas de tal manera que la falla no puede ser observada del lado del usuario. $\Refuter$ gana si el juego alcanza un estado de error, i.e., $\ErrorSt$; de lo contrario, $\Verifier$ gana el juego. 
@@ -323,8 +324,9 @@ es vacío devuelve un vértice correspondiente a un arco arbitrario.
 	(2) $\rho_i \neq \ErrorSt$, para todo $i\geq 0$. Esto implica que la estrategia es ganadora para el Verificador. 
 La prueba es por inducción sobre $i$. El caso base es directo ya que 
 $\InitVertex^G \neq \ErrorSt$ y $\InitVertex^G = (\InitState, \#, \InitStatePrime, \Refuter)$ y por suposición tenemos $\InitState \Masking \InitStatePrime$. Para el caso inductivo, asumimos que 
-\todo{No entiendo esta frase}
-$\rho_i$ holds $\rho_i \neq \ErrorSt$ y que $\pr{3}{\rho_i} = \Verifier$ o $\pr{0}{\rho_i} \Masking \pr{2}{\rho_i}$. 
+%\myworries{No entiendo esta frase}
+%$\rho_i$ holds
+$\rho_i \neq \ErrorSt$ y que $\pr{3}{\rho_i} = \Verifier$ o $\pr{0}{\rho_i} \Masking \pr{2}{\rho_i}$. 
 Si $\rho_i = (s, \#, s', \Refuter)$, entonces esto significa que $s \Masking s'$. Como asumimos que
 $\rightarrow$ y $\rightarrow'$ son seriales, tenemos que: $\exists \sigma \in \Sigma: s \xrightarrow{\sigma} t$ y $\exists \sigma \in \SigmaF : s' \xrightarrowprime{\sigma} t'$. Es decir, por definición del juego, $\rho_{i+1} \neq \ErrorSt$. 
 Además, $\pr{3}{\rho_{i+1}} = \Verifier$ y entonces las aserciones (1) y (2) valen. 
@@ -388,8 +390,8 @@ $\Rightarrow$ a partir de $\rightarrow$ toma un tiempo polinomial.
 \end{center}
 \end{figure}
 
-	Se puede solucionar juegos de alcanzabilidad computando conjuntos $\text{Reach}_0$ (estados ganadores para el Refutador) como un punto fijo de conjuntos $\text{Reach}^i_0$  \cite{Jurd11}.
-	Estas ideas pueden ser adaptadas a nuestro contexto para tener en cuenta la cantidad de fallas. Esto sera útil en las próximas secciones, donde la cantidad de fallas es importante para razonar sobre la versión cuantitativa de los juegos de masking.
+Se puede solucionar juegos de alcanzabilidad computando conjuntos $\text{Reach}_0$ (estados ganadores para el Refutador) como un punto fijo de conjuntos $\text{Reach}^i_0$  \cite{Jurd11}.
+Estas ideas pueden ser adaptadas a nuestro contexto para tener en cuenta la cantidad de fallas. Esto sera útil en las próximas secciones, donde la cantidad de fallas es importante para razonar sobre la versión cuantitativa de los juegos de masking.
 \begin{definition}\label{def:U} Dado un grafo de juego de masking fuerte $\StrMaskGG$, 
 los conjuntos $\setsUs$ (para $i,j \geq 0$) se definen de la siguiente manera:
 \begin{align*}
@@ -404,9 +406,11 @@ los conjuntos $\setsUs$ (para $i,j \geq 0$) se definen de la siguiente manera:
     &\textstyle\cup
     %\{v' \mid v' \in S_V \wedge post(v') \subseteq \bigcup_{j'\leq j} U_{i+1}^{j'} \wedge post(v') \cap U^j_{i+1} \neq \emptyset \wedge \pr{2}{v'} \notin \Faults \} \\
     %NOTE: above is the original condition of TACAS paper
-    \{v' \mid v' \in V_\Verifier \wedge \post(v') \subseteq \bigcup_{i'\leq i+1, j' \leq j}U_{i'}^{j'} \wedge \post(v') \cap U^j_{i+1} \neq \emptyset \wedge \pr{1}{v'} \notin \Faults \} \\
+    \{v' \mid v' \in V_\Verifier \wedge \post(v') \subseteq \bigcup_{i'\leq i+1, j' \leq j}U_{i'}^{j'} \\
+    &\phantom{==}\wedge \post(v') \cap U^j_{i+1} \neq \emptyset \wedge \pr{1}{v'} \notin \Faults \} \\
     &\textstyle \cup
-    \{v' \mid  v' \in V_\Verifier \wedge \post(v') \subseteq \bigcup_{i'\leq i, j' \leq j}U_{i'}^{j'} \wedge \post(v') \cap \setsUs \neq \emptyset \wedge \pr{1}{v'} \in \Faults \}
+    \{v' \mid  v' \in V_\Verifier \wedge \post(v') \subseteq \bigcup_{i'\leq i, j' \leq j}U_{i'}^{j'} \\
+    &\phantom{==}\wedge \post(v') \cap \setsUs \neq \emptyset \wedge \pr{1}{v'} \in \Faults \}
 \end{align*}
 Además, $U^k = \bigcup_{i \geq 0} U_i^k$ y $U = \bigcup_{k \geq 0} U^k$.
 \end{definition}
@@ -464,7 +468,7 @@ Es importante remarcar que utilizamos el atributo  ``cuantitativo'' en un sentid
 
 \end{itemize}
 %
-donde $\chi_{\Faults}$ es la función característica sobre el conjunto $\Faults$, devolviendo $1$ si $\sigma \in \Faults$ y $0$ de otro modo, y $\chi_{\ErrorSt}$ es la función característica sobre el singleton $\{\ErrorSt\}$.
+donde $\chi_{\Faults}$ es la función característica sobre el conjunto $\Faults$, devolviendo $1$ si $\sigma \in \Faults$ y $0$ de otro modo, y $\chi_{\ErrorSt}$ es la función característica sobre el conjunto unitario $\{\ErrorSt\}$.
 \end{definition}
 Note que la función de recompensa retorna un par de números en lugar de un solo numero. Es directo codificar al par como un único numero pero no lo hacemos por claridad. Remarcamos que el
 \emph{grafo de juego de masking cuantitativo débil} $\QMWeakGame$
@@ -592,7 +596,7 @@ $\FMask(\out(\pi^*_\Refuter, \pi^*_\Verifier)) = \frac{1}{\pr{0}{\delta(\rho_0)}
 $\inf_{\pi_\Verifier \in \Pi_\Verifier} \FMask(\out(\pi^*_\Refuter, \pi_\Verifier)) = \frac{1}{\pr{0}{\delta(v^G_0)}}$. 
 
 
-Finalmente, probaremos que no existe una estrategia $\pi^+_\Refuter$  tal que $\sup_{\pi_\Verifier} \FMask(\out(\pi^+_\Refuter, \pi_\Verifier)) < \frac{1}{\pr{0}{\delta(v^G_0)}}$. 
+Por último, demostraremos que no existe una estrategia $\pi^+_\Refuter$  de tal forma que $\sup_{\pi_\Verifier} \FMask(\out(\pi^+_\Refuter, \pi_\Verifier)) < \frac{1}{\pr{0}{\delta(v^G_0)}}$. 
 De esta forma, $\pi^*_\Refuter$ es la mejor estrategia. 
 Vamos a hacer una prueba por contradicción, asumamos que tenemos tal estrategia. Consideremos $\out(\pi^+_\Refuter, \pi^*_\Verifier) = \rho = \rho_0 \rho_1 \dots$, 
 y sea $\delta(\rho_0) = (i,j)$. Entonces, note que, si $\rho_i \in V_\Refuter$, entonces $\pr{0}{\delta(\rho_i)} = \pr{0}{\delta(\rho_{i+1})}$, 
@@ -718,7 +722,7 @@ Los pasos principales del algoritmo se detallan a continuación:
   Sea $k$ la primer componente de la etiqueta del estado inicial, entonces el valor del juego es $0$ si 
   $k = \infty$, y $\frac{1}{k}$ en caso contrario.\\
 \end{enumerate}
-\begin{algorithm}[t]
+\begin{algorithm}[t!]
 \SetAlgoLined
 \KwIn{Juego de Masking Cuantitativo Fuerte $\QMStrGame = \langle V^G, V_\Refuter, V_\Verifier,E^G, \InitVertex^G, \reward^G \rangle$}
 \KwOut{$\val(\QMStrGame)$}
@@ -1052,7 +1056,7 @@ Por esto, teniendo en cuenta las inecuaciones \ref{eq:hi1a}, \ref{eq:hi2} y \ref
 \begin{align*}
 	\frac{1}{\pr{0}{\delta((s,\#, s'', \Refuter))}} & = \frac{1}{i} & \text{(Suposición)} \\
 									      & \leq \frac{1}{i'+1} + \frac{1}{i''} & \text{Ineq.~\ref{eq:hi1a}} \\
-									      &  = \frac{1}{\pr{0}{\delta((s, \#, s', \Refuter))}} +  \frac{1}{\pr{0}{\delta((s', \#, s'', \Refuter))}} &
+									      &  = \frac{1}{\pr{0}{\delta((s, \#, s', \Refuter))}} \ +  \\ &\phantom{=\ } \frac{1}{\pr{0}{\delta((s', \#, s'', \Refuter))}} &
 \end{align*}
 	Si $F \notin \Faults'$, entonces debemos tener una transición $((s', F^2, w'', \Verifier), (s', \#, w'', \Refuter))$ en $\mathcal{Q}_{A',A''}$. 
 Ahora bien, por hipótesis inductiva, tenemos $\delta((s, \#, s', \Refuter)) = (i',j')$ y $\delta((s', \#, w'', \Refuter)) = (i'',j'')$ tal que 
@@ -1092,14 +1096,6 @@ El Teorema \ref{thm:triang_ineq} establece que ir midiendo la distancia de maski
 
 
 \section{Trabajo Relacionado} \label{sec:related_work}
-
-This article is a revised and expanded version of a conference paper presented at 
-TACAS 2019 \cite{CastroDDP18b} and it extends it as follows:  
-(1) it presents formal proofs for all theorems; (2) it describes the problem of computing  
-the masking distance considering deterministic and 
-non-deterministic systems; (3) it includes a more efficient implementation 
-of the \MaskD~tool; and (4) it proposes a more thorough experimental analysis, including more 
-instances for each case study and a new case study (Raft).
 
 En los últimos años, se ha incrementado el interés en generalizaciones cuantitativas de la noción booleana de correctitud y sus interrogantes correspondientes en verificación cuantitativa \cite{BokerCHK14,CernyHR12,Henzinger10,Henzinger13}.
 El framework descrito en \cite{CernyHR12} es el trabajo mas cercanamente relacionado a nuestro enfoque. 

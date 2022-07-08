@@ -17,57 +17,61 @@ Mas precisamente, un programa descrito en este lenguaje es una colección de pro
 Estas construcciones sintácticas se denominan acciones. El lenguaje también permite a los usuarios etiquetar una acción como \emph{internal} (i.e., acciones silenciosas). Esto es importante para abstraerse de los mecanismos internos de el sistema que se modela y permitir construir modelos mas grandes. Además, algunas acciones pueden ser etiquetadas como \emph{faulty} para indicar que representan fallas. 
 
 \begin{figure}[t]
+\centering
 \begin{minipage}[t]{.47\textwidth}
-\fontsize{6.6}{6.6}\selectfont\ttfamily
+\fontsize{10}{10}\selectfont\ttfamily
 \begin{tabbing}
 x\=xxxxxxxx\=xxxxxxxxxxxx\=xx\=xxx\= \kill    
-Process MEMORY \{\\[1ex]
-\>w : BOOL; // the last value written \\
-\>r : BOOL;  // the value read from the \\ 
-\>\> ~~// memory \\
-\>c0 : BOOL; \\[1ex]
+Process MEMORIA \{\\[1ex]
+\>w : BOOL; // ultimo valor escrito \\
+\>r : BOOL;  // valor observable \\ 
+\>c0 : BOOL; // bit de memoria\\[1ex]
 \>Initial: w \&\& c0 \&\& r;\\[1ex]
 %\>                   \>\>// 1 = refreshing\\[1ex]
 \>[write1]  true -> w=true, c0=true, \\
 \>\>~r=true; \\
 \>[write0]  true -> w=false, c0=false, \\
 \>\>~r=false; \\
-\>[read0] !r -> r=r; \\
-\>[read1]  r -> r=r; \\[1ex]
+\>[read0] !r -> r=r; // skip \\
+\>[read1]  r -> r=r; // skip \\[1ex]
 \}\\
 \end{tabbing}
 \end{minipage}
+\caption{Modelo nominal para el ejemplo de la celda de memoria.} \label{fig:exam_1_mem_cell_nominal}
+\end{figure}
+
 \hfill
+
+\begin{figure}[t]
+\centering
 \begin{minipage}[t]{.47\textwidth}
-\fontsize{6.6}{6.6}\selectfont\ttfamily
+\fontsize{10}{10}\selectfont\ttfamily
 \begin{tabbing}
 x\=xxxxxxxx\=xxxxxxxxxxxxx\=xxx\=xxx\= \kill    
-Process MEMORY\_FT \{\\[1ex]
-\>w : BOOL; \\
-\>r : BOOL;  \\
-\>c0 : BOOL; // first bit \\
-\>c1 : BOOL; // second bit \\
-\>c2 : BOOL; // third bit \\[1ex]
+Process MEMORIA\_FT \{\\[1ex]
+\>w : BOOL; // ultimo valor escrito \\
+\>r : BOOL; // valor observable \\
+\>c0 : BOOL; // primer bit \\
+\>c1 : BOOL; // segundo bit \\
+\>c2 : BOOL; // tercer bit \\[1ex]
 %\>\textcolor{red}{f : [0..1] init 0;} \>\>\textcolor{red}{// fault limiting artifact}\\[1ex]
 \>Initial: w \&\& c0 \&\& c1 \&\& c2 \&\& r;\\[1ex]
 \>[write1]  true -> w=true, c0=true, c1=true,  \\
 \>\>~c3=true, r=true; \>\> \\
 \>[write0]  true -> w=false, c0=false, c1=false,  \\
 \>\>~c3=false, r=false; \>\> \\
-\>[read0]  !r -> r=r; \\
-\>[read1]  r ->  r=r; \\
-\>[fail1]  faulty true -> c0=!c0, r =(!c0\&\&c1)||(c1\&\&c2)|| \\ 
-\>\>(!c0\&\&c2);   \\
-\>[fail2]  faulty true -> c1=!c1, r =(c0\&\&!c1)||(!c1\&\&c2)|| \\ 
-\>\>(c0\&\&c2);   \\
-\>[fail3]  faulty true -> c2=!c2, r =(c0\&\&c1)||(c1\&\&!c2)|| \\ 
-\>\>(c0\&\&!c2);   \\[1ex]
+\>[read0]  !r -> r=r; // skip \\
+\>[read1]  r ->  r=r; // skip \\
+\>[fault1]  faulty true -> c0=!c0, r =(!c0\&\&c1)||(c1\&\&c2)|| \\ 
+\>\>(!c0\&\&c2); // el primer bit falla  \\
+\>[fault2]  faulty true -> c1=!c1, r =(c0\&\&!c1)||(!c1\&\&c2)|| \\ 
+\>\>(c0\&\&c2); // el segundo bit falla  \\
+\>[fault3]  faulty true -> c2=!c2, r =(c0\&\&c1)||(c1\&\&!c2)|| \\ 
+\>\>(c0\&\&!c2); // el tercer bit falla  \\[1ex]
 \}\\
 \end{tabbing}
 \end{minipage}
-\vspace{-0.5cm}
-\caption{Procesos para el ejemplo de la celda de memoria.} \label{fig:exam_1_mem_cell}
-\vspace{-0.5cm}
+\caption{Modelo con fallas para el ejemplo de la celda de memoria.} \label{fig:exam_1_mem_cell_faulty}
 \end{figure}
 
 Como ejemplo, consideremos la celda de memoria vista en el capitulo anterior. 
@@ -78,17 +82,15 @@ Por lo tanto, una propiedad que uno podría asociar a este modelo es que el valo
 Como se ha visto anteriormente, una falla potencial en este escenario ocurre cuando la celda pierde su carga de forma inesperada, y su valor almacenado cambia sin que se haya realizado una escritura (e.g., cambia de $1$ a $0$ por perdida de carga). Una técnica típica para lidiar con esta situación es el uso de \emph{redundancia}: 
 en este caso, se utilizan tres bits de memoria en lugar de solo uno. Las operaciones de escritura son realizadas simultáneamente en los tres bits. 
 La operación de lectura, por otro lado, retorna el valor que se repite al menos dos veces en los bits de memoria; esto se conoce como \emph{votación}. 
-    La figura \ref{fig:exam_1_mem_cell} muestra los procesos representando el modelo nominal y el el modelo de la implementación tolerante a fallas en este ejemplo. 
+    Las figuras \ref{fig:exam_1_mem_cell_nominal} y \ref{fig:exam_1_mem_cell_faulty} muestran los procesos representando el modelo nominal y el el modelo de la implementación tolerante a fallas respectivamente para este ejemplo. 
 
 \subsection{Arquitectura}
 
 \MaskD~es software de código abierto escrito en el lenguaje \textsf{Java}. La documentación y las instrucciones de instalación se pueden encontrar en \cite{MaskD}. La arquitectura de la herramienta se muestra en la figura~\ref{fig:arch}.
 \begin{figure}[t]
     \centering
-    \includegraphics[scale=0.45]{Figs/architecture.eps}
-    \vspace{-0.4cm}
+    \includegraphics[scale=0.50]{Figs/architecture.eps}
     \caption{Arquitectura de \textsf{MaskD}.}\label{fig:arch}
-    \vspace{-0.5cm}
 \end{figure}
     Discutiremos brevemente las componentes principales de la herramienta:
 \begin{description}
@@ -141,22 +143,20 @@ El usuario puede utilizar la opción \verb"-det" para cambiar al algoritmo de di
 \begin{figure}[t]
 \centering
 \begin{minipage}[t]{.47\textwidth}
-\fontsize{6.6}{6.6}\selectfont\ttfamily
+\fontsize{10}{10}\selectfont\ttfamily
 \begin{tabbing}
 0. ERR\_STATE\\
 1. \{ <> , I\_m1.read1 , <m1r,m1c0,m1c2> , V \} \\
 2. \{ <> , \# , <m1r,m1c0,m1c2> , R \} \\ 
-3. \{ <> , I\_m1.fail1 , <m1r,m1c0,m1c2> , V \} \\
+3. \{ <> , I\_m1.fault1 , <m1r,m1c0,m1c2> , V \} \\
 4. \{ <> , \# , <m1c2> , R \} \\ 
-5. \{ <> , I\_m1.fail3 , <m1c2> , V \} \\
+5. \{ <> , I\_m1.fault3 , <m1c2> , V \} \\
 6. \{ <> , \# , <> , R \} \\ 
 7. \{ <m1w,m1r,m1c0> , I\_m1.write0 , <> , V \} \\
 8. \{ <m1w,m1r,m1c0> , \# , <m1w,m1r,m1c0,m1c1,m1c2> , R \} \\ 
 \end{tabbing}
 \end{minipage}
-\vspace{-0.3cm}
 \caption{Traza de Error para el ejemplo de la celda de memoria.} \label{fig:trace_mem_cell}
-\vspace{-0.5cm}
 \end{figure}
 
 
@@ -246,7 +246,7 @@ Hemos calculado la distancia de masking para el protocolo con $1$, $5$ y $10$ tr
 
 Podemos observar que los valores de la distancia no son afectados por la cantidad de trozos a enviar por el protocolo. Esto es de esperar, debido a que la distancia de masking depende de la redundancia agregada para enmascarar fallas, en este caso, depende de la cantidad de retransmisiones permitidas.
 
-Los experimentos fueron realizados en una MacBook Air con un procesador Intel Core i5 de 1.3 GHz y una memoria RAM de 4GB. La herramienta y los casos de estudio para reproducir los resultados se encuentran disponibles en un repositorio Zenodo \cite{MaskD}.
+Los experimentos fueron realizados en una MacBook Air con un procesador Intel Core i5 de 1.3 GHz y una memoria RAM de 4GB. El código fuente y ejecutables de la herramienta asi como los casos de estudio para reproducir los resultados se encuentran disponibles en un repositorio Github \cite{MaskD}.
 
 
 

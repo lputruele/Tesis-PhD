@@ -1,5 +1,5 @@
 %\documentclass[10pt]{report} %twoside para impresion final 
-\documentclass[11pt,a4paper]{report} %a4paper,
+\documentclass[11pt,a4paper]{report}
 
 
 % Note: Make all your adjustments in here
@@ -8,7 +8,6 @@
 \titleformat{\paragraph}[runin]
 {\normalfont\normalsize\bfseries}{\theparagraph}{1em}{}
 \titlespacing*{\paragraph}   {0pt}{3.25ex plus 1ex minus .2ex}{1em}
-\babelhyphenation[spanish]{Node-Caching-Linked-List}
 
 
 \begin{document}
@@ -17,13 +16,14 @@
 
 % ********************************************************************
 % Frontmatter
-%\pagenumbering{roman}
+\pagenumbering{roman}
 \pagestyle{plain}
 %\include{titlepage}
 \input{titlepage-famaf}
 
 \cleardoublepage\null
 \include{resumen}
+\include{abstract}
 \cleardoublepage%\null
 \include{agradecimientos}
 \cleardoublepage
@@ -52,14 +52,7 @@
 % ********************************************************************
 % Backmatter
 \cleardoublepage\null
-%\bibliographystyle{amsplain}
 \bibliographystyle{apalike}
-%\bibliographystyle{apacite}
-%\bibliographystyle{alpha}
-%\cleardoublepage\phantomsection
 \addcontentsline{toc}{chapter}{{\sc bibliografía}}
 \bibliography{bibliografia}
-%\appendix
-%\cleardoublepage
-%\part{Appendix}
 \end{document}
