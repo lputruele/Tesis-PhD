@@ -8,10 +8,11 @@ dicha cuantificación es especialmente evidente en entornos de misión crítica 
 se centró en tecnologías y aplicaciones específicas, lo que resultó en subdisciplinas aparentemente no relacionadas con terminologías y metodologías distintas.
 Desde entonces, se ha avanzado mucho al ver el área de una manera más
 manera abstracta y formal. Esto ha llevado a
-una comprensión más clara de los problemas inherentes y esenciales en el campo y
-muestra lo que se puede hacer para aprovechar la
+una comprensión más clara de los problemas inherentes y esenciales en el campo y muestra lo que se puede hacer para aprovechar la
 complejidad de los sistemas que contrarrestan
-fallas. Esta tesis adopta esta visión y se concentra en extender nociones de verificación de software tolerante a fallas utilizando conceptos que provienen de teoría de juegos.
+fallas. 
+En la práctica, se utilizan diversas técnicas para aumentar la confiabilidad de un algoritmo, por ejemplo: usando mecanismos de votación, roll-backs, protocolos randomizados, etcétera. Sin embargo, la mayoría de estas técnicas comúnmente se usan en una forma \emph{ad-hoc}, consecuentemente,  el análisis del grado de tolerancia a fallas que proveen tales técnicas es una tarea demandante y casi nunca es posible antes de que el software ya esté en uso, y por lo tanto las fallas se vuelvan visibles a los usuarios.
+En esta tesis se planea utilizar nociones que vienen de la teoría de juegos \cite{AptG11} para razonar sobre sistemas tolerantes a fallas. El comportamiento de un sistema distribuido puede pensarse como un juego donde un jugador representa al sistema y otro representa un ambiente que puede comportarse de forma maliciosa, por ejemplo introduciendo fallas; además, también es posible considerar que los jugadores se comportan de forma probabilística. El jugador malicioso quiere llevar al sistema a estados no deseados que violen propiedades de safety o liveness mientras que el jugador que representa al sistema quiere evadir estos estados.
 
 \section{Motivaci\'on y Objetivos}
 \label{sec:intro.objetivos}
@@ -31,17 +32,25 @@ Esta visión es particularmente útil para \emph{síntesis de controladores}, i.
 Por lo tanto, sintetizar un controlador consiste de computar las estrategias óptimas para un juego dado. Al mismo tiempo, la teoría de juegos permite desarrollar métricas que pueden ser útiles para razonar sobre el nivel de tolerancia a fallas de un sistema dado.
 En esta tesis nos enfocamos en juegos de dos jugadores, cero-suma, por turnos y de información perfecta con recompensas (no negativas)\cite{FilarV96}. 
 
-\subsubsection*{Los objetivos planteados son los siguientes}
-%Esto nos lleva a nuestros objetivos:
+\subsubsection*{Considerando los problemas mencionados anteriormente, los objetivos específicos de la investigación llevada a cabo en mi tesis son los siguientes:}
 
-\paragraph{A}
-Desarrollar técnicas que permitan medir el grado de tolerancia a fallas exhibido por un sistema distribuido.
+\paragraph{Tolerancia a Fallas}
+\begin{itemize}
+\item Obtener una caracterización formal de la tolerancia a fallas basada en teoría de juegos, haciendo énfasis en la masking-tolerancia a fallas. 
+    
+\item Desarrollar algoritmos que permitan cuantificar el grado de tolerancia a fallas exhibido por un sistema.
 
-\paragraph{B}
-Demostrar que dichas técnicas son correctas y factibles de implementar en la práctica.
+\item Implementar y evaluar el rendimiento de dichas técnicas en herramientas de software de código abierto que puedan ayudar a un ingeniero a diseñar sistemas tolerantes a fallas y evaluar su nivel de tolerancia.
+\end{itemize}
 
-\paragraph{C}
-Implementar dichas técnicas en herramientas de software de código abierto que puedan ayudar a un ingeniero a diseñar sistemas tolerantes a fallas y evaluar su nivel de tolerancia.
+\paragraph{Síntesis de Controladores}
+\begin{itemize}
+\item Caracterizar formalmente juegos estocásticos entre un sistema y un entorno que se comporta de forma fair. 
+    
+\item Desarrollar algoritmos que permitan derivar estrategias óptimas para un sistema estocástico.
+
+\item Implementar y evaluar el rendimiento de dichas técnicas en herramientas de software de código abierto.
+\end{itemize}
 
 
 \section{Contribuciones}
@@ -53,12 +62,13 @@ Implementar dichas técnicas en herramientas de software de código abierto que 
 A continuación se enumeran las contribuciones de esta tesis:
 
 \begin{enumerate}
-	\item Presentamos una noción de distancia de masking-tolerancia a fallas entre sistemas bajo la caracterización a través de relaciones de simulación y representaciones de juegos con objetivos cuantitativos. 
-    Utilizando esta distancia, es posible medir la tolerancia de una implementación dada y compararla con otras para así seleccionar la más adecuada \cite{CastroDDP18b}.
 	
-	\item Desarrollamos una herramienta automática diseñada para medir el nivel de tolerancia a fallas entre componentes de software, descritos por medio de un lenguaje de comandos con guarda. La herramienta se enfoca en medir componentes masking-tolerantes a fallas, es decir, programas que enmascaran fallas de tal manera que no puedan ser observadas por el ambiente\cite{PutrueleDCD22}. 
+\item Presentamos una noción de distancia de masking-tolerancia a fallas entre sistemas bajo la caracterización a través de relaciones de simulación y representaciones de juegos con objetivos cuantitativos. 
+Utilizando esta distancia, es posible medir la tolerancia de una implementación dada y compararla con otras para así seleccionar la más adecuada \cite{CastroDDP18b}.
+	
+\item Desarrollamos una herramienta automática diseñada para medir el nivel de tolerancia a fallas entre componentes de software, descritos por medio de un lenguaje de comandos con guarda. La herramienta se enfoca en medir componentes masking-tolerantes a fallas, es decir, programas que enmascaran fallas de tal manera que no puedan ser observadas por el ambiente\cite{PutrueleDCD22}. 
 
-    \item Investigamos las propiedades de los juegos estocásticos con payoff de recompensa total bajo la suposición de un entorno fair. Bajo este escenario, mostramos que se preserva la determinación y que los jugadores poseen estrategias óptimas sin memoria y deterministas, además, mostramos que el valor del juego puede  ser calculado en tiempo polinomial. Por último, validamos los resultados con una evaluación experimental\cite{?}.  %
+\item Investigamos las propiedades de los juegos estocásticos con payoff de recompensa total bajo la suposición de un entorno fair. Bajo este escenario, mostramos que se preserva la determinación y que los jugadores poseen estrategias óptimas sin memoria y deterministas, además, mostramos que el valor del juego puede  ser calculado en tiempo polinomial. Por último, validamos los resultados con una evaluación experimental\cite{?}.  %
  
 \end{enumerate}
 
