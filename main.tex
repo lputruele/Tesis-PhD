@@ -9,7 +9,7 @@
 {\normalfont\normalsize\bfseries}{\theparagraph}{1em}{}
 \titlespacing*{\paragraph}   {0pt}{3.25ex plus 1ex minus .2ex}{1em}
 
-
+\pgfplotsset{compat=1.17} 
 \begin{document}
 \frenchspacing
 \raggedbottom
@@ -21,10 +21,10 @@
 %\include{titlepage}
 \input{titlepage-famaf}
 
-\cleardoublepage\null
+%\cleardoublepage\null
 \include{resumen}
 \include{abstract}
-\cleardoublepage%\null
+%\cleardoublepage%\null
 \include{agradecimientos}
 \cleardoublepage
 \tableofcontents
@@ -40,16 +40,17 @@
 \pagestyle{headings}
 \pagenumbering{arabic}
 \cleardoublepage
-\include{chapter1}
-\include{chapter2}
-\include{chapter3}
-\include{chapter4}
-\include{chapter5}
-\include{chapter6}
+\include{chapter-intro}
+\include{chapter-background}
+\include{chapter-masking}
+\include{chapter-fair}
+\include{chapter-maskingProb}
+\include{chapter-tool}
+\include{chapter-conclusion}
 
 % ********************************************************************
 % Backmatter
-\cleardoublepage\null
+%\cleardoublepage\null
 \bibliographystyle{apalike}
 \addcontentsline{toc}{chapter}{{\sc bibliografía}}
 \bibliography{bibliografia}

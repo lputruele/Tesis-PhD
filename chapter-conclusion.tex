@@ -1,0 +1,35 @@
+\chapter{Conclusiones y Trabajos Futuros}
+\label{cap:conclusiones}
+
+En esta tesis hemos presntado primero una noción de distancia de masking-tolerancia a fallas entre sistemas basada en una caracterización de masking-tolerancia a través de relaciones de simulación y una representación correspondiente basada en juegos con objetivos cuantitativos.
+Nuestro marco es adecuado para apoyar a los ingenieros en el análisis y
+diseño de sistemas tolerantes a fallas. Más precisamente, hemos definido una función de distancia de enmascaramiento computable tal que un ingeniero pueda medir la tolerancia de enmascaramiento de un determinado
+implementación tolerante a fallas, es decir, el número de fallas que se pueden enmascarar.
+De este modo, el ingeniero puede medir y comparar la distancia de masking-tolerancia a fallas entre implementaciones tolerantes a fallas alternativas, y seleccione una que
+se adapte mejor a sus preferencias.
+Hemos desarrollado una herramienta que permite aplicar esta distancia entre dos sistemas dados y la hemos evaluado sobre diversos casos de estudio.
+En esta linea de trabajo hay muchas direcciones para el trabajo futuro. Sólo hemos definido una noción de distancia de tolerancia a fallas para enmascarar la tolerancia a fallas, nociones similares de distancia pueden definirse para otros niveles de tolerancia a fallas como \emph{fail-safe} y \emph{non-masking}.
+
+Por otro lado, también hemos investigado propiedades de juegos estocásticos con funciones de payoff de recompensas totales bajo la asunción de que el minimizador (es decir, el entorno) emplea solo estrategias fair al jugar.  
+Hemos demostrado que, en este escenario, se conserva la determinación y ambos jugadores tienen estrategias óptimas sin memoria y deterministas; además, el valor del juego se puede calcular aproximando un punto fijo mayor de un operador de Bellman. Solo hemos considerado recompensas no negativas en esta tesis. Una forma posible de extender los resultados presentados aquí a juegos con recompensas negativas es adaptar las técnicas presentadas en \cite{DBLP:conf/lics/Baier0DGS18} para MDPs con costos negativos, dejamos esto como un trabajo futuro.
+Para mostrar la aplicabilidad de nuestra técnica, hemos presentado dos ejemplos de aplicaciones y una validación experimental sobre diversas instancias de estos casos de estudio utilizando nuestra herramienta prototipo. Creemos que los supuestos de fairness permiten considerar un comportamiento más realista del ambiente.
+No hemos investigado otras funciones comunes de payoff, como el discounted payoff o el limiting-average payoff. Un beneficio de estas clases de funciones es que el valor de los juegos está bien definido incluso cuando los juegos no se detienen.
+A primera vista, la noción de fairness es poco relevante para los juegos con discounted payoff, ya que este tipo de funciones de pago toman la mayor parte de su valor de las partes iniciales de las ejecuciones. Para el limiting-average payoff, la situación es diferente, y las suposiciones de fairness pueden ser relevantes, ya que podrían cambiar el valor de los juegos, dejamos esto como trabajo futuro.
+
+Por último presentamos una relación de masking-tolerancia a fallas entre sistemas de transición probabilistas, acompañada por una caracterización correspondiente en términos de juegos estocásticos. A pesar de que el juego podría ser infinito, propusimos una representación simbólica finita como alternativa, esto permite que el juego pueda ser resuelto en tiempo polinomial.
+%
+Extendimos el juego con objetivos cuantitativos basados en contar ``hitos'' y de esta forma se puede cuantificar la masking-tolerancia a fallas de una implementación probabilista dada.
+%
+Como este juego considera objetivos de recompensa total, es necesario que haya algún criterio de terminación y por lo tanto se requiere que el juego sea almost-sure terminante bajo fairness del ambiente.
+%
+Al restringir a estrategias sin memoria, hemos demostrado que el juego resultante está determinado y que puede computarse solucionando un conjunto de ecuaciones funcionales. También proveemos una técnica para decidir si un juego es almost-sure terminante bajo fairness en tiempo polinomial.
+%
+Hay muchas direcciones para trabajo futuro. La más directa es extender estos resultados a estrategias no estacionarias. Dados los resultados presentados en el capítulo~\ref{cap:fairAdversaries}, creemos que esto es posible pero teniendo especial cuidado con la naturaleza infinita del juego.
+%
+En otra dirección de trabajo, solo nos enfocamos en una versión fuerte de simulación de masking probabilista. Para analizar sistemas complejos, es necesario contar con una versión débil de esta relación para así poder abstraerse de las transiciones internas de una implementación dada.
+%
+%% We are currently working on this extension, with the main goal of
+%% being able to model more complex case studies.
+De nuevo, solo hemos trabajado con masking-tolerancia a fallas, queda como trabajo futuro extrapolar las ideas exploradas aqui a otros niveles de tolerancia a fallas.
+%
+Finalmente, desarrollamos una herramienta prototipo que implementa los algoritmos desarrollados acompañada por una evaluación experimental sobre pequeños casos de estudio típicos.

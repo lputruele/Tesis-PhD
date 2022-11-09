@@ -300,3 +300,197 @@
 \newenvironment{proofofclaim}[1]{\par\noindent\underline{Demostración:}\space#1}{\hfill $\blacksquare$}
 \renewcommand{\algorithmcfname}{Algoritmo}
 \newcommand\myworries[1]{\textbf{\textcolor{red}{!!!!!!!!!!!!!!!!!!!  #1  !!!!!!!!!!!!!!!!!!!}}}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%% MASKING PROB %%%%%%%%%%%%%%%%%%%%%%
+
+
+% Definitions
+
+% used for masking relations
+%\newcommand{\M}{\mathbin{\mathbf{M}}} 
+% masking TS relation
+%\def\Masking{\preceq_{mask}}
+\def\Masking{\preceq_{m}}
+% weak masking TS relation
+%\def\WeakMasking{\preceq^w_{mask}}
+\def\WeakMasking{\preceq^w_{m}}
+% masking payoff cunction
+%\def\FMask{f_{mask}}
+\def\FMask{f_{m}}
+% masking distance
+%\def\DeltaMask{\delta_{mask}}
+\def\DeltaProbMask{\delta_{m}^{p}}
+% set of all transition systms
+\def\AllTS{\mathfrak{A}}
+% Refuter id
+\def\Refuter{\mathsf{R}}
+% Verifier id
+\def\Verifier{\mathsf{V}}
+% Probabilistic player
+\def\Probabilistic{\mathsf{P}}
+% Error state
+\def\ErrorSt{v_{\text{err}}}
+% Error state in symbolic game
+\def\ErrorStSG{\ErrorSt^{\SymbG_{A,A'}}}
+% Init State
+\def\InitVertexG{v_0^\mathcal{G}}
+% Init State in symbolic game
+\def\InitVertexSG{v_0^{\SymbG_{A,A'}}}
+% Supremo
+%\def\Sup{\mbox{sup}}
+\def\Sup{\sup}
+% infimo
+%\def\Inf{\mbox{inf}}
+\def\Inf{\inf}
+% max brp
+\def\MaxBRP{M}
+% the projection operator
+%\def\pr#1#2{\mbox{pr}_{#1}(#2)}
+%SigmaF
+\def\SigmaF{\Sigma_{\mathcal{F}}}
+%SigmaM
+\def\SigmaM{\Sigma_{\mathcal{M}}}
+%MaskD
+\def\MaskD{\textsf{MaskD}}
+%val
+\def\val{\mathop{\textup{val}}}
+\def\support#1{\mathit{Supp}(#1)}
+\def\image#1{\mathit{Im}(#1)}
+\def\faults{\mathcal{F}}
+\def\RFP{\mathit{RFP}}
+%\def\inf{\mathop{inf}}
+%\def\equations#1{\mathit{Eq}(#1)}
+%\def\equationsbin#1#2{\mathit{Eq}(#1)(#2)}
+%\def\post#1{\mathit{post}(#1)}
+%\def\outputbin#1#2{\mathit{out}(#1,#2)}
+%\def\output#1#2#3{\mathit{out}_{#1}(#2,#3)}
+\def\Prob#1#2{\mathit{Prob}^{#1, #2}}
+\def\couplings#1#2{\mathbb{C}(#1,#2)}
+\def\vertices#1{\mathbb{V}(#1)}
+% the projection operator
+%\def\pr#1#2{\operatorname{pr}_{#1}(#2)}
+\def\pr#1#2{{#2}[{#1}]}
+%\def\pr#1#2{(#2)_{#1}}
+%\DeclareMathOperator*{\argmin}{argmin}
+%\DeclareMathOperator*{\argmax}{argmax}
+
+% Probabilistic macros
+%Dist
+%\def\Dist{\textsf{Dist}}
+%R-respecting coupling
+\def\RelCoupling{R^{\#}}
+%M-respecting coupling
+%\newcommand{\MaskCoup}{\mathbin{\mathbf{M^{\#}}}} 
+% Expectation 
+\def\Expect#1#2{\mathbb{E}^{#1, #2}}
+% Symbolic Graph 
+\def\SymbG{\mathcal{SG}}
+% Stochastic Masking Game Graph 
+\def\StochG{\mathcal{G}}
+\def\Stochgame#1{\mathcal{#1}}
+% Milostone Stochastic Masking Game Graph 
+\def\MilestoneG{\mathcal{MG}}
+\def\post{\mathit{Post}}
+\def\pre{\mathit{Pre}}
+\def\Apre{\forall\mathit{Pre}}
+\def\Epre{\exists\mathit{Pre}}
+\def\AFairpre{\forall\mathit{Pre}_f}
+\def\EFairpre{\exists\mathit{Pre}_f}
+\def\SymbAFairpre{\forall\mathit{Pre}^S_f}
+\def\SymbEFairpre{\exists\mathit{Pre}^S_f}
+\def\Eq{\mathit{Eq}}
+\def\out{\mathit{out}}
+%\def\Dist{\mathit{Dist}}
+\def\Dist{\mathcal{D}}
+\def\Dirac{\Delta}
+\def\reward{\mathit{r}}
+\def\LP{\mathit{LP}}
+\def\tuple#1{{\langle{#1}\rangle}}
+
+
+
+% strategies for player 1
+\def\strat#1{\pi_{#1}}
+\def\stratprime#1{\pi'_{#1}}
+\def\starredstrat#1{\pi^*_{#1}}
+\def\Memoryless{\mathsf{M}}
+\def\Deterministic{\mathsf{D}}
+\def\Randomized{\mathsf{R}}
+\def\upperbound{\mathsf{u}}
+
+
+% strategies for player 2
+\def\Strategies#1{\Pi_{#1}}
+\def\dedrule#1#2{\frac{\textstyle #1}{\textstyle #2}}
+\def\U{\mathbin{\textsf{U}}}
+
+% a new hyphen, better suited for mathematical written
+\mathchardef\mhyphen="2D
+
+% a new primed xrightarrow 
+%\newcommand*{\xrightarrowprime}[2][]{\mathrel{{\xrightarrow[#1]{#2}}{}'}}
+\def\PRISM{\textsf{PRISM}}
+\def\LTL{\textsf{LTL}}
+\def\Bellman{L}
+
+
+% Proof env
+\renewenvironment{proof}{\noindent\textbf{Demostración.}}{\hfill$\diamond$}
+
+
+
+
+
+\usepackage{color}
+
+\definecolor{lightblue}{RGB}{231,255,255}
+\definecolor{lightred}{RGB}{255,224,224}
+\definecolor{lightgreen}{RGB}{224,255,224}
+\definecolor{lightyellow}{RGB}{255,255,224}
+\definecolor{lightpurple}{RGB}{255,224,255}
+\definecolor{darkerred}{RGB}{64,0,0}
+\definecolor{darkred}{RGB}{128,0,0}
+\definecolor{darkblue}{RGB}{0,0,128}
+\definecolor{darkgreen}{RGB}{0,128,0}
+\definecolor{darkpurple}{RGB}{128,0,128}
+\definecolor{black}{RGB}{0,0,0}
+
+
+%\newcommand{\highlightedremark}[4]{%
+%  \begin{center}\fcolorbox{#1}{#2}{%
+%  \begin{minipage}{.98\linewidth}\color{#1}%
+%  \textbf{\THICKhrulefill[ #3 ]\THICKhrulefill}%
+%  \par\noindent#4\end{minipage}}\end{center}%
+%}
+
+\makeatletter
+\def\THICKhrulefill{\leavevmode \leaders \hrule height 5pt\hfill \kern \z@}
+\makeatother
+
+
+\newcommand{\redtext}[1]{\textcolor{red}{#1}}
+
+
+% milestones macros
+\newcommand{\milestones}{\mathcal{M}}
+\newcommand{\mreward}{\reward_\milestones}
+
+
+
+%PALABRAS EN INGLES DUDOSAS PARA TRADUCIR
+\def\WordMasking{\emph{masking}}
+\def\WordFair{\emph{fair}}
+\def\WordFairness{\emph{fairness}}

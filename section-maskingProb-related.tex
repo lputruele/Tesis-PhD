@@ -1,0 +1,55 @@
+\section{Discusiones finales} 
+\label{sec:final_discussions_prob}
+
+%\section{Related Work} \label{sec:related_work}
+%\paragraph{Related Work.}
+Los juegos introducidos en \cite{Bacci0LM17,BacciBLMTB19,DesharnaisGJP04,DesharnaisLT11}  están basados en la noción de bisimulación probabilista, por lo que son simétricos. Además, en \cite{DesharnaisGJP04,DesharnaisLT11}, los vértices son modelados utilizando subconjuntos de estados de PTS's, 
+observemos que nuestros juegos no utilizan subconjuntos de estados. Los juegos definidos en  \cite{Bacci0LM17,BacciBLMTB19} utilizan los \textit{liftings} de Kantorovich y Hausdorff para lidiar con distribuciones probabilistas y no-determinismo, respectivamente; mientras que los vértices de los politopos de transportación son utilizados como vértices probabilistas. En contraste, introducimos una representación simbólica de juegos para evadir la explosión de estados causada por los vértices del politopo. También notemos que las métricas introducidas en \cite{Bacci0LM17,BacciBLMTB19} miden la distancia de bisimulación (probabilista) entre PTSs, la cual es siempre $1$ para sistemas almost-sure failing.
+		
+%% In \cite{LanotteMT17}, the authors introduce a notion of weak simulation quasimetric tailored for reasoning about the evolution of \emph{gossip protocols} in order to compare network protocols that have similar behaviour up to a certain tolerance; being $0$ and $1$ the minimum and maximum distance, respectively.
+%% Note that using this quasimetric to compare a network protocol with an almost-sure failing implementation will always return $1$, thus that approach cannot be used to quantify the masking fault-tolerance of almost-sure failing systems.
+%
+\cite{LanotteMT17}~introduce una simulación débil quasi-simétrica para razonar sobre la evolución de los \emph{ protocolos gossip} para poder comparar protocolos de comportamiento similar hasta una cierta tolerancia.
+Sin embargo, a la hora de comparar un protocolo de red con una implementación almost-sure failing, esta quasi-métrica siempre retorna $1$ (la máxima distancia) y por lo tanto, no puede cuantificar la masking-tolerancia a fallas de la misma forma que en el trabajo presentado aquí.
+
+
+Las métricas como \emph{Mean-Time To Failure} (MTTF)~\cite{ReliabilityBook}  pueden aplicar para los ejemplos de la Sección~\ref{sec:experimental_eval_prob}.
+%%Our framework is more general than such metrics. Indeed, we do not necessarily have to count time
+Sin embargo, nuestro framework es más general que tales métricas ya que no se limita a contar unidades de tiempo, otros eventos pueden ser considerados hitos.  Adicionalmente, el cómputo de MTTF normalmente requiere que se identifiquen los estados de falla de manera ad hoc, mientras que las técnicas presentadas aquí nos permiten hacer esto en un nivel de abstracción más alto.
+ %% level of abstraction: the failure situation appears in the game as a
+ %% result of comparing the implementation model against the nominal
+ %% model.
+
+
+
+
+ 
+% The games introduced in \cite{Bacci0LM17,BacciBLMTB19,DesharnaisGJP04,DesharnaisLT11}  are based on probabilistic bisimulation, so they are symmetric. Furthermore, in 
+%\cite{DesharnaisGJP04,DesharnaisLT11} the nodes of the game graph are modeled using subsets of states of the PTSs, in our formulation
+%we do not use subsets of states. The games defined in \cite{Bacci0LM17,BacciBLMTB19} use Kantorovich's and Hausdorff's liftings to deal with probabilistic distributions and %non-determinism, respectively. In addition, the authors use the vertices of the transportation polytopes as probabilistic vertices. In contrast, we introduced a symbolic %representation of games to avoid the state explosion caused by the vertices of the polytopes. Also note that the metrics introduced in \cite{Bacci0LM17,BacciBLMTB19} %measure the (probabilistic) bisimulation distance between two PTSs, which for almost-sure failing systems is always $1$.
+		
+%Another related framework is  defined in \cite{LanotteMT17}. Therein, the authors introduce a notion of weak simulation quasimetric tailored for reasoning about the evolution of %\emph{gossip protocols}. This makes it possible to compare network protocols that have similar behaviour up to a certain tolerance; being $0$ and $1$ the minimum and %maximum distance, respectively.  Note that using this quasimetric to compare a network protocol with an almost-sure failing implementation will always return $1$, thus that %approach cannot be used to quantify the masking fault-tolerance of almost-sure failing systems.
+
+%After the case studies of Section~\ref{sec:experimental_eval},
+%\emph{Mean-Time To Failure} (MTTF)~\cite{ReliabilityBook} may come to
+%mind.  Though this metric (lifted to games) may be the result of a
+%particular case study, we present a much more general framework.
+%Indeed, on the one hand, we do not necessarily have to count time
+%units, and other events may be set as milestones.  On the other hand,
+%the computation of MTTF would normally require the identification of
+%failures states in an ad hoc manner, while we do this at a higher
+%level of abstraction: the failure situation appears in the game as a
+%result of comparing the implementation model against the nominal
+%model.
+
+
+
+
+
+
+%% Finally, let us compare our approach with a well-known metric in fault-tolerance, \emph{Mean-Time To Failure} (MTTF), which is the expected (or average) amount of time that a system 
+%% performs successfully until it fails. In our framework, when we set ticks as milestones, we can calculate the mean time until a masking failure occur.
+%% %These metrics are designed for hardware or electronic systems, where we have at hand estimations about the failure rate of the physical components. 
+%% Our approach is designed to be used at a higher level of abstraction, where we have a model of the system to be implemented acting as a specification, and several possible implementations of it, described as probabilistic automata. %This level of abstraction makes it possible to use this framework to analyze software fault-tolerance. 
+%% Notice that our framework is particularly tailored to deal with masking fault-tolerance, a particular kind of fault-tolerance.
+%% In addition, our game formulation allows us to analyse systems on worst-case scenarios.

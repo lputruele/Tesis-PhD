@@ -1,50 +1,33 @@
 \chapter*{Abstract}
 
-Fault-tolerance is an important characteristic of critical software, it can be defined as the  capability of systems  
-to deal with unexpected events, which may be caused by code bugs, interaction with an uncooperative environment, 
+Fault-tolerance is an important characteristic of critical software, it can be defined as the capability of systems to deal with unexpected events, which may be caused by code bugs, interaction with an uncooperative environment, 
 hardware malfunctions, etc.
 Examples of fault-tolerant systems can be found  almost everywhere:
 communication protocols, hardware circuits, avionic systems, 
 cryptocurrencies, etc. 
 So, the increasing relevance of critical software in  
-everyday life  has led to a renewed interest  in the automatic 
-verification of fault-tolerant properties. However, one of the main 
-difficulties when reasoning about these kinds of properties is given 
-by their quantitative nature, which is present even when probabilities are not considered.
-One aim of this thesis is to develop techniques and tools for dealing with this difficulties.
-We then introduce a notion of fault-tolerance distance between 
-labeled transition systems. Intuitively, this notion of distance measures the degree of fault-tolerance exhibited by a candidate system.
-In practice, there are different kinds of fault-tolerance, here we restrict ourselves to the analysis of
-masking fault-tolerance because it is often a highly desirable goal for critical systems. 
-Roughly speaking, a system is masking fault-tolerant when it is able to completely mask the faults, 
-not allowing these faults to have any observable consequences for the users.  
+everyday life  has led to a renewed interest  in the automatic verification of fault-tolerant properties. However, one of the main difficulties when reasoning about these kinds of properties is given by their quantitative nature, which is present whether probabilities are considered or not.
+
+One aim of this thesis is to develop techniques and tools for dealing with these difficulties.
+We then introduce a notion of fault-tolerance distance between labeled transition systems. Intuitively, this notion of distance measures the degree of fault-tolerance exhibited by a candidate system.
+In practice, there are different kinds of fault-tolerance, here we restrict ourselves to the analysis of masking fault-tolerance because it is often a highly desirable goal for critical systems. 
+Roughly speaking, a system is masking fault-tolerant when it is able to completely mask the faults, not allowing these faults to have any observable consequences for the users.  
 We capture masking fault-tolerance via a simulation relation, which is accompanied  by a corresponding  game characterization. 
 We enrich the resulting games with quantitative objectives to 
 define the notion of masking fault-tolerance distance.
-Furthermore, we investigate the basic properties of this notion of masking distance, and 
-we prove that it is a directed semimetric. 
-We show that, in the case of deterministic systems, computing the  
-masking distance can be accomplished by a shortest path algorithm. 
-In contrast, for non-deterministic systems, this computation can be performed via a fix-point approach.
-We have implemented our approach in a tool that automatically computes the masking distance between a nominal system and a fault-tolerant version of it, we have evaluated its performance and effectiveness on several case studies of different complexities.
-This tool can help software engineers to design, evaluate and compare different fault-tolerant implementations, and decide which is best to fit their interests.
+We define measures for masking fault-tolerance in the context of both non-stochastic and stochastic systems. Furthermore, we investigate the basic properties of these notions of masking distance.
+We have implemented our approach in tools that automatically compute the masking distance between a nominal system and a fault-tolerant version of it, we have evaluated their performance and effectiveness on several case studies of different complexities.
+These tools can help software engineers to design, evaluate and compare different fault-tolerant implementations, and decide which is best to fit their interests.
 
-Game theory \cite{MorgensternNeuman42}  admits an elegant and profound mathematical theory. 
-In the last decades, it has received widespread attention from computer scientists because it has important applications to software synthesis and verification. 
-The analogy is appealing, the operation of a system under an uncooperative environment (faulty hardware, malicious agents, unreliable communication channels, etc.) can be modeled as a game 
-between two players (the system and the environment), in which the system tries to fulfill certain goals, whereas the environment tries to prevent this from happening. 
-This view is particularly useful for \emph{controller synthesis}, i.e., to automatically generate decision-making policies from high-level specifications.
-The other aim of this thesis is to develop novel techniques for solving stochastic games played between a system and an environment.
-We then investigate zero-sum turn-based two-player stochastic games in which the objective of one player is to maximize the amount of rewards obtained during a play, while
-the other %
-aims at minimizing it. %
-For this kind of games we consider that a minimizer plays in a 
+A second aim of this thesis is to develop novel techniques for solving stochastic games played between a system and an environment. This view is particularly useful for \emph{controller synthesis}, i.e., to automatically generate decision-making policies from high-level specifications.
+We investigate zero-sum turn-based two-player stochastic games in which the objective of one player is to maximize the amount of rewards obtained during a play, while the other aims at minimizing it. %
+For these kinds of games we consider that a minimizer plays in a 
 fair way. We believe that these kinds of games enjoy interesting applications in software verification, where the maximizer plays the role of a system intending to maximize the
 number of  ``milestones'' achieved, and the minimizer represents the behavior of some uncooperative but yet fair environment.
 Normally, to study total reward properties, games are requested to be stopping (i.e., they reach a terminal state with probability 1).  %
-We relax the property to request that the game is stopping only under a fair minimizing player.
-We prove that these games are determined, i.e., each state of the game has a value defined. Furthermore, we show that both
-players have memoryless and deterministic optimal strategies, and the game value can be computed by approximating the greatest-fixed point of a set of functional equations. We implemented our approach in a prototype tool, and evaluated it on an illustrating example and an Unmanned Aerial Vehicle case study.
+We relax the property to request that the game is stopping only under a fair minimizing player. Furthermore, the results of this research were necessary to be able to develop the masking distance of probabilistic systems. We also implemented these ideas in a prototype tool,  and performed an experimental evaluation.
+
+
 
 \noindent
 \textbf{Keywords:} Software Verification, Game Theory, Fault Tolerance, Measure, Distance, Masking, Controller Synthesis, Stochastic Games.

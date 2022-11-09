@@ -16,7 +16,19 @@
 \usepackage{proof}
 \usepackage{lscape}
 \usepackage{booktabs}
+
+
 \usepackage{tikz}
+\usetikzlibrary{arrows,arrows.meta,calc,automata,positioning,decorations.pathreplacing,shapes.geometric,shapes.misc,graphs,backgrounds}
+\tikzset{align at top/.style={baseline=(current bounding box.north)}}
+\tikzstyle{every node}=[font=\scriptsize]
+%\tikzstyle{state} = [draw,fill=white,circle,thick,align=center,inner sep=0pt,minimum size=4.5mm]
+\tikzstyle{state} = [draw,fill=white,ellipse,thick,align=center,inner sep=0pt,minimum size=4.5mm]
+\tikzstyle{vvert} = [draw,fill=white,ellipse,thick,align=center,inner sep=-2pt,minimum size=8mm]
+\tikzstyle{rvert} = [draw,fill=white,rectangle,thick,align=center,inner sep=3pt,minimum size=7mm]
+\tikzstyle{dot} = [fill,circle,inner sep=0mm,minimum size=1.25mm,line width=0mm]
+
+
 \usepackage[T1]{fontenc}
 \usepackage[colorinlistoftodos]{todonotes}
 
@@ -82,5 +94,7 @@
 \usepackage[spanish]{cleveref}
 \usepackage{lmodern}
 \usepackage[utf8]{inputenc}
+
+
 
 \input{macros}

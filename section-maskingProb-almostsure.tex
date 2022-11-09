@@ -1,0 +1,594 @@
+\section{Cuantificando la Tolerancia a Fallas} \label{sec:almost_sure_prob}
+%\section{Quantifying Fault Tolerance in Almost-Sure Failing Systems} \label{sec:prob_almost_sure}
+%\section{Quantifying Fault Tolerance in Almost-Sure Failing Systems under Fairness} \label{sec:prob_almost_sure}
+
+La simulación de masking probabilista determina si una implementación tolerante a fallas es capaz de enmascarar las fallas completamente o no. Sin embargo, en la práctica, este tipo de masking-tolerancia a fallas no es común. Usualmente, los sistemas tolerantes a fallas son capaces de enmascarar una cantidad de fallas determinada antes de alcanzar un estado de error.
+%
+%% Our main goal in this section is to extend the
+%% game theory presented in the previous section to be able to measure
+%% the amount of masking tolerance exhibited by a system before it fails.
+%
+En esta sección extendemos la teoría de juegos presentada anteriormente para proporcionar una medida para la cantidad de fallas que un sistema puede enmascarar antes de entrar en un estado de error.
+%
+Para hacer esto, extendemos el juego de masking estocástico con una función de objetivo cuantitativo.
+El valor esperado de esta función indica la cantidad de ``hitos'' que se espera que la implementación tolerante a fallas concrete antes de entrar en un estado de error.  Un hito es cualquier evento de interés que pueda ocurrir durante la ejecución de un sistema.  Por ejemplo, se puede considerar hito al enmascaramiento de una falla.
+En este caso, la medida reflejará la cantidad de fallas que fueron toleradas por el sistema antes de romperse. Otro hito podria ser un \textit{acknowledgement} exitoso en un protocolo de transmisión. Esto mide el número esperado de mensajes que el protocolo es capaz de transferir antes de entrar a un estado de falla.
+
+%
+%% To do this type of measuring,  we need  stochastic games with 
+%% quantitative objective functions.  Intuitively, these objective functions count the
+%% number of ``milestones'' observed during a play.
+%% %
+%% Therefore, we first extend stochastic masking games as follows.
+%
+%% \begin{definition}%
+%%   Let
+%%   $A =( S, \Sigma, \rightarrow, s_0 )$ and $A' =( S', \SigmaF, \rightarrow', s_0' )$
+%%   be two PTSs.
+%% %
+%%   A \emph{stochastic masking game graph with milestones} $\milestones$
+%%   is a tuple
+%%   $\MilestoneG_{A,A'} = (V^\StochG, E^\StochG, V^\StochG_\Refuter, V^\StochG_\Verifier, V^\StochG_\Probabilistic, \InitVertex, \delta^\StochG,  \milestones)$
+%%   where:
+%%   \begin{inparaenum}[(i)]
+%%   \item%
+%%     $(V^\StochG, E^\StochG, V^\StochG_\Refuter, V^\StochG_\Verifier, V^\StochG_\Probabilistic, \InitVertex, \delta^\StochG)$  is a stochastic masking game graph,
+%%   \item%
+%%     $\milestones \subseteq \SigmaF^2$ is the set of \emph{milestones}, and
+%%   \item%
+%%     $\reward^\StochG(v) = \chi_{\milestones}(\pr{1}{v})$ is a \emph{reward function}.
+%%   \end{inparaenum}
+%% \end{definition}
+%% %
+%% In this definition, $\chi_B$ is the characteristic function over
+%% set $B$ defined as usual:
+%% %$\chi_B(a) = {(a{\in}B)}\mathbin{?}1\mathbin{:}0$.
+%% $\chi_B(a) = 1$ whenever $(a{\in}B)$ and $\chi_B(a) = 0$ otherwise.
+%% If $B=\{b\}$ is a singleton set, we simply write $\chi_b$.
+%
+%% Given a stochastic masking game graph with milestones and reward function $r^\StochG$, for any play 
+%% $\rho = \rho_0, \rho_1,  \dots$,
+%% we define the \emph{masking payoff function} by
+%% %
+%% $\FMask(\rho) = \lim_{n \rightarrow \infty} (\sum^{n}_{i=0} \reward^\StochG(\rho_i))$.
+%% %% we define the \emph{masking payoff function} as follows:
+%% %% \[
+%% %% 	\FMask(\rho) = \lim_{n \rightarrow \infty} (\sum^{n}_{i=0} \reward^\StochG(\rho_i)).
+%% %% \]
+%
+Por lo tanto, un hito es simplemente una etiqueta de una acción designada en el modelo de implementación.
+
+
+\begin{definition}%
+  Sea $A' =( S', \SigmaF, \rightarrow', s_0' )$ un PTS que modela una implementación.
+  Un \emph{conjunto de hitos} es un conjunto $\milestones\subseteq\SigmaF$.
+\end{definition}
+
+%\remarkPRD{Este cambio en la definici\'on de la recompensa soluciona directamente el error se\~nalado por Luciano en el Teorema 6, solo que habria que cambiar alli a $\chi_{\milestones}$ por $\mreward^\StochG$ (ya lo hice).  Adem\'as habr\'ia que revisar el apendice, por este cambio, pero tambi\'en porque desaparecio el stochastic game graph with milestones $\MilestoneG_{A,A'}$}
+Dado un conjunto de hitos $\milestones$ para $A'$, definimos la recompensa
+$\mreward^\StochG$ sobre el juego de masking estocástico
+$\StochG_{A,A'} = (V^\StochG, E^\StochG, V^\StochG_\Refuter, V^\StochG_\Verifier, V^\StochG_\Probabilistic, \InitVertex, \delta^\StochG)$ para los PTSs $A$ y $A'$ de la siguiente manera:
+%
+$\mreward^\StochG(v) = 1$ si $v\in V^\StochG_\Verifier$ y
+$\pr{1}{v}\in(\milestones^1\cup\milestones^2)$; en caso contrario,
+$\mreward^\StochG(v) = 0$.
+%
+$\mreward^\StochG$ recolecta hitos (cuando puede) solo una vez por cada ronda del juego
+. Esto solo se puede hacer en los vértices del Verificador ya que solo en estos se almacena la etiqueta que se esta jugando en la ronda.
+%
+Luego, la \emph{función de payoff masking} está definida por
+%
+$\FMask(\rho) = \lim_{n \rightarrow \infty} (\sum^{n}_{i=0} \mreward^\StochG(\rho_i))$.
+%
+Intuitivamente, la función de payoff $\FMask$ caracteriza la cantidad de hitos que una implementación tolerante a fallas es capaz de lograr hasta que se alcanza el estado de error. Este tipo de funciones de payoff se suelen llamar \emph{recompensas totales} en la literatura.
+Esto se puede pensar como un juego entre el mecanismo de tolerancia a fallas y un jugador (malicioso) que escoge la manera en la que las fallas ocurren. En este juego, el Verificador es quien maximiza (pretende alcanzar tanto hitos como sea posible) y el Refutador es quien minimiza (quiere prevenir al Verificador de coleccionar recompensas por hitos).  
+
+    
+
+% Desde aca incluimos las cosas de fairness
+Para que el juego de recompensa total esperada esté determinado, el juego estocástico tiene que ser almost-surely stopping, i.e., el juego debe alcanzar un vértice terminal con probabilidad
+1~\cite{FilarV96}.  \cite{CastroDDP22} ha extendido la propiedad de determinación a juegos que son almost-surely stopping bajo la condición de que el minimizador juega de manera fair.
+%
+%% In our setting, this amounts to considering \emph{almost-sure failing
+%% masking games}, that is, games in which the error state $\ErrorSt$ is
+%% reached with probability 1.  Moreover, we require that the Refuter
+%% plays fair.  This is necessary to prevent the Refuter from stalling the game
+%% in an unproductive loop.
+En nuestro contexto, esto nos lleva a considerar \emph{juegos de masking almost-sure failing bajo fairness}, i.e., juegos en los que el estado de error
+$\ErrorSt$ es alcanzado con probabilidad 1 dado que el Refutador juega de forma fair.
+%
+El supuesto de fairness es necesario para prevenir que el Refutador frene el progreso del juego en un bucle improductivo.
+%
+En efecto, consideremos el escenario descrito en el Ejemplo~\ref{example:memory}, y el juego de masking estocástico entre los modelos nominal y con fallas de las Figuras~\ref{fig:exam_1_mem_cell:nom} y~\ref{fig:exam_1_mem_cell:ft} (omitiendo la parte en rojo).
+Uno esperaría que el juego lleve a un estado de falla con probabilidad 1.
+%`
+Sin embargo, el Refutador posee estrategias para las cuales la probabilidad de alcanzar $\ErrorSt$ es menor a $1$.  Por ejemplo, el Refutador podría siempre jugar con una acción de lectura, y por lo tanto, el Verificador tiene que imitar esta acción para siempre y entonces la probabilidad de alcanzar el estado de error es~0.
+%
+Observemos que, en este escenario, el Refutador se está comportando de forma benevolente, jugando de tal forma que se esquiva el estado de error.
+Claramente, esto va en contra de la intención del comportamiento de las fallas, las cuales uno esperaría que ocurran después de esperar lo suficiente.
+%
+Por lo tanto, la suposición de que el Refutador juega de forma (fuertemente) fair, i.e., 
+si alguna acción o falla está habilitada con infinita frecuencia para el Refutador, entonces este está obligado a jugarla eventualmente.
+%it will eventually play such action or fault.
+
+El contexto para los juegos estocásticos con función de payoff masking como objetivo que presentaremos ahora se basa en~\cite{CastroDDP22}, solo que con la necesidad de un cuidado especial debido a la naturaleza infinita de nuestros grafos de juego estocásticos.
+%
+Por esta razón limitamos los resultados del resto de la sección a estrategias sin memoria (aleatorias) y posponemos el resultado general como trabajo futuro.
+%
+Por lo tanto, vamos usar $\Strategies{\Verifier}^{\Memoryless}$ y
+$\Strategies{\Refuter}^{\Memoryless}$ para denotar los conjuntos de todas las estrategias sin memoria (aleatorias) para el Verificador y el Refutador,
+respectivamente, y de forma similar, utilizaremos
+$\Strategies{\Verifier}^{\Memoryless\Deterministic}$ y
+$\Strategies{\Refuter}^{\Memoryless\Deterministic}$ para denotar los conjuntos de todas las estrategias sin memoria puras (o deterministas).
+
+
+%%    We are interested in systems that eventually fail, this allows us to model an interesting set of systems, and it is also mathematically convenient to ensure
+%%  the well-definedness of our games.	However,  In practice, the restriction to almost-sure failing systems  could exclude interesting  case studies.
+%% Consider, for instance,  the scenario described in  Example~\ref{example:memory}.  The fault-tolerant memory implementation described therein is not 
+%% almost-sure failing, as the Refuter has strategies for which the probability of reaching the error state is less than $1$. 
+%% For instance,  the Refuter may always play the reading action,  and hence the Verifier have to mimic this action forever, 
+%% this yields a probability of $0$ of reaching the error state. 
+%% Observe that,  in this scenario, the Refuter is behaving in a benevolent manner, 
+%% playing in such a way that the error state is avoided. A natural assumption in this case is  that the environment (i.e., the Refuter) behaves in a fair way, in the sense that, if some action or fault is 
+%%  infinitely often enabled, then it will be eventually played by this player.  Fairness properties  are particularly useful  in fault-tolerance in order to adopt a more realistic model of faults \cite{DBLP:conf/icse/DIppolitoBPU11}.
+%%      In this section, we extends the framework presented above to systems that almost sure fails under strong fairness assumptions.  As shown in \cite{DBLP:conf/cav/CastroDDP22}, the value of
+%% stochastic games under fair strategies of one player can be computed using greatest fixpoints. We extend these results to our setting. First, consider the notion of fair plays.
+
+
+
+
+Una jugada fair del Refutador se define como una jugada en la cuál el Refutador se compromete a seguir un patrón fair fuerte, i.e., que incluye con infinita frecuencia. Una estrategia fair para el Refutador, es una estrategia que siempre mide 1 sobre el conjunto de todas las estrategias fair del Refutador, sin importar la estrategia del Verificador. La definición a continuación sigue el estilo de~\cite{DBLP:journals/dc/BaierK98,BaierK08,CastroDDP22}.
+
+
+
+%
+\begin{definition}
+  Dado un juego de masking
+  $\StochG_{A,A'} = (V^\StochG, E^\StochG, V^\StochG_\Refuter, V^\StochG_\Verifier, V^\StochG_\Probabilistic, \InitVertex, \delta^\StochG)$,
+  el \emph{conjunto de todas las jugadas fair del Refutador} está definido como
+  $ 
+	\RFP = \{ \omega \in \Omega \mid v \in \inf(\omega) \cap V^\StochG_\Refuter \Rightarrow \post(v) \subseteq \inf(\omega) \}
+  $.
+  %
+  Una estrategia del Refutador $\strat{\Refuter}$ se dice que es \emph{almost-sure fair} si y solo si, para toda estrategia del Verificador
+  $\strat{\Verifier}$,
+  $\Prob{\strat{\Refuter}}{\strat{\Verifier}}_{\StochG_{A,A'},\InitVertex}(\RFP) = 1$.
+\end{definition}
+
+
+%% %
+%% \begin{definition} Given a masking game $\StochG_{A,A'} = (V^\StochG, E^\StochG, V^\StochG_\Refuter, V^\StochG_\Verifier, V^\StochG_\Probabilistic, \InitVertex, \delta^\StochG)$,
+%% The set of Refuter's fair plays (denoted $\RFP$) is defined as follows:
+%% \[
+%% 	\RFP = \{ \omega \in \Omega \mid v \in \inf(\omega) \cap V^\StochG_\Refuter \Rightarrow \post(v) \subseteq \inf(\omega) \}
+%% \]
+%% \end{definition}
+%% 	The almost-sure fair strategies for the Refuter are defined as follows.
+%% \begin{definition} Given a masking game $\StochG_{A,A'} = (V^\StochG, E^\StochG, V^\StochG_\Refuter, V^\StochG_\Verifier, V^\StochG_\Probabilistic, \InitVertex, \delta^\StochG)$,
+%% a Refuter strategy $\strat{\Refuter}$ is said to be \emph{almost-sure fair} iff, for any Verifier's strategy $\strat{\Verifier}$, 
+%% $\Prob{\strat{\Refuter}}{\strat{\Verifier}}_{\StochG_{A,A'},  \InitVertex}(\RFP) = 1$.
+%% \end{definition}
+
+Bajo este concepto, el juego de masking estocástico es almost-sure failing
+bajo fairness si para cada estrategia del Verificador y para cada estrategia fair del Refutador, el juego lleva al estado de error con probabilidad 1. Esto se define formalmente a continuación.
+
+
+
+\begin{definition}
+  Sean $A$ y $A'$ dos PTSs. Decimos que el juego de masking estocástico $\StochG_{A,A'}$ es \emph{almost-sure failing bajo fairness
+  (y estrategias sin memoria)} si y solo si, para toda estrategia sin memoria
+  $\strat{\Verifier} \in \Strategies{\Verifier}^{\Memoryless}$ y para cualquier estrategia fair sin memoria
+  $\strat{\Refuter} \in \Strategies{\Refuter}^{\Memoryless}$,
+  $\Prob{\strat{\Verifier}}{\strat{\Refuter}}_{\StochG_{A,A'}, \InitVertex}(\Diamond \ErrorSt)=1$.
+\end{definition}
+
+%% Now, a model is an almost-sure failing implementation under fairness
+%% of a given nominal model if for every Verifier's strategy and every
+%% Refuter's fair strategy, the stochastich masking games leads to an
+%% error with probability 1.  This is formally defined as follows.
+%% %	We use  almost-sure fair strategies to define almost-sure failing implementations under fairness.
+
+%% \begin{definition} Let $A =( S, \Sigma, \rightarrow, s_0 )$ and $A' =( S', \SigmaF, \rightarrow', s_0' )$ be two PTSs. We say that $A'$ is an \emph{almost-sure failing implementation under fairness}  of $A$ iff, 
+%% for every strategy  $\strat{\Verifier} \in \Strategies{\Verifier}$ and any fair strategy $\strat{\Refuter} \in \Strategies{\Refuter}$, it holds: $\Prob{\strat{\Verifier}}{\strat{\Refuter}}_{\StochG_{A,A'},  \InitVertex}(\Diamond \ErrorSt)=1$.
+%% \end{definition}
+
+
+
+Es interesante observar que,  bajo supuestos de fairness fuerte, la determinación de los juegos se preserva~\cite{CastroDDP22}. Además, en juegos estocásticos finitos con restricciones de fairness, el valor del juego puede ser computado calculando el máximo punto fijo del siguiente funcional de Bellman. Adaptamos este resultado a nuestros juegos al usar los vértices de los politopos al computar los valores de los estados probabilistas. %vertices.
+    
+%% \begin{theorem}\label{theo:det-fairness} Let $\MilestoneG_{A,A'}$ be a stochastic game with milestones for some PTSs $A$ and $A'$ that is almost-sure 
+%% failing for fair Refuter's strategies.  Then,  we have:
+%% \[
+%%  \inf_{\strat{\Refuter} \in \Strategies{\Refuter}^{\Memoryless}} \sup_{\strat{\Verifier} \in \Strategies{\Verifier}^{\Memoryless}}  \mathbb{E}^{\strat{\Verifier},\strat{\Refuter}}_{\MilestoneG_{A,A'}, v}[\FMask] 
+%%     = \sup_{\strat{\Verifier \in \Strategies{\Verifier}^{\Memoryless}}} \inf_{\strat{\Refuter \in \Strategies{\Refuter}^{\Memoryless}}}    \mathbb{E}^{\strat{\Verifier},\strat{\Refuter}}_{\MilestoneG_{A,A'}, v}[\FMask] 
+%%     < \infty.
+%% \]
+%% Moreover, 
+%% the value of the game for memoryless strategies for the Verifier and  fair memoryless Refuter's strategies is the greatest fixpoint of the following functional $\Bellman$: 
+%% %(see Theorem ~\ref{thm:solution_eq_stock_game}). 
+%% \[
+%%     \Bellman(f)(v) =
+%%     \begin{cases}
+%%            %\displaystyle \max_{w \in \vertices{\couplings{\pr{3}{v},\pr{4}{v}}}} \{\chi_{\milestones}(\pr{1}{v}) + \sum_{v' \in \post(v)} w(v,v')  \Bellman_{v'} \}& \text{ if }v \in V^{\SymbG}_\Verifier  \\
+%%            %\displaystyle \max_{w \in \vertices{\couplings{\pr{3}{v}}{\pr{4}{v}}}} \{\chi_{\milestones}(\pr{1}{v}) + \sum_{v' \in \post(v)} w(\pr{0}{v'},\pr{2}{v'})  \Bellman_{v'} \}& \text{ if }v \in V^{\SymbG}_\Verifier  \\
+%%            \displaystyle \min \{\upperbound,  \max_{w \in \vertices{\couplings{\pr{3}{v}}{\pr{4}{v}}}} \{ \chi_{\milestones}(\pr{1}{v})  + \sum_{v' \in \post(v)} w(\pr{0}{v'},\pr{2}{v'})  f(v') \} \}& \text{ if }v \in V^{\SymbG}_\Probabilistic  \\
+%%            \displaystyle \min \{ \upperbound, \max \{\chi_{\milestones}(\pr{1}{v})  + f(v') \mid v' \in \post(v) \} \} & \text{ if } v \in  V^{\SymbG}_\Verifier, \\
+%%            \displaystyle \min \{ \upperbound,  \min \{\chi_{\milestones}(\pr{1}{v})  + f(v') \mid v' \in \post(v) \} \} & \text{ if } v \in  V^{\SymbG}_\Refuter, \\
+%%            \displaystyle 0 & \text{ if } v=\ErrorSt.
+%%            \displaystyle 
+%%     \end{cases}
+%% \]
+%% where $\upperbound$ is a number such that 
+%% $\upperbound \geq \inf_{\strat{\Refuter} \in \Strategies{\Refuter}^{\Memoryless\Deterministic}} \sup_{\strat{\Verifier} \in \Strategies{\Verifier}^{\Memoryless\Deterministic}} \Expect{\strat{\Verifier}}{\strat{\Refuter}}_{\MilestoneG_{A,A'}, \InitVertex}[\FMask]$.
+%% \end{theorem}
+%% \reversemarginpar\marginnote{\color{blue}LP2ALL: The functional counts milestones in every case but it should only count on the V case.}[-4cm]
+
+
+%\remarkPRD{Cambi\'e un poco el enunciado de este teorema y puede afectar cosas en el ap\'endice. Revisar}
+\begin{theorem}\label{theo:det-fairness}
+Sea $\milestones$ un conjunto de hitos para $A'$ y sea  $\StochG_{A,A'}$ un juego estocástico para $A$ y $A'$ que es almost-sure 
+failing para estrategias fair del Refutador.  Entonces,  
+\[\adjustlimits
+ \inf_{\strat{\Refuter} \in \Strategies{\Refuter}^{\Memoryless}} \sup_{\strat{\Verifier} \in \Strategies{\Verifier}^{\Memoryless}}  \mathbb{E}^{\strat{\Verifier},\strat{\Refuter}}_{\StochG_{A,A'}, v}[\FMask] 
+    = 
+    \adjustlimits    
+    \sup_{\strat{\Verifier} \in \Strategies{\Verifier}^{\Memoryless}} \inf_{\strat{\Refuter} \in \Strategies{\Refuter}^{\Memoryless}}    \mathbb{E}^{\strat{\Verifier},\strat{\Refuter}}_{\StochG_{A,A'}, v}[\FMask] 
+    < \infty.
+\]
+Además, 
+el valor del juego para estrategias sin memoria para el Verificador y estrategias fair sin memoria para el Refutador es el punto fijo mayor del siguiente funcional  $\Bellman$: 
+%
+{\small
+\[
+    \Bellman(f)(v) =
+    \begin{cases}
+           \displaystyle \min \Big\{\upperbound,  \max_{w \in \vertices{\couplings{\pr{3}{v}}{\pr{4}{v}}}} \Big\{ \mreward^\StochG(v)  +\!\! \sum_{v' \in \post(v)}\!\! w(\pr{0}{v'},\pr{2}{v'})  f(v') \Big\} \Big\}& \text{ si }v \in V^{\SymbG}_\Probabilistic  \\
+           \displaystyle \min \big\{ \upperbound, \max \big\{\mreward^\StochG(v)  + f(v') \mid v' \in \post(v) \big\} \big\} & \text{ si } v \in  V^{\SymbG}_\Verifier, \\
+           \displaystyle \min \big\{ \upperbound,  \min \big\{\mreward^\StochG(v)  + f(v') \mid v' \in \post(v) \big\} \big\} & \text{ si } v \in  V^{\SymbG}_\Refuter, \\
+           \displaystyle 0 & \text{ si } v=\ErrorSt.
+           \displaystyle 
+    \end{cases}
+\]}%
+donde $\upperbound$ es un número tal que
+$\upperbound \geq \inf_{\strat{\Refuter} \in \Strategies{\Refuter}^{\Memoryless\Deterministic}} \sup_{\strat{\Verifier} \in \Strategies{\Verifier}^{\Memoryless\Deterministic}} \Expect{\strat{\Verifier}}{\strat{\Refuter}}_{\StochG_{A,A'}, \InitVertex}[\FMask]$.
+\end{theorem}
+
+%\textbf{Proof of Theorem \ref{theo:det-fairness}.} Let $\StochG_{A,A'}$ be a stochastic game that is almost-sure 
+%failing for fair Refuter's strategies,  and  let $\milestones$ be a milestone set for $A'$.  Then,  
+%\[
+%    \inf_{\strat{\Refuter} \in \Strategies{\Refuter}^{\Memoryless}} \sup_{\strat{\Verifier} \in \Strategies{\Verifier}^{\Memoryless}}  \mathbb{E}^{\strat{\Verifier},\strat{\Refuter}}_{\StochG_{A,A'}, v}[\FMask] 
+%    = \sup_{\strat{\Verifier \in \Strategies{\Verifier}^{\Memoryless}}} \inf_{\strat{\Refuter \in \Strategies{\Refuter}^{\Memoryless}}}    \mathbb{E}^{\strat{\Verifier},\strat{\Refuter}}_{\StochG_{A,A'}, v}[\FMask] 
+%    < \infty
+%\]
+%Furthermore, the value of the game for memoryless strategies for the Verifier and  fair Memoryless Refuter's strategies is the greatest fixpoint of the following functional $\Bellman$: 
+%(see Theorem ~\ref{thm:solution_eq_stock_game}). 
+%\[\small
+%    \Bellman(f)(v) =
+%    \begin{cases}
+           %\displaystyle \max_{w \in \vertices{\couplings{\pr{3}{v},\pr{4}{v}}}} \{\mreward^\StochG(v) + \sum_{v' \in \post(v)} w(v,v')  \Bellman_{v'} \}& \text{ if }v \in V^{\SymbG}_\Verifier,  \\
+           %\displaystyle \max_{w \in \vertices{\couplings{\pr{3}{v}}{\pr{4}{v}}}} \{\mreward^\StochG(v) + \sum_{v' \in \post(v)} w(\pr{0}{v'},\pr{2}{v'})  \Bellman_{v'} \}& \text{ if }v \in V^{\SymbG}_\Verifier,  \\
+%           \displaystyle \min \{\upperbound,  \max_{w \in \vertices{\couplings{\pr{3}{v}}{\pr{4}{v}}}} \{\mreward^\StochG(v) + \sum_{v' \in \post(v)} w(\pr{0}{v'},\pr{2}{v'})  f(v') \} \}& \text{ if }v \in V^{\SymbG}_\Probabilistic  \\
+%           \displaystyle \min \{ \upperbound, \max \{\mreward^\StochG(v)  + f(v') \mid v' \in \post(v) \} \} & \text{ if } v \in  V^{\SymbG}_\Verifier, \\
+%           \displaystyle \min \{ \upperbound,  \min \{\mreward^\StochG(v)  + f(v') \mid v' \in \post(v) \} \} & \text{ if } v \in  V^{\SymbG}_\Refuter, \\
+%           \displaystyle 0 & \text{ if } v=\ErrorSt.
+%           \displaystyle 
+%    \end{cases}
+%\]
+%where $\SymbG_{A,A'}$ is the corresponding symbolic game, and $\upperbound$ is a number such that 
+%$\upperbound \geq \inf_{\strat{\Refuter} \in \Strategies{\Refuter}^{\Memoryless\Deterministic}} \sup_{\strat{\Verifier} \in \Strategies{\Verifier}^{\Memoryless\Deterministic}} \Expect{\strat{\Verifier}}{\strat{\Refuter}}_{\StochG_{A,A'}, v}[\FMask]$, for every $v$.
+
+
+\noindent
+\begin{proof}
+Primero vamos a probar que podemos restringirnos a estrategias deterministas de manera segura al computar el valor del juego para estrategias sin memoria.  Para hacer esto, demostramos ahora que para todas estrategias sin memoria $\strat{\Verifier}$ y $\strat{\Refuter}$, hay una estrategia sin memoria y determinista
+$\strat{\Verifier}'$ tal que: $\mathbb{E}^{\strat{\Verifier}',\strat{\Refuter}}_{\StochG_{A,A'}, v}[\FMask]  \geq \mathbb{E}^{\strat{\Verifier},\strat{\Refuter}}_{\StochG_{A,A'}, v}[\FMask]$. Primero, observemos que cualquier estrategia sin memoria satisface la siguiente ecuación para todo $v \in V^\StochG_\Verifier$:
+\begin{align}
+    \mathbb{E}_{\StochG_{A,A'},v}^{\strat{\Verifier},\strat{\Refuter}}[\FMask]&  \leq \mreward^\StochG(v) + \sum_{v' \in \post(v)} \delta^{\strat{\Refuter},\strat{\Verifier}}(v,v')  \mathbb{E}_{\StochG_{A,A'},v'}^{\strat{\Verifier},\strat{\Refuter}}[\FMask] \label{theo:det-fairness:eq3:l1}\\
+    & \leq \mreward^\StochG(v)  + \max_{v' \in \post(v)} \{  \mathbb{E}_{\StochG_{A,A'},v'}^{\strat{\Verifier},\strat{\Refuter}}[\FMask] \},
+    \label{theo:det-fairness:eq3:l12}
+\end{align}
+\sloppy donde $\delta^{\strat{\Refuter},\strat{\Verifier}}(v,v')$ denota la función de transición probabilista obtenida cuando las estrategias $\strat{\Refuter}$ y $\strat{\Refuter}$
+están fijadas en el juego $\StochG_{A,A'}$. La primera desigualdad se deduce de la definición de valor esperado, la segunda desigualdad se deduce de que $ \sum_{v' \in \post(v)} \delta^{\strat{\Refuter},\strat{\Verifier}}(v,v') \mathbb{E}_{\StochG_{A,A'},v'}^{\strat{\Verifier},\strat{\Refuter}}[\FMask] $ es una combinación convexa. Es decir,  definiendo $\strat{\Verifier}'(v) = \argmax_{v' \in \post(v)}  \{ \mathbb{E}_{\StochG_{A,A'},v'}^{\strat{\Verifier},\strat{\Refuter}}[\FMask] \}$, para todo $v$,  obtenemos
+$\mathbb{E}_{\StochG_{A,A'},v}^{\strat{\Verifier},\strat{\Refuter}}[\FMask] \leq \mathbb{E}_{\StochG_{A,A'},v}^{\strat{\Verifier}',\strat{\Refuter}}[\FMask]$. 
+Similarmente podemos probar que para todas estrategias sin memoria $\strat{\Refuter}$ y $\strat{\Verifier}$, existe una estrategia sin memoria, determinista y fair 
+$\strat{\Refuter}'$ tal que  $\mathbb{E}_{\StochG_{A,A'},v}^{\strat{\Verifier},\strat{\Refuter}'}[\FMask] \leq \mathbb{E}_{\StochG_{A,A'},v}^{\strat{\Verifier},\strat{\Refuter}}[\FMask]$.  Estas propiedades implican que:
+\[
+    \inf_{\strat{\Refuter} \in \Strategies{\Refuter}^{\Memoryless\Deterministic}}  \sup_{\strat{\Verifier} \in \Strategies{\Verifier}^{\Memoryless\Deterministic}} \mathbb{E}_{\StochG_{A,A'},v'}^{\strat{\Verifier},\strat{\Refuter}}[\FMask] 
+    =  \inf_{\strat{\Refuter} \in \Strategies{\Refuter}^{\Memoryless}}  \sup_{\strat{\Verifier} \in \Strategies{\Verifier}^{\Memoryless}} \mathbb{E}_{\StochG_{A,A'},v'}^{\strat{\Verifier},\strat{\Refuter}}[\FMask]
+\]
+y de forma similar:
+\[
+    \sup_{\strat{\Verifier} \in \Strategies{\Verifier}^{\Memoryless\Deterministic}}  \inf_{\strat{\Refuter} \in \Strategies{\Refuter}^{\Memoryless\Deterministic}} \mathbb{E}_{\StochG_{A,A'},v'}^{\strat{\Verifier},\strat{\Refuter}}[\FMask] 
+    =  \sup_{\strat{\Verifier} \in \Strategies{\Verifier}^{\Memoryless}}  \inf_{\strat{\Refuter} \in \Strategies{\Refuter}^{\Memoryless}} \mathbb{E}_{\StochG_{A,A'},v'}^{\strat{\Verifier},\strat{\Refuter}}[\FMask].
+\]
+
+    Ahora demostraremos el teorema.  Podemos definir un juego (finito) restringido solo teniendo en cuenta los vértices del politopo definidos por los couplings.  Consideremos el subjuego $\mathcal{H}_{A,A'}$ obtenido de $\StochG_{A,A'}$ al restringir los sucesores de los vértices del Verificador a los siguientes conjuntos:
+\begin{itemize}
+	\item $\{ \langle (s, \sigma^2, s', \mhyphen, \mu', \mhyphen, \Verifier), (s, \mhyphen, s', \mu, \mu', w, \Probabilistic) \rangle \mid (\exists\;\sigma \in \Sigma: s \xrightarrow{\sigma} \mu) \wedge   w \in \vertices{\couplings{\mu}{\mu'}}\} \subseteq E^\StochG$ para todo $\sigma \notin \faults$,
+
+ 	 \item $\{ \langle (s, \sigma^1, s', \mu, \mhyphen, \mhyphen, \Verifier),(s, \mhyphen, s', \mu, \mu', w, \Probabilistic) \rangle \mid (\exists\;\sigma \in \Sigma: s' \xrightarrowprime{\sigma} \mu' ) \wedge  w \in \vertices{\couplings{\mu}{\mu'}} \} \subseteq E^\StochG$,
+	 
+	 \item $\{ \langle (s, F^2, s', \mhyphen, \mu', \mhyphen, \Verifier), (s, \mhyphen, s', \Dirac_s, \mu', w, \Probabilistic) \rangle \wedge w \in \vertices{\couplings{\Dirac_s}{\mu'}} \} \subseteq E^\StochG$ para todo $F \in \faults$,
+\end{itemize}
+Es decir, restringimos los couplings a los vértices del politopo $\couplings{\mu}{\mu'}$.  Observemos que como el conjunto de vértices es finito, el juego  $\mathcal{H}_{A,A'}$ también es finito.  
+Ahora vamos a probar que:
+\begin{equation}\label{eq:theo:determined:eq2}
+    \sup_{\strat{\Verifier} \in \Strategies{\Verifier}^{\Memoryless}} \inf_{\strat{\Refuter} \in \Strategies{\Refuter}^{\Memoryless}} \mathbb{E}_{\mathcal{H}_{A,A'},v'}^{\strat{\Verifier},\strat{\Refuter}}[\FMask]
+    \leq 
+     \sup_{\strat{\Verifier} \in \Strategies{\Verifier}^{\Memoryless}} \inf_{\strat{\Refuter} \in \Strategies{\Refuter}^{\Memoryless}} \mathbb{E}_{\mathcal{G}_{A,A'},v'}^{\strat{\Verifier},\strat{\Refuter}}[\FMask],
+\end{equation}
+y:
+\begin{equation}\label{eq:theo:determined:eq3}
+    \inf_{\strat{\Refuter} \in \Strategies{\Refuter}^{\Memoryless}} \sup_{\strat{\Verifier} \in \Strategies{\Verifier}^{\Memoryless}} \mathbb{E}_{\mathcal{G}_{A,A'},v'}^{\strat{\Verifier},\strat{\Refuter}}[\FMask]
+    \leq 
+     \inf_{\strat{\Refuter} \in \Strategies{\Refuter}^{\Memoryless}} \sup_{\strat{\Verifier} \in \Strategies{\Verifier}^{\Memoryless}} \mathbb{E}_{\mathcal{H}_{A,A'},v'}^{\strat{\Verifier},\strat{\Refuter}}[\FMask],
+\end{equation}
+    Observemos que, por la propiedad que probamos arriba, estas son equivalentes a:
+\begin{equation}\label{eq:theo:determined:eq4}
+    \sup_{\strat{\Verifier} \in \Strategies{\Verifier}^{\Memoryless\Deterministic}} \inf_{\strat{\Refuter} \in \Strategies{\Refuter}^{\Memoryless\Deterministic}} \mathbb{E}_{\mathcal{H}_{A,A'},v'}^{\strat{\Verifier},\strat{\Refuter}}[\FMask]
+    \leq 
+     \sup_{\strat{\Verifier} \in \Strategies{\Verifier}^{\Memoryless\Deterministic}} \inf_{\strat{\Refuter} \in \Strategies{\Refuter}^{\Memoryless\Deterministic}} \mathbb{E}_{\mathcal{G}_{A,A'},v'}^{\strat{\Verifier},\strat{\Refuter}}[\FMask],
+\end{equation}
+y:
+\begin{equation}\label{eq:theo:determined:eq5}
+    \inf_{\strat{\Refuter} \in \Strategies{\Refuter}^{\Memoryless\Deterministic}} \sup_{\strat{\Verifier} \in \Strategies{\Verifier}^{\Memoryless\Deterministic}} \mathbb{E}_{\mathcal{G}_{A,A'},v'}^{\strat{\Verifier},\strat{\Refuter}}[\FMask]
+    \leq 
+     \inf_{\strat{\Refuter} \in \Strategies{\Refuter}^{\Memoryless\Deterministic}} \sup_{\strat{\Verifier} \in \Strategies{\Verifier}^{\Memoryless\Deterministic}} \mathbb{E}_{\mathcal{H}_{A,A'},v'}^{\strat{\Verifier},\strat{\Refuter}}[\FMask],
+\end{equation}
+(\ref{eq:theo:determined:eq4}) vale ya que $\post^{\mathcal{H}_{A,A'}}(v) \subseteq \post^{\StochG_{A,A'}}(v)$ para $v \in V^{\mathcal{H}_{A,A'}}_\Verifier$ y
+$\post^{\mathcal{H}_{A,A'}}(v) = \post^{\StochG_{A,A'}}(v)$ para $v \in V^{\mathcal{H}_{A,A'}}_\Refuter$.  Para probar (\ref{eq:theo:determined:eq5}), fijemos una estrategia fair $\strat{\Refuter} \in \Strategies{\Refuter}^{\Memoryless \Deterministic}$, la estrategia óptima para el Verificador en el juego $\mathcal{G}_{A,A'}$ se obtiene solo en vértices probabilistas que son vértices de $\couplings{\mu}{\mu'}$, estos son vértices probabilistas de $\mathcal{H}_{A,A'}$, por lo tanto 
+$  \sup_{\strat{\Verifier} \in \Strategies{\Verifier}^{\Memoryless\Deterministic}} \mathbb{E}_{\mathcal{G}_{A,A'},v'}^{\strat{\Verifier},\strat{\Refuter}}[\FMask]
+    \leq 
+     \sup_{\strat{\Verifier} \in \Strategies{\Verifier}^{\Memoryless\Deterministic}} \mathbb{E}_{\mathcal{H}_{A,A'},v'}^{\strat{\Verifier},\strat{\Refuter}}[\FMask],$
+para cualquier estrategia fair sin memoria $\strat{\Refuter}$,  (\ref{eq:theo:determined:eq5}) se deduce.
+
+    Además, el valor del juego $\mathcal{H}_{A,A'}$ está dado por el mayor punto fijo de las ecuaciones \cite{CastroDDP22}:
+\begin{equation}\label{eq:theo:determined:bellman1}\small
+    \Bellman(f)(v) =
+    \begin{cases}
+           \displaystyle \min \{\upperbound, \mreward^\StochG(v) + \sum_{v' \in \post(v)} \delta(v)(v')  f(v') \} & \text{ if } v \in V^{\mathcal{H}}_\Probabilistic  \\
+           \displaystyle \min \{\upperbound,  \max \{\mreward^\StochG(v) +f(v') \mid v' \in \post(v) \} \} & \text{ si } v \in  V^{\mathcal{H}}_\Verifier, \\
+           \displaystyle \min \{\upperbound,  \min \{\mreward^\StochG(v)  + f(v') \mid v' \in \post(v) \} \} & \text{ si } v \in  V^{\mathcal{H}}_\Refuter, \\
+           \displaystyle 0 & \text{ si } v=\ErrorSt.
+           \displaystyle 
+    \end{cases}
+\end{equation}
+    para algún $\upperbound \geq \inf_{\strat{\Refuter} \in \Strategies{\Refuter}^{\Memoryless}} \sup_{\strat{\Verifier} \in \Strategies{\Verifier}^{\Memoryless}} \mathbb{E}_{\mathcal{H}_{A,A'},v'}^{\strat{\Verifier},\strat{\Refuter}}[\FMask]$.
+    Es decir, tenemos:
+\begin{equation}\label{eq:theo:determined:eq6}
+    \inf_{\strat{\Refuter} \in \Strategies{\Refuter}^{\Memoryless\Deterministic}} \sup_{\strat{\Verifier} \in \Strategies{\Verifier}^{\Memoryless\Deterministic}}  \mathbb{E}^{\strat{\Verifier},\strat{\Refuter}}_{\mathcal{H}_{A,A'}, v}[\FMask] 
+    = \sup_{\strat{\Verifier \in \Strategies{\Verifier}^{\Memoryless\Deterministic}}} \inf_{\strat{\Refuter \in \Strategies{\Refuter}^{\Memoryless\Deterministic}}}    \mathbb{E}^{\strat{\Verifier},\strat{\Refuter}}_{\mathcal{H}_{A,A'}, v}[\FMask] 
+    < \infty
+\end{equation}
+  Por lo tanto, a causa de (\ref{eq:theo:determined:eq4}),  (\ref{eq:theo:determined:eq5}) y (\ref{eq:theo:determined:eq6}) tenemos:
+\[
+ \inf_{\strat{\Refuter} \in \Strategies{\Refuter}^{\Memoryless}} \sup_{\strat{\Verifier} \in \Strategies{\Verifier}^{\Memoryless}}  \mathbb{E}^{\strat{\Verifier},\strat{\Refuter}}_{\StochG_{A,A'}, v}[\FMask] 
+    = \sup_{\strat{\Verifier \in \Strategies{\Verifier}^{\Memoryless}}} \inf_{\strat{\Refuter \in \Strategies{\Refuter}^{\Memoryless}}}    \mathbb{E}^{\strat{\Verifier},\strat{\Refuter}}_{\StochG_{A,A'}, v}[\FMask] 
+    < \infty.
+\]
+    Esto prueba una parte del teorema.
+    Ahora, consideremos el siguiente funcional sobre el juego simbólico:
+\[\small
+\Bellman'(f)(v) =
+    \begin{cases}
+           \displaystyle \min \{ \upperbound, \max_{w \in \vertices{\couplings{\pr{3}{v}}{\pr{4}{v}}}} \{\mreward^\SymbG(v)  + \sum_{v' \in \post(v)} w(\pr{0}{v'},\pr{2}{v'})  f(v') \} \}& \text{ si }v \in V^{\SymbG}_\Probabilistic  \\
+           \displaystyle \min \{ \upperbound, \max \{\mreward^\SymbG(v)  +f(v') \mid v' \in \post(v) \} \} & \text{ si } v \in  V^{\SymbG}_\Verifier, \\
+           \displaystyle \min \{ \upperbound, \min \{\mreward^\SymbG(v) + f(v') \mid v' \in \post(v) \} \} & \text{ si } v \in  V^{\SymbG}_\Refuter, \\
+           \displaystyle 0 & \text{ si } v=\ErrorSt.
+           \displaystyle 
+    \end{cases}
+\]
+Vamos a probar que este puede ser utilizado para resolver $\Bellman$. Primero, observemos que $\Bellman'$ es monótona,  está definida sobre el retículo completo $[0,\upperbound]$ y es Scott-completa. Por lo tanto, tiene un mayor punto fijo.  Sea $\nu \Bellman'$ el mayor punto fijo de $\Bellman',$  vamos a demostrar que
+$\nu \Bellman(v) = \nu \Bellman'((v[0],v[1],v[2],v[3],v[4], v[6]))$, para todo $v \in V^{\mathcal{H}_{A,A'}}_\Verifier \cup V^{\mathcal{H}}_\Refuter$.
+Para realizar esto, consideremos para cada vértice simbólico el siguiente mapping:
+\begin{itemize}
+    \item $\llbracket (s,\sigma,s',\mu,\mu',X) \rrbracket = (s,\sigma,s',\mu,\mu',\mhyphen,X)$, para $X \in \{\Refuter, \Verifier\}$,
+    \item $\llbracket (s,\mhyphen, s',\mu,\mu',\Probabilistic) \rrbracket =(s, \mhyphen,s', \mu,\mu', w,\Probabilistic)$,  \\ donde
+              $w = \argmax_{w \in \vertices{\couplings{\mu}{\mu'}}} \{\sum_{v' \in \post(v)} w(\pr{0}{v'},\pr{2}{v'})  \nu \Bellman'(v') \}$
+\end{itemize}
+    De manera similar, podemos definir un mapping desde vértices concretos a vértices simbólicos:
+\begin{itemize}
+    \item $\llparenthesis (s,\sigma,s',\mu,\mu',Y ,X) \rrparenthesis = (s,\sigma,s',\mu,\mu',X)$, para $X \in \{\Refuter, \Verifier \}$ y $Y \in \{\mhyphen \} \cup \vertices{\couplings{\mu,\mu'}}$.
+\end{itemize}
+    Ahora bien, probemos que $\alpha(v) = \nu \Bellman'(\llparenthesis v \rrparenthesis)$ es un punto fijo de $\Bellman$. Procedemos por casos:
+   
+   Si $v$ es un vértice del Refutador,  entonces:
+\begin{align}
+   \Bellman(\alpha)(v) & =  \min \{\upperbound,  \min \{\mreward^\StochG(v)  + \alpha(v') \mid v' \in \post(v) \} \}  \\
+                                    & =  \min \{\upperbound,  \min \{\mreward^\SymbG(v)  +\nu \Bellman'(\llparenthesis v'  \rrparenthesis) \mid v' \in \post(v) \} \} \\  
+                                    & = \nu \Bellman'(\llparenthesis v  \rrparenthesis) \\
+                                    & = \alpha(v)           
+\end{align}
+ La primer linea es por definición de $\Bellman$, la segunda linea se obtiene aplicando la definición de $\alpha$, la tercer linea se debe a la suryectividad de  $\llparenthesis \rrparenthesis$,  el hecho de que $\mreward^\SymbG(v) = \mreward^\StochG(v) $, la definición de $\Bellman'$ y ya que $\nu \Bellman'(\llparenthesis v  \rrparenthesis)$ es un punto fijo de $\Bellman'$.
+
+    Si $v$ es un vértice del Verificador entonces:
+\begin{align}
+   \Bellman(\alpha)(v) & =   \min \{ \upperbound, \max \{\mreward^\StochG(v) + \alpha(v') \mid v' \in \post(v) \} \}  \\
+                                    & =   \min \{ \upperbound, \mreward^\StochG(v) + \max_{w \in \vertices{\couplings{\pr{3}{v}}{\pr{4}{v}}}} \{\sum_{v' \in \post(v)} w(\pr{0}{v'},\pr{2}{v'})  \nu \Bellman'(\llparenthesis v' \rrparenthesis) \} \} \\  
+                                    & = \nu \Bellman'(\llparenthesis v  \rrparenthesis) \\
+                                    & = \alpha(v)           
+\end{align}
+    La segunda linea se debe a que los vértices probabilistas en $\mathcal{H}_{A,A'}$ son exactamente los vértices del politopo que define los couplings posibles.
+
+    Por esto, $\alpha$ es un punto fijo de $\Bellman$ para los vértices en $V^{\mathcal{H}}_\Verifier \cup V^{\mathcal{H}}_\Refuter$.  Además,  probaremos que es el mayor punto fijo. Asumamos por contradicción que existe algún $\alpha'$ tal que es un punto fijo de $\Bellman$ y $\alpha'(v) \geq  \alpha(v)$ para todo $v \in V^{\mathcal{H}}_\Verifier \cup V^{\mathcal{H}}_\Refuter$, y $\alpha'(v') >  \alpha(v')$ para algún $v' \in V^{\mathcal{H}}_\Verifier \cup V^{\mathcal{H}}_\Refuter$.  
+    Podemos definir $\beta : V^{\SymbG} \rightarrow [0,\upperbound]$ como sigue: $\beta(v) = \alpha'(\llbracket v \rrbracket)$, como hicimos arriba podemos probar que es un punto fijo de $\Bellman'$ y, además, para todo vértice simbólico tenemos $\beta(v) =  \alpha'(\llbracket v \rrbracket) \geq \alpha(\llbracket v \rrbracket) = \nu \Bellman'(\llparenthesis \llbracket v \rrbracket \rrparenthesis)
+    = \nu \Bellman'(v)$, y de forma similar podemos probar que existe un $v'$ tal que $\beta(v') >  \nu \Bellman'(v)$, lo cual es una contradicción ya que $\nu \Bellman'$ es el mayor punto fijo de $\Bellman'$.
+\end{proof}\\
+%% \reversemarginpar\marginnote{\color{blue}LP2ALL: The functional counts milestones in every case but it should only count on the V case.}[-4cm]
+%% \remarkPRD{Notar que con el cambio de la Def. 6 queda solucionado el problema que se\~nala Luciano}
+La constante $\upperbound$ es necesaria para que Knaster-Tarski aplique al reticulo completo $[0,\upperbound]^V$~\cite{CastroDDP22}.
+
+
+
+%%    Also, we can check whether  a game is almost-sure failing under fairness by computing predecessor sets in the symbolic game graph.  To do so, we define the symbolic version of the predecessor sets.
+%% %\begin{align*}
+%% %	\EFairpre(C) =& \{ v \in V^\StochG_\Probabilistic \mid \delta(v)(C) > 0\} \\
+%% %		       & \cup \{ v \in  V^\StochG_\Verifier \cup V^\StochG_\Refuter  \mid \exists v' \in C : (v,v') \in E^\StochG \}\\
+%% %	\AFairpre(C) = &\{ v \in V^\StochG_\Probabilistic \mid \delta(v)(C) > 0\} \\
+%% %		      & \cup \{ v \in  V^\StochG_\Verifier   \mid \forall v' \in C : (v,v') \in E^\StochG \Rightarrow v' \in C \}\\
+%% %		      &  \cup \{ v \in  V^\StochG_\Refuter  \mid \exists v' \in C : (v,v') \in E^\StochG \}
+%% %\end{align*}
+%% %	These sets allows us to check if a given game is almost-sure failing for $\starredstrat{\Refuter}$.
+%% %\begin{theorem} Given a masking game $\StochG_{A,A'} = (V^\StochG, E^\StochG, V^\StochG_\Refuter, V^\StochG_\Verifier, V^\StochG_\Probabilistic, \InitVertex, \delta^\StochG)$,
+%% %then $\Prob{\strat{\Verifier}}{\strat{\Refuter}}_{\StochG_{A,A'}}(\mathcal{A}) = 1$ for every fair Refuter's strategy $\strat{\Refuter}$ and Verifier's strategy $\strat{\Verifier}$, being $\mathcal{A} = \{ \rho \in \Omega \mid \rho_i = \ErrorSt \}$, iff
+%% %$\InitVertex \notin \EFairpre^*(V^\StochG \setminus \AFairpre^*(\ErrorSt))$.
+%% %\end{theorem}
+%% %\begin{proof} Consider the MDP $\StochG^{\starredstrat{\Refuter}}_{A,A'}$, then note that $v \in  \AFairpre^*(C)$ (in game $\StochG_{A,A'}$) iff
+%% %$v \in  \Apre^*(C)$ (in MDP $\StochG^{\starredstrat{\Refuter}}_{A,A'}$), so any successor of a Refuter's state in  $\StochG^{\starredstrat{\Refuter}}_{A,A'}$ has a positive probability.
+%% %Then, $ v \in V^\StochG \setminus \AFairpre^*(C)$ (in game $\StochG_{A,A'}$) iff $v \in V^\StochG \setminus \Apre^*(C)$ (in MDP $\StochG^{\starredstrat{\Refuter}}_{A,A'}$), because $\starredstrat{\Refuter}$ is memoryless, which means that the states in both are the same. 
+%% %That is, $ v \in \EFairpre^*(V^\StochG \setminus \AFairpre^*(C))$ (in game $\StochG_{A,A'}$)
+%% %iff $ v \in \Epre^*(V^{\StochG^{\starredstrat{\Refuter}}} \setminus \Apre^*(C))$, since $\Epre^*(S)$ and $\EFairpre^*(S)$ coincide over 
+%% %any set of vertices.
+%% %\end{proof}\\
+%%     Given a game $\StochG_{A,A'}$ and its symbolic version $\SymbG_{A,A'}$, let $\SymbEFairpre(C)$ and 
+%% $\SymbAFairpre(C)$, for a given set $C$ of symbolic vertices, be defined as follows:
+
+Además, podemos chequear si un juego es almost-sure failing bajo fairness al computar los conjuntos predecesores en el grafo de juego simbólico. Para llevar a cabo esto, definimos los conjuntos predecesores en el grafo de juego simbólico $\SymbG_{A,A'}$ para un conjunto dado $C$ de vértices simbólicos, como a continuación:
+%
+{\small
+\begin{align*}
+	\SymbEFairpre(C) ={}& \{ v \in V^\SymbG_\Probabilistic \mid  \exists v' \in C\cap V^\SymbG_\Refuter : \pr{0}{v'}\in\support{\pr{3}{v}} \land \pr{2}{v'}\in\support{\pr{4}{v}} \} \\
+		       & \cup \{ v \in  V^\SymbG_\Verifier \cup V^\SymbG_\Refuter  \mid \exists v' \in C : (v,v') \in E^\SymbG \}\\
+	\SymbAFairpre(C) = {}&\{ v \in V^\SymbG_\Probabilistic \mid \Eq(v,C) \textit{  no tiene solución }\} \\
+		      & \cup \{ v \in  V^\SymbG_\Verifier   \mid \forall v' : (v,v') \in E^\SymbG \Rightarrow v' \in C \}\\
+		      &  \cup \{ v \in  V^\SymbG_\Refuter  \mid \exists v' \in C : (v,v') \in E^\SymbG \}
+\end{align*}}%
+%% \begin{align*}
+%% 	\SymbEFairpre(C) ={}& \{ v \in V^\SymbG_\Probabilistic \mid  \exists v' \in C\cap V^\SymbG_\Refuter : \pr{0}{v'}\in\support{\pr{3}{v}} \land \pr{2}{v'}\in\support{\pr{4}{v}} \} \\
+%% 		       & \cup \{ v \in  V^\SymbG_\Verifier \cup V^\SymbG_\Refuter  \mid \exists v' \in C : (v,v') \in E^\SymbG_{A,A'} \}\\
+%% 	\SymbAFairpre(C) ={}&\{ v \in V^\SymbG_\Probabilistic \mid \Eq(v,C) \textit{  has no solution }\} \cup \{ v \in  V^\SymbG_\Refuter  \mid \exists v' \in C : (v,v') \in E^\SymbG \}\\
+%% 		      & \cup \{ v \in  V^\SymbG_\Verifier   \mid \forall v' \in C : (v,v') \in E^\SymbG \Rightarrow v' \in C \}
+%% \end{align*}
+%
+En particular, el primer conjunto en la definición de $\SymbEFairpre(C)$
+contiene todos los vértices probabilistas $v$ para los cuales existe un coupling que lleva al vértice del Refutador $v'$ en $C$.  Para esto es suficiente chequear que los estados $\pr{0}{v'}$ y $\pr{2}{v'}$ que definen a $v'$
+están en los respectivos conjuntos soporte de las probabilidades
+$\pr{3}{v}$ y $\pr{4}{v}$ que definen a $v$ (como
+siempre es posible definir un coupling que asigne probabilidad positiva a un par de estados en los conjuntos soporte correspondientes).  El primer conjunto en la definición de $\SymbAFairpre(C)$ contiene todos los vértices probabilistas $v$ para los cuales no existe coupling ``evite'' $C$, es decir, que no haya coupling que lleve con probabilidad 0 al conjunto de todos los pares de estados que definen un vértice en $C$.  Un coupling que evite
+$C$ resuelve $\Eq(v,C)$.
+%
+%% By using $\SymbEFairpre$ and $\SymbAFairpre$ recursively, we can
+%% decide whether a game is almost-sure failing under fairness as follows.
+Utilizando $\SymbEFairpre$ y $\SymbAFairpre$, podemos decidir si un juego es almost-sure failing bajo fairness:
+
+\begin{theorem}\label{theo:decide-stopping}
+%% Given a masking game $\StochG_{A,A'}$ and its symbolic version $\SymbG_{A,A'}$,  we have that 
+%%  $\StochG_{A,A'}$ is almost-sure failing under fairness  iff
+%% $
+%%   \InitVertex \in V^\SymbG \setminus {\SymbEFairpre}^*(V^\SymbG \setminus {\SymbAFairpre}^*(\{ \ErrorSt \})),
+%% $
+%% where $\InitVertex$ is the initial state of $\SymbG_{A,A'}$ and $V^\SymbG$ its sets of vertices.
+
+El juego de masking 
+ $\StochG_{A,A'}$ es almost-sure failing bajo fairness  si y solo si
+$
+  \InitVertex \in V^\SymbG \setminus {\SymbEFairpre}^*(V^\SymbG \setminus {\SymbAFairpre}^*(\{ \ErrorSt \})),
+$
+donde $\InitVertex$ es el estado inicial de $\SymbG_{A,A'}$ (la versión simbólica de $\StochG_{A,A'}$) y $V^\SymbG$ son los conjuntos de vértices $\SymbG_{A,A'}$.
+\end{theorem}
+
+%\noindent
+%\textbf{Proof of Theorem \ref{theo:decide-stopping}}
+%Given a masking game $\StochG_{A,A'}$ and its symbolic version $\SymbG_{A,A'}$,  we have that 
+% $\StochG_{A,A'}$ is stopping under fairness  iff
+$
+%  \InitVertex \in V^\SymbG \setminus {\SymbEFairpre}^*(V^\SymbG \setminus {\SymbAFairpre}^*(\{ \ErrorSt \})),
+$
+%where $\InitVertex$ is the initial state of $\SymbG_{A,A'}$ and $V^\SymbG$ its sets of vertices.
+
+\noindent
+\begin{proof} 
+Consideremos el juego $\mathcal{H}_{A,A'}$ como se definió en la prueba del Teorema~\ref{theo:det-fairness}.  Primero, vamosma mostrar que el juego $\StochG_{A,A'}$ es almost-sure failing para estrategias fair del Refutador si y solo si $\mathcal{H}_{A,A'}$ también es almost-sure failing para estrategias fair del Refutador.  
+Esto es equivalente a probar que $\inf_{\strat{\Verifier}} \Prob{\strat{\Verifier}}{\strat{\Refuter}}_{\StochG_{A,A'}, \InitVertex}(\Diamond \ErrorSt)=1$ 
+si y solo si $\inf_{\strat{\Verifier}} \Prob{\strat{\Verifier}}{\strat{\Refuter}}_{\mathcal{H}_{A,A'}, \InitVertex}(\Diamond \ErrorSt)=1$ para toda estrategia fair sin memoria  $\strat{\Refuter}$. Ahora bien, observemos que para toda estrategia sin memoria del Verificador $\strat{\Verifier}$ tenemos:
+\begin{align*}
+     \Prob{\strat{\Verifier}}{\strat{\Refuter}}_{\mathcal{G}_{A,A'}, v}(\Diamond \ErrorSt) & \geq \min\{ \sum_{v' \post(v)} w(\pr{0}{v'}, \pr{2}{v'})\Prob{\strat{\Verifier}}{\strat{\Refuter}}_{\mathcal{G}_{A,A'}, v'}(\Diamond \ErrorSt) \mid w \in \couplings{\pr{3}{v}}{\pr{4}{v}} \}\\
+         & = \min\{ \sum_{v' \post(v)} w(\pr{0}{v'}, \pr{2}{v'})\Prob{\strat{\Verifier}}{\strat{\Refuter}}_{\mathcal{G}_{A,A'}, v'}(\Diamond \ErrorSt) \mid w \in\vertices{\couplings{\pr{3}{v}}{\pr{4}{v}}} \}
+\end{align*}
+Por lo tanto, tenemos una estrategia determinista y sin memoria $\strat{\Verifier}'$ tal que:
+\[
+\Prob{\strat{\Verifier}'}{\strat{\Refuter}}_{\mathcal{G}_{A,A'}, v}(\Diamond \ErrorSt) = \inf_{\strat{\Verifier} \in \Strategies{\Verifier}^{\Memoryless}} \Prob{\strat{\Verifier}}{\strat{\Refuter}}_{\StochG_{A,A'}, \InitVertex}(\Diamond \ErrorSt),
+\]
+esta estrategia solo elige vértices probabilistas en  $V^{\mathcal{H}}_{\Probabilistic}$, y por lo tanto, $\strat{\Verifier}'$ es una estrategia 
+en $\mathcal{H}_{A,A'}$. Entonces las cadenas de Markov  $\StochG^{\strat{\Verifier}',\strat{\Refuter}}$,$ \mathcal{H}^{\strat{\Verifier}',\strat{\Refuter}}$
+son iguales para toda estrategia $\strat{\Refuter}$, por lo tanto tenemos: 
+$\inf_{\strat{\Verifier}} \Prob{\strat{\Verifier}}{\strat{\Refuter}}_{\StochG_{A,A'}, v^{\mathcal{H}}_0}(\Diamond \ErrorSt)
+= \inf_{\strat{\Verifier}} \Prob{\strat{\Verifier}}{\strat{\Refuter}}_{\mathcal{H}_{A,A'}, \InitVertex}(\Diamond \ErrorSt)$.
+
+Ahora bien, demostraremos que podemos verificar si el juego $\mathcal{H}$ es almost-sure failing bajo fairness o no utilizando el juego simbólico. Definimos asi los siguientes conjuntos sobre este juego:
+\begin{align*}
+  \EFairpre(C) = {}&\{ v \in V^{\mathcal{H}} \mid\exists v' \in C : \langle v,v' \rangle \in E^\mathcal{H} \} \\
+  \AFairpre(C) = {}&\{ v \in V^{\mathcal{H}}_\Probabilistic \mid \delta(v,C)>0\} \\
+                       & \cup \{ v \in  V^{\mathcal{H}}_\Verifier \mid \forall v' {\in} V^{\mathcal{H}} : \langle v,v' \rangle \in E^{\mathcal{H}} \Rightarrow v' {\in} C \} \\
+                     & \cup \{v \in V^{\mathcal{H}}_\Refuter \mid \exists v'{\in} V^{\mathcal{H}} : \langle v,v' \rangle \in E^\mathcal{H} \} 
+\end{align*}
+
+Como se demostró en \cite{CastroDDP22} (Teorema 3) tenemos que: 
+ $\Prob{\strat{\Verifier}}{\strat{\Refuter}}_{\mathcal{H}_{A,A'},v}(\Diamond \ErrorSt) = 1$ para toda estrategia 
+ $\strat{\Verifier} \in \Strategies{\Verifier}$ y estrategia fair $\strat{\Refuter} \in \Strategies{\Refuter}$
+  si y solo si $v \in V\setminus \EFairpre^*(V \setminus \AFairpre^*(\{ \ErrorSt \}))$.
+    
+ Definimos un mapping $\zeta : V^\SymbG \rightarrow 2^{V^{\mathcal{H}}}$ como a continuación:
+ \[\small
+     \zeta(v) = 
+                    \begin{cases*}
+                         \{(\pr{0}{v},\pr{1}{v},\pr{2}{v},\pr{3}{v},\pr{4}{v},\mhyphen, \pr{5}{v} )\} & if  $v \in V^{\SymbG}_\Refuter \cup V^{\SymbG}_\Verifier$, \\
+                         \{ (\pr{0}{v},\pr{1}{v},\pr{2}{v},\pr{3}{v},\pr{4}{v},w, \pr{5}{v}) \mid w \in \vertices{\couplings{\pr{4}{v}}{\pr{5}{v}}}\} & otherwise.
+                    \end{cases*}
+ \]   
+ Observemos que para los vértices del Refutador y el Verificador la función $\zeta$ retorna un conjunto unitario.  Para vértices probabilistas retorna los vértices del politopo correspondiente.
+ 
+  Ahora bien, demostraremos que para todo $v \in V^\SymbG$  tenemos que:  $\zeta(v) \subseteq  \AFairpre^n(\{ \ErrorSt \})$ si y solo si $v \in {\SymbAFairpre}^n(\{ \ErrorSt \})$
+  La prueba es por inducción sobre $n$. El caso base es directo. El caso inductivo es por casos:
+ 
+ \sloppy      Si $v$ es un nodo del Refutador, entonces  $\zeta(v) = \{(\pr{0}{v},\pr{1}{v}, \pr{2}{v}, \pr{3}{v}, \pr{4}{v},\mhyphen, \pr{5}{v})\}$. 
+        Ahora bien, vamos a mostrar la parte ``si'', la otra dirección es similar. $v \in  {\SymbAFairpre}^n(\{ \ErrorSt \})$ si y solo si para algún $v' \in  {\SymbAFairpre}^{n-1}(\{ \ErrorSt \})$ (*) tenemos 
+        $\langle v,v' \rangle \in E^{\SymbG}$ (**),  por inducción y (*) tenemos que 
+        $(\pr{0}{v'},\pr{1}{v'}, \pr{2}{v'}, \pr{3}{v'},\pr{4}{v'},\mhyphen, \pr{5}{v'}) \in  {\SymbAFairpre}^{n-1}(\{ \ErrorSt \})$,
+        y por definición de $E^{\mathcal{H}}$ y (**) obtenemos 
+        $\langle (\pr{0}{v},\pr{1}{v},\pr{2}{v},\pr{3}{v},\pr{4}{v},\mhyphen, \pr{5}{v}),(\pr{0}{v'},\pr{1}{v'},\pr{2}{v'},\pr{3}{v'},\pr{4}{v'},\mhyphen,\pr{5}{v'}) \rangle \in E^{\mathcal{H}}$ por lo tanto $(\pr{0}{v},\pr{1}{v},\pr{2}{v},\pr{3}{v},\pr{4}{v},\mhyphen, \pr{5}{v}) \in \AFairpre^n(\{ \ErrorSt \})$, y entonces $\zeta(v) \subseteq \AFairpre^n(\{ \ErrorSt \})$
+        
+    %  \item If $v$ is a Verifier's node,  we have $\zeta(v) = \{(v[0],v[1],v[2],v[3],v[4],\mhyphen, v[5])\}$.  
+     %  $v \in  {\SymbAFairpre}^n(\ErrorSt)$ iff for all $v' \in  {\SymbAFairpre}^{n-1}(\ErrorSt)$
+   
+        Si $v$ es un nodo del Verificador, también tenemos  $\zeta(v) = \{( \pr{0}{v},\pr{1}{v},\pr{2}{v},\pr{3}{v},\pr{4}{v},\mhyphen, \pr{5}{v} )\}$.  
+        De manera similar a lo anterior, demostraremos solo la parte ``si'' ya que la otra dirección es análoga.       
+        Si $v \in  {\SymbAFairpre}^n(\{ \ErrorSt \})$, entonces 
+        para todo $(v,v') \in E^{\SymbG}$ tenemos $v' \in  {\SymbAFairpre}^{n-1}(\{ \ErrorSt \})$.  Ahora bien, vamos a probar que $\zeta(v) \subseteq  \AFairpre^n(\{ \ErrorSt \})$, 
+        sea $\langle ( \pr{0}{v},\pr{1}{v},\pr{2}{v},\pr{3}{v},\pr{4}{v},\mhyphen, \pr{5}{v} ),u' \rangle \in E^{\mathcal{H}_{A,A'}}$, por definición de $E^{\SymbG}$
+        tenemos que $\langle v,  (\pr{0}{u'},  \pr{1}{u'}, \pr{2}{u'}, \pr{3}{u'}, \pr{4}{u'}, \pr{6}{u'}) \rangle \in E^{\SymbG}$, por lo tanto por nuestro supuesto obtenemos que 
+        $(\pr{0}{u'},  \pr{1}{u'}, \pr{2}{u'}, \pr{3}{u'}, \pr{4}{u'}, \pr{6}{u'}) \in  {\SymbAFairpre}^{n-1}(\{ \ErrorSt \})$, y por inducción, tenemos que
+        $u' \in  \AFairpre^{n-1}(\{ \ErrorSt \})$,  y por definición de $\AFairpre$ obtenemos que 
+        $( \pr{0}{v},\pr{1}{v},\pr{2}{v},\pr{3}{v},\pr{4}{v},\mhyphen, \pr{5}{v} ) \in \AFairpre^n(\{ \ErrorSt \})$, por lo tanto $\zeta(v) \subseteq  \AFairpre^n(\{ \ErrorSt \})$.
+       
+        Si $v$ es un nodo probabilista, una vez más solo probamos la parte ``si''.   Si $v \in  {\SymbAFairpre}^n(\{ \ErrorSt \})$, entonces
+        $\Eq(v)({\SymbAFairpre}^{n-1}(\{ \ErrorSt \}))$ no tiene solución.  Ahora bien, consideremos 
+        $(\pr{0}{v},  \pr{1}{v}, \pr{2}{v}, \pr{3}{v}, \pr{4}{v}, w,\pr{5}{v}) \in \zeta(v)$, observemos que no podemos tener 
+        $\delta((\pr{0}{v},  \pr{1}{v}, \pr{2}{v}, \pr{3}{v}, \pr{4}{v}, w,\pr{5}{v}),  \AFairpre^{n-1}(\{ \ErrorSt \})) = 0$,  en caso contrario
+        $w$ tendría solución para  $\Eq(v)({\SymbAFairpre}^{n-1}(\{ \ErrorSt \}))$. Por lo tanto,  
+        $(\pr{0}{v},  \pr{1}{v}, \pr{2}{v}, \pr{3}{v}, \pr{4}{v}, w,\pr{5}{v}) \in  {\SymbAFairpre}^n(\{ \ErrorSt \})$. La parte ``solo si'' es similar.
+        
+       Ahora vamos a probar que, para cualquier conjunto $S \subseteq V^{\SymbG}$ y $ \bigcup \zeta(S) \subseteq S'$ (en particular, notemos que $\bigcup \zeta(V^{\SymbG}) = V^{\mathcal{H}}$)
+        tenemos que: 
+       $\zeta(v) \subseteq  \EFairpre^n( S' ) \neq \emptyset$ si y solo si $v \in {\SymbEFairpre}^n( S )$. Como hicimos arriba, la prueba es por inducción sobre $n$.
+       El caso base es directo.  Para el caso inductivo procedemos por casos.
+       
+       Si $v$ es un nodo del Refutador demostramos la parte ``si''.  Asumamos que $v \in  {\SymbEFairpre}^n( S )$ por lo que existe un
+       $(v, v') \in E^{\SymbG}$ tal que $v' \in {\SymbEFairpre}^{n-1}( S )$,  pero entonces tenemos que $\zeta(v') \subseteq \EFairpre^{n-1}( S' )$ y también (por definición de $E^{\mathcal{H}_{A,A'}}$) tenemos que 
+       $\langle (\pr{0}{v},\pr{1}{v},\pr{2}{v},\pr{3}{v},\pr{4}{v},\mhyphen, \pr{5}{v}),(\pr{0}{v'},\pr{1}{v'},\pr{2}{v'},\pr{3}{v'},\pr{4}{v'},\mhyphen,\pr{5}{v'}) \rangle \in E^{\mathcal{H}_{A,A'}}$,
+       como $\zeta(v) = \{(\pr{0}{v},\pr{1}{v},\pr{2}{v},\pr{3}{v},\pr{4}{v},\mhyphen, \pr{5}{v})\}$, por definición de $\EFairpre$ obtenemos que
+       $\zeta(v) \subseteq  \EFairpre^n( S' )$. La otra dirección de la prueba es similar. La prueba para los nodos del Verificador es similar.
+       
+       Para el caso de $v$ siendo un nodo probabilista,   $v \in  {\SymbEFairpre}^n( S )$ si y solo si existe un
+       $v' \in  {\SymbEFairpre}^{n-1}( S )$ tal que $\pr{0}{v'} \in \support{\pr{3}{v}}$ y $\pr{2}{v'} \in \support{\pr{4}{v}}$.
+       por inducción tenemos que esto es equivalente a $\zeta(v') \subseteq  {\SymbEFairpre}^{n-1}( S' )$, y como todo nodo $u \in \zeta(v')$ satisface
+       $\pr{0}{u} \in \support{\pr{3}{v}}$ y $\pr{2}{u} \in \support{\pr{4}{v}}$ obtenemos $\zeta(v) \subseteq \EFairpre^n( S' )$.
+       
+       
+       Ahora, utilizamos las propiedades anteriores para probar el resultado. De la primer propiedad obtenemos que $\zeta({\SymbAFairpre}^*(\ErrorSt)) = \AFairpre^*(\ErrorSt)$ (esto se deduce de la definición de $\SymbAFairpre$ para vértices probabilistas),  
+       por lo tanto $V^{\mathcal{H}} \setminus \AFairpre^*(\ErrorSt) \supseteq \bigcup \zeta(V^\SymbG \setminus {\SymbAFairpre}^*(\ErrorSt))$, entonces utilizando la segunda propiedad obtenemos que $\InitVertex \in V^{\mathcal{H}} \setminus \EFairpre^*(V^{\mathcal{H}} \setminus \AFairpre^*(\ErrorSt))$ si y solo si   
+       $\InitVertex \in V^\SymbG \setminus {\SymbEFairpre}^*(V^\SymbG \setminus {\SymbAFairpre}^*(\ErrorSt))$ (observemos que $\zeta(\InitVertex)$ es un conjunto unitario).
+\end{proof}
+
+Como $\Eq(v,C)$ puede ser computado en tiempo polinomial, también es el caso para los conjuntos predecesores $\SymbEFairpre(C)$ y $\SymbAFairpre(C)$.  Consecuentemente, el problema de decidir si un juego de masking estocástico es almost-sure failing bajo fairness también es polinomial.
+

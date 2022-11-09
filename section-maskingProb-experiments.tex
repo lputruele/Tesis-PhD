@@ -1,0 +1,139 @@
+\section{Experimentos}
+\label{sec:experimental_eval_prob}
+La Tabla~\ref{table:resultsMEM} reporta los resultados obtenidos para nuestro ejemplo de la memoria.
+$M_{t}$ y $M_{r}$ son los resultados de medir las acciones de tick y refresh, consideradas como hitos respectivamente.
+
+Algunas palabras son útiles para interpretar los resultados. Notemos que, tanto el incremento de la redundancia, como el aumento de la frecuencia de resfresco, tienen efectos positivos sobre las medidas. En la práctica, estos valores se pueden tener en cuenta a la hora de diseñar un componente tolerante a fallas que provea un balance óptimo entre eficiencia y costos de hardware. Por ejemplo, asumiendo una probabilidad de falla de $0.05$, uno podria preferir $3$ bits y un refresco mas frecuente, por sobre $5$ bits con menos refrescado,a pesar del overhead de software.
+
+
+\begin{table}
+  \centering
+  \scalebox{0.7}{
+    \begin{tabular}{c!{\ }c!{\ }|>{\ \,}c!{\ }c!{\ }|!{\ }c!{\ }c!{\ }|!{\ }c!{\ }c}
+      %% & & \makebox[2.5em][l]{3 bits redund.} & & \makebox[2.5em][l]{5 bits redund.} & & \makebox[2.5em][l]{7 bits redund.} & \\ \hline
+      %% Fault & Refresh & \multirow{2}{*}{$M_{t}$} & \multirow{2}{*}{$M_{r}$} & \multirow{2}{*}{$M_{t}$} & \multirow{2}{*}{$M_{r}$} & \multirow{2}{*}{$M_{t}$} & \multirow{2}{*}{$M_{r}$}  \\
+      %% Prob. &  Prob.  & & & & & &  \\ \hline
+      Prob. & Prob. & \makebox[2.5em][l]{3 redund. bits} & & \makebox[2.5em][l]{5 redund. bits} & & \makebox[2.5em][l]{7 redund. bits} & \\ \cline{3-8}
+      Falla &  Refresh  & $M_{t}$ & $M_{r}$ & $M_{t}$ & $M_{r}$ & $M_{t}$ & $M_{r}$  \\ \hline
+                  \multirow{3}{*}{$0.5$} 
+                  & $0.5$ & $6$ & $3$
+                          & $14$ & $7$
+                          & $30$ & $15$\\ 
+                  & $0.1$ & $4.4$ & $0.44$
+                          & $7.28$ & $0.73$
+                          & $10.74$ & $1.07$\\
+                  & $0.05$ & $4.2$  & $0.21$
+                           & $6.62$ & $0.33$
+                           & $9.28$ & $0.46$\\ \hline
+                  \multirow{3}{*}{$0.1$} 
+                  & $0.5$ & $70.01$ & $35$
+                          & $430.44$ & $215.22$
+                          & $2606.16$ & $1303.08$\\ 
+                  & $0.1$ & $30$ & $3$
+                          & $70.01$ & $7$
+                          & $150.04$ & $15$\\ 
+                  & $0.05$ & $25$  & $1.25$
+                           & $47.5$ & $2.37$
+                           & $81.26$ & $4.06$\\ \hline
+                  \multirow{3}{*}{$0.05$} 
+                  & $0.5$ & $240.13$ & $120.07$
+                          & $2676.52$ & $1338.26$
+                          & $31418.29$ & $15709.16$\\ 
+                  & $0.1$ & $80.01$ & $8$
+                          & $260.11$ & $26.01$
+                          & $801.08$ & $80.11$\\ 
+                  & $0.05$ & $60$  & $3$
+                           & $140.03$ & $7$
+                           & $300.13$ & $15.01$\\ \bottomrule
+    \end{tabular}
+  }
+  \vspace{-1.5ex}
+%  \caption{Experimental results on a Redundant Memory Cell.}
+  \caption{Resultados experimentales sobre la Memoria Probabilista}
+  \label{table:resultsMEM}
+\end{table}
+
+
+
+
+Las Tablas~\ref{table:resultsNMR} y \ref{table:resultsNMR2} reportan resultados sobre dos casos de estudio adicionales: Redundancia N-Modular (NMR), un ejemplo estándar de tolerancia a fallas \cite{ShoomanBook}; y una arquitectura NMR procesador-memoria con N votantes \cite{KrishnaBook}.
+
+Ya introdujimos NMR en el capítulo~\ref{cap:maskingMeasure}, NMR consiste de N módulos, consiste de N módulos que realizan una tarea independientemente, y cuyos resultados son procesados por un votante perfecto para producir una sola salida.
+En este caso, estos módulos pueden exhibir un comportamiento inesperado con una cierta probabilidad, en cuyo caso van a dar una salida incorrecta. Los resultados para este caso de estudio son similares al caso de la celda de memoria cuando hay probabilidad $0$ de refrescado. 
+
+El segundo caso de estudio consiste en N procesadores que dan como salida un valor a un módulo de memoria a través de N votantes. Tanto los votantes como los procesadores pueden dar como salida un valor incorrecto con una cierta probabilidad.
+El experimento da como salida los mismos resultados si la probabilidad de falla de los votantes y procesadores son intercambiados. Esto sugiere que, dado que la probabilidad de un par procesador-votante falle se mantenga igual, el sistema es más tolerante cuando las fallas ocurren con una distribución equitativa sobre los votantes y procesadores.
+%% An interesting fact,  corroborated by the results,  is that the system is more fault-tolerant when the faults occur uniformly on voters and processors.
+Hemos ejecutado nuestros experimentos en una MacBook Air con un procesador 1.3 GHz Intel Core i5 y 
+4 GB de memoria.
+
+%\vspace*{-0.9cm}
+\begin{table}
+\centering
+\scalebox{0.7}{
+    \begin{tabular}{c!{\ }|!{\ }c|!{\ }c}
+      Redundancia & Prob. Falla & $M_{t}$ \\ \hline
+      \multirow{4}{*}{$3$}  & $0.5$ & $4$ \\ 
+      & $0.3$ & $6.66$ \\
+      & $0.1$ & $20$ \\ 
+      & $0.05$ & $40$ \\ \cline{1-3}
+      \multirow{4}{*}{$5$} & $0.5$ & $6$ \\ 
+      & $0.3$ & $10$ \\
+      & $0.1$ & $30$ \\ 
+      & $0.05$ & $60$ \\ \cline{1-3}
+      \multirow{4}{*}{$7$} & $0.5$ & $8$ \\
+      & $0.3$ & $13.33$ \\
+      & $0.1$ & $40$ \\ 
+      & $0.05$ & $80$ \\ \cline{1-3}
+      \multirow{4}{*}{$9$} & $0.5$ & $10$ \\
+      & $0.3$ & $16.66$ \\
+      & $0.1$ & $50$ \\ 
+      & $0.05$ & $100$ \\ \cline{1-3}
+%      \multirow{4}{*}{$11$} & $0.5$ & $12$ \\
+%      & $0.3$ & $20$ \\
+%      & $0.1$ & $60$ \\ 
+%      & $0.05$ & $120$ \\ \bottomrule
+      \hline
+    \end{tabular}
+    }
+    \vspace{0.2cm}
+    \caption{Resultados experimentales sobre un Sistema Redundante N-Modular.}
+    \label{table:resultsNMR}
+    \hfill
+\end{table}
+
+
+    \begin{table}
+    \centering
+    \vspace{0.6cm}
+    \scalebox{0.7}{
+    \begin{tabular}{c!{\ }|!{\ }c|!{\ }c|!{\ }c}
+      Redundancia & P. Falla Proc. & P. Falla Vot. & $M_{t}$ \\ \hline
+      \multirow{5}{*}{$3$}  & $0.09$  & $0.01$ & $21.8$ \\ 
+      & $0.07$ & $0.03$ & $24.2$ \\ 
+      & $0.05$ & $0.05$ & $25$ \\ 
+      & $0.03$ & $0.07$ & $24.2$ \\ 
+      & $0.01$  & $0.09$ & $21.8$ \\ \cline{1-4}
+      \multirow{5}{*}{$5$} & $0.09$ & $0.01$ & $33.19$ \\ 
+      & $0.07$ & $0.03$ & $38.95$ \\ 
+      & $0.05$ & $0.05$ & $41.25$ \\
+      & $0.03$ & $0.07$ & $38.95$ \\
+      & $0.01$ & $0.09$ & $33.19$ \\  \cline{1-4}
+      \multirow{5}{*}{$7$} & $0.09$ & $0.01$ & $44.39$ \\
+      & $0.07$ & $0.03$ & $53.78$ \\ 
+      & $0.05$ & $0.05$ & $58.13$ \\
+      & $0.03$ & $0.07$ & $53.78$ \\
+      & $0.01$ & $0.09$ & $44.39$ \\ \cline{1-4}
+%      \multirow{5}{*}{$9$} & $0.09$ & $0.01$ & $55.54$ \\
+%      & $0.07$ & $0.03$ & $68.59$ \\ 
+%      & $0.05$ & $0.05$ & $75.39$ \\ 
+%      & $0.03$ & $0.07$ & $68.59$ \\ 
+%      & $0.01$ & $0.09$ & $55.54$ \\ \bottomrule
+      \hline
+    \end{tabular}
+    }
+    \vspace{0.2cm}
+    \caption{Resultados experimentales sobre una arquitectura NMR procesador/memoria con N votantes.}
+    \label{table:resultsNMR2}
+    \vspace{-.5cm}
+\end{table}

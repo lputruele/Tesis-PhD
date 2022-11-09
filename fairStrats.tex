@@ -1,0 +1,327 @@
+%\subsection{Almost-Sure Failing under Fair Strategies}
+
+
+
+For the game of expected total reward to be determined, we need that
+the stochastic game is almost-sure stopping, i.e., that the game
+reaches a sink vertex with probability 1~\cite{FilarV96}. We manage to
+extend the determinacy property to games that are almost-sure stopping
+under the condition that the minimizing player is
+fair~\cite{DBLP:journals/corr/abs-2112-09811}.
+
+In our setting, this amounts to considering \emph{almost-sure failing
+masking games}, that is, games in which the error state $\ErrorSt$ is
+reached with probability 1.  Moreover, we require that the Refuter
+plays fair.  This is necessary to avoid the Refuter stalls the game
+in an unproductive loop.
+%
+Indeed, consider the scenario described in
+Example~\ref{example:memory} and set the stochastic masking game
+between the nominal and faulty model of
+Figure~\ref{fig:exam_1_mem_cell} (omitting the red part).
+One would expect that the game leads to a failure with probability 1.
+%
+However, the Refuter has strategies for which the probability of
+reaching $\ErrorSt$ is less than $1$.  For instance, the Refuter may
+always play the reading action, and hence the Verifier has to mimic
+this action forever, this yields a probability of $0$ of reaching the
+error state.
+%
+Observe that, in this scenario, the Refuter is behaving in a
+benevolent manner, playing with the aim to avoid the error state.
+Clearly, this is against the spirit of the behaviour of faults which
+one expects they happen if waiting long enough.
+%
+Therefore the assumption that the Refuter is fair in the sense that,
+if some action or fault is infinitely often enabled for the Refuter,
+it will eventually play such action or fault.
+
+The setting for the stochastic game with the masking payoff function
+as objective that we present in the rest of the section stands
+on~\cite{DBLP:journals/corr/abs-2112-09811}, only that here special
+care is needed due to the infinite nature of the stochastic game
+graphs.
+%
+For this reason we limit the results of the rest of the section to
+(randomized) memoryless strategies and postpone the general result for
+further work.
+%
+Thus, we let $\Strategies{\Verifier}^{\Memoryless}$ and
+$\Strategies{\Refuter}^{\Memoryless}$ denote the sets of all
+(randomized) memoryless strategies for the Verifier and the Refuter,
+respectively, and similarly, we let
+$\Strategies{\Verifier}^{\Memoryless\Deterministic}$ and
+$\Strategies{\Refuter}^{\Memoryless\Deterministic}$ denote the sets of
+all pure (or deterministic) memoryless strategies.
+
+
+%%    We are interested in systems that eventually fail, this allows us to model an interesting set of systems, and it is also mathematically convenient to ensure
+%%  the well-definedness of our games.	However,  In practice, the restriction to almost-sure failing systems  could exclude interesting  case studies.
+%% Consider, for instance,  the scenario described in  Example~\ref{example:memory}.  The fault-tolerant memory implementation described therein is not 
+%% almost-sure failing, as the Refuter has strategies for which the probability of reaching the error state is less than $1$. 
+%% For instance,  the Refuter may always play the reading action,  and hence the Verifier have to mimic this action forever, 
+%% this yields a probability of $0$ of reaching the error state. 
+%% Observe that,  in this scenario, the Refuter is behaving in a benevolent manner, 
+%% playing in such a way that the error state is avoided. A natural assumption in this case is  that the environment (i.e., the Refuter) behaves in a fair way, in the sense that, if some action or fault is 
+%%  infinitely often enabled, then it will be eventually played by this player.  Fairness properties  are particularly useful  in fault-tolerance in order to adopt a more realistic model of faults \cite{DBLP:conf/icse/DIppolitoBPU11}.
+%%      In this section, we extends the framework presented above to systems that almost sure fails under strong fairness assumptions.  As shown in \cite{DBLP:journals/corr/abs-2112-09811}, the value of
+%% stochastic games under fair strategies of one player can be computed using greatest fixpoints. We extend these results to our setting. First, consider the notion of fair plays.
+
+
+
+
+A Refuter's fair play is defined as a play in which the Refuter commits to follow a strong fair pattern, i.e., that includes infinitely often any transition that is enabled infinitely often.  A fair strategy for the Refuter, is a strategy that always measures 1 on the set of all the Refuter's fair plays, regardless of the strategy of the Verifier.  The definition provided below follows the style in~\cite{DBLP:journals/dc/BaierK98,BaierK08,DBLP:journals/corr/abs-2112-09811}.
+
+
+
+%
+\begin{definition}
+  Given a masking game
+  $\StochG_{A,A'} = (V^\StochG, E^\StochG, V^\StochG_\Refuter, V^\StochG_\Verifier, V^\StochG_\Probabilistic, \InitVertex, \delta^\StochG)$,
+  the \emph{set of all Refuter's fair plays} is defined by
+  $ 
+	\RFP = \{ \omega \in \Omega \mid v \in \inf(\omega) \cap V^\StochG_\Refuter \Rightarrow \post(v) \subseteq \inf(\omega) \}
+  $.
+  %
+  A Refuter strategy $\strat{\Refuter}$ is said to
+  be \emph{almost-sure fair} iff, for every Verifier's strategy
+  $\strat{\Verifier}$,
+  $\Prob{\strat{\Refuter}}{\strat{\Verifier}}_{\StochG_{A,A'},\InitVertex}(\RFP) = 1$.
+\end{definition}
+
+
+%% %
+%% \begin{definition} Given a masking game $\StochG_{A,A'} = (V^\StochG, E^\StochG, V^\StochG_\Refuter, V^\StochG_\Verifier, V^\StochG_\Probabilistic, \InitVertex, \delta^\StochG)$,
+%% The set of Refuter's fair plays (denoted $\RFP$) is defined as follows:
+%% \[
+%% 	\RFP = \{ \omega \in \Omega \mid v \in \inf(\omega) \cap V^\StochG_\Refuter \Rightarrow \post(v) \subseteq \inf(\omega) \}
+%% \]
+%% \end{definition}
+%% 	The almost-sure fair strategies for the Refuter are defined as follows.
+%% \begin{definition} Given a masking game $\StochG_{A,A'} = (V^\StochG, E^\StochG, V^\StochG_\Refuter, V^\StochG_\Verifier, V^\StochG_\Probabilistic, \InitVertex, \delta^\StochG)$,
+%% a Refuter strategy $\strat{\Refuter}$ is said to be \emph{almost-sure fair} iff, for any Verifier's strategy $\strat{\Verifier}$, 
+%% $\Prob{\strat{\Refuter}}{\strat{\Verifier}}_{\StochG_{A,A'},  \InitVertex}(\RFP) = 1$.
+%% \end{definition}
+
+Under this concept, the stochastic masking game is almost-sure failing
+under fairness if for every Verifier's strategy and every Refuter's
+fair strategy, the game leads to an error with probability 1.  This is
+formally defined as follows.
+
+
+
+\begin{definition}
+  Let $A$ and $A'$ be two PTSs.  We say that the stochastich masking
+  game $\StochG_{A,A'}$ is \emph{almost-sure failing under fairness
+  (and memoryless strategies)} iff, for every memoryless strategy
+  $\strat{\Verifier} \in \Strategies{\Verifier}^{\Memoryless}$ and any
+  fair memoryless strategy
+  $\strat{\Refuter} \in \Strategies{\Refuter}^{\Memoryless}$,
+  $\Prob{\strat{\Verifier}}{\strat{\Refuter}}_{\StochG_{A,A'}, \InitVertex}(\Diamond \ErrorSt)=1$.
+\end{definition}
+
+%% Now, a model is an almost-sure failing implementation under fairness
+%% of a given nominal model if for every Verifier's strategy and every
+%% Refuter's fair strategy, the stochastich masking games leads to an
+%% error with probability 1.  This is formally defined as follows.
+%% %	We use  almost-sure fair strategies to define almost-sure failing implementations under fairness.
+
+%% \begin{definition} Let $A =( S, \Sigma, \rightarrow, s_0 )$ and $A' =( S', \SigmaF, \rightarrow', s_0' )$ be two PTSs. We say that $A'$ is an \emph{almost-sure failing implementation under fairness}  of $A$ iff, 
+%% for every strategy  $\strat{\Verifier} \in \Strategies{\Verifier}$ and any fair strategy $\strat{\Refuter} \in \Strategies{\Refuter}$, it holds: $\Prob{\strat{\Verifier}}{\strat{\Refuter}}_{\StochG_{A,A'},  \InitVertex}(\Diamond \ErrorSt)=1$.
+%% \end{definition}
+
+
+
+    Interestingly,  under strong fairness assumptions the determinacy of games is preserved \cite{DBLP:journals/corr/abs-2112-09811}. Furthermore,  in finite stochastic games with fairness restrictions the value of the game can be computed by calculating the greatest fixed point of the following Bellman functional. We can adapt this result to our games by using the vertices of the polytopes when computing the   values of the probabilistic states. %vertices.
+\begin{theorem}\label{theo:det-fairness} Let $\MilestoneG_{A,A'}$ be a stochastic game with milestones for some PTSs $A$ and $A'$ that is almost-sure 
+failing for fair Refuter's strategies.  Then,  we have:
+\[
+ \inf_{\strat{\Refuter} \in \Strategies{\Refuter}^{\Memoryless}} \sup_{\strat{\Verifier} \in \Strategies{\Verifier}^{\Memoryless}}  \mathbb{E}^{\strat{\Verifier},\strat{\Refuter}}_{\MilestoneG_{A,A'}, v}[\FMask] 
+    = \sup_{\strat{\Verifier \in \Strategies{\Verifier}^{\Memoryless}}} \inf_{\strat{\Refuter \in \Strategies{\Refuter}^{\Memoryless}}}    \mathbb{E}^{\strat{\Verifier},\strat{\Refuter}}_{\MilestoneG_{A,A'}, v}[\FMask] 
+    < \infty.
+\]
+Moreover, 
+the value of the game for memoryless strategies for the Verifier and  fair memoryless Refuter's strategies is the greatest fixpoint of the following functional $\Bellman$: 
+%(see Theorem ~\ref{thm:solution_eq_stock_game}). 
+\[
+    \Bellman(f)(v) =
+    \begin{cases}
+           %\displaystyle \max_{w \in \vertices{\couplings{\pr{3}{v},\pr{4}{v}}}} \{\chi_{\mathcal{M}}(\pr{1}{v}) + \sum_{v' \in \post(v)} w(v,v')  \Bellman_{v'} \}& \text{ if }v \in V^{\SymbG}_\Verifier  \\
+           %\displaystyle \max_{w \in \vertices{\couplings{\pr{3}{v}}{\pr{4}{v}}}} \{\chi_{\mathcal{M}}(\pr{1}{v}) + \sum_{v' \in \post(v)} w(\pr{0}{v'},\pr{2}{v'})  \Bellman_{v'} \}& \text{ if }v \in V^{\SymbG}_\Verifier  \\
+           \displaystyle \min \{\upperbound,  \max_{w \in \vertices{\couplings{\pr{3}{v}}{\pr{4}{v}}}} \{ \chi_{\mathcal{M}}(\pr{1}{v})  + \sum_{v' \in \post(v)} w(\pr{0}{v'},\pr{2}{v'})  f(v') \} \}& \text{ if }v \in V^{\SymbG}_\Probabilistic  \\
+           \displaystyle \min \{ \upperbound, \max \{\chi_{\mathcal{M}}(\pr{1}{v})  + f(v') \mid v' \in \post(v) \} \} & \text{ if } v \in  V^{\SymbG}_\Verifier, \\
+           \displaystyle \min \{ \upperbound,  \min \{\chi_{\mathcal{M}}(\pr{1}{v})  + f(v') \mid v' \in \post(v) \} \} & \text{ if } v \in  V^{\SymbG}_\Refuter, \\
+           \displaystyle 0 & \text{ if } v=\ErrorSt.
+           \displaystyle 
+    \end{cases}
+\]
+where $\upperbound$ is a number such that 
+$\upperbound \leq \inf_{\strat{\Refuter} \in \Strategies{\Refuter}^{\Memoryless\Deterministic}} \sup_{\strat{\Verifier} \in \Strategies{\Verifier}^{\Memoryless\Deterministic}} \Expect{\strat{\Verifier}}{\strat{\Refuter}}_{\MilestoneG_{A,A'}, \InitVertex}[\FMask]$.
+\end{theorem}
+\reversemarginpar\marginnote{\color{blue}LP2ALL: The functional counts milestones in every case but it should only count on the V case.}[-4cm]
+
+
+   Also, we can check whether  a game is almost-sure failing under fairness by computing predecessor sets in the symbolic game graph.  To do so, we define the symbolic version of the predecessor sets.
+%\begin{align*}
+%	\EFairpre(C) =& \{ v \in V^\StochG_\Probabilistic \mid \delta(v)(C) > 0\} \\
+%		       & \cup \{ v \in  V^\StochG_\Verifier \cup V^\StochG_\Refuter  \mid \exists v' \in C : (v,v') \in E^\StochG \}\\
+%	\AFairpre(C) = &\{ v \in V^\StochG_\Probabilistic \mid \delta(v)(C) > 0\} \\
+%		      & \cup \{ v \in  V^\StochG_\Verifier   \mid \forall v' \in C : (v,v') \in E^\StochG \Rightarrow v' \in C \}\\
+%		      &  \cup \{ v \in  V^\StochG_\Refuter  \mid \exists v' \in C : (v,v') \in E^\StochG \}
+%\end{align*}
+%	These sets allows us to check if a given game is almost-sure failing for $\starredstrat{\Refuter}$.
+%\begin{theorem} Given a masking game $\StochG_{A,A'} = (V^\StochG, E^\StochG, V^\StochG_\Refuter, V^\StochG_\Verifier, V^\StochG_\Probabilistic, \InitVertex, \delta^\StochG)$,
+%then $\Prob{\strat{\Verifier}}{\strat{\Refuter}}_{\StochG_{A,A'}}(\mathcal{A}) = 1$ for every fair Refuter's strategy $\strat{\Refuter}$ and Verifier's strategy $\strat{\Verifier}$, being $\mathcal{A} = \{ \rho \in \Omega \mid \rho_i = \ErrorSt \}$, iff
+%$\InitVertex \notin \EFairpre^*(V^\StochG \setminus \AFairpre^*(\ErrorSt))$.
+%\end{theorem}
+%\begin{proof} Consider the MDP $\StochG^{\starredstrat{\Refuter}}_{A,A'}$, then note that $v \in  \AFairpre^*(C)$ (in game $\StochG_{A,A'}$) iff
+%$v \in  \Apre^*(C)$ (in MDP $\StochG^{\starredstrat{\Refuter}}_{A,A'}$), so any successor of a Refuter's state in  $\StochG^{\starredstrat{\Refuter}}_{A,A'}$ has a positive probability.
+%Then, $ v \in V^\StochG \setminus \AFairpre^*(C)$ (in game $\StochG_{A,A'}$) iff $v \in V^\StochG \setminus \Apre^*(C)$ (in MDP $\StochG^{\starredstrat{\Refuter}}_{A,A'}$), because $\starredstrat{\Refuter}$ is memoryless, which means that the states in both are the same. 
+%That is, $ v \in \EFairpre^*(V^\StochG \setminus \AFairpre^*(C))$ (in game $\StochG_{A,A'}$)
+%iff $ v \in \Epre^*(V^{\StochG^{\starredstrat{\Refuter}}} \setminus \Apre^*(C))$, since $\Epre^*(S)$ and $\EFairpre^*(S)$ coincide over 
+%any set of vertices.
+%\end{proof}\\
+    Given a game $\StochG_{A,A'}$ and its symbolic version $\SymbG_{A,A'}$, let $\SymbEFairpre(C)$ and 
+$\SymbAFairpre(C)$, for a given set $C$ of symbolic vertices, be defined as follows:
+\begin{align*}
+	\SymbEFairpre(C) ={}& \{ v \in V^\SymbG_\Probabilistic \mid  \exists v' \in C\cap V^\SymbG_\Refuter : \pr{0}{v'}\in\support{\pr{3}{v}} \land \pr{2}{v'}\in\support{\pr{4}{v}} \} \\
+		       & \cup \{ v \in  V^\SymbG_\Verifier \cup V^\SymbG_\Refuter  \mid \exists v' \in C : (v,v') \in E^\SymbG_{A,A'} \}\\
+	\SymbAFairpre(C) = {}&\{ v \in V^\SymbG_\Probabilistic \mid \Eq(v,C) \textit{  has no solution }\} \\
+		      & \cup \{ v \in  V^\SymbG_\Verifier   \mid \forall v' \in C : (v,v') \in E^\SymbG \Rightarrow v' \in C \}\\
+		      &  \cup \{ v \in  V^\SymbG_\Refuter  \mid \exists v' \in C : (v,v') \in E^\SymbG \}
+\end{align*}
+%% \begin{align*}
+%% 	\SymbEFairpre(C) ={}& \{ v \in V^\SymbG_\Probabilistic \mid  \exists v' \in C\cap V^\SymbG_\Refuter : \pr{0}{v'}\in\support{\pr{3}{v}} \land \pr{2}{v'}\in\support{\pr{4}{v}} \} \\
+%% 		       & \cup \{ v \in  V^\SymbG_\Verifier \cup V^\SymbG_\Refuter  \mid \exists v' \in C : (v,v') \in E^\SymbG_{A,A'} \}\\
+%% 	\SymbAFairpre(C) ={}&\{ v \in V^\SymbG_\Probabilistic \mid \Eq(v,C) \textit{  has no solution }\} \cup \{ v \in  V^\SymbG_\Refuter  \mid \exists v' \in C : (v,v') \in E^\SymbG \}\\
+%% 		      & \cup \{ v \in  V^\SymbG_\Verifier   \mid \forall v' \in C : (v,v') \in E^\SymbG \Rightarrow v' \in C \}
+%% \end{align*}
+%
+In particular, the first set in the definition of $\SymbEFairpre(C)$
+collects all probabilistic vertices $v$ for which there is a coupling
+that leads to a Refuter vertex $v'$ in $C$.  For this is sufficient to
+check that the states $\pr{0}{v'}$ and $\pr{2}{v'}$ that define $v'$
+are on the respective support sets of the probabilities
+$\pr{3}{v}$ and $\pr{4}{v}$ that define $v$ (since
+it is always possible to define a coupling that assigns positive
+probability to a pair of states in the respective support sets).  The
+first set in the definition of $\SymbAFairpre(C)$ collects all
+probabilistic vertices $v$ for which there is no coupling ``avoiding'' $C$, that is, no coupling that leads with probability 0 to the set of all
+pair of states defining a vertex in $C$.  A coupling avoiding
+$C$ will solve $\Eq(v,C)$.
+%
+By using $\SymbEFairpre$ and $\SymbAFairpre$ recursively, we can
+decide whether a game is almost-sure failing under fairness as follows.
+
+\begin{theorem}\label{theo:decide-stopping} Given a masking game $\StochG_{A,A'}$ and its symbolic version $\SymbG_{A,A'}$,  we have that 
+ $\StochG_{A,A'}$ is almost-sure failing under fairness  iff
+$
+  \InitVertex \in V^\SymbG \setminus {\SymbEFairpre}^*(V^\SymbG \setminus {\SymbAFairpre}^*(\ErrorSt)),
+$
+where $\InitVertex$ is the initial state of $\SymbG_{A,A'}$ and $V^\SymbG$ its sets of vertices.
+\end{theorem}
+
+
+As $\Eq(v,C)$ can be computed in polynomial time, so do the predecessor
+sets $\SymbEFairpre(C)$ and $\SymbAFairpre(C)$.  As a consequence, the
+problem of deciding whether a stochastic masking game is almost-sure
+failing under fairness is also polynomial.
+
+
+
+
+
+
+
+
+
+
+
+
+\iffalse
+\begin{proof} We first prove that for all $v \in V^\StochG$ and $v' \in V^\SymbG_{A,A'}$ 
+such that $\pr{i}{v} = \pr{i}{v'}$ for $0 \leq i \leq 4$, we have:
+$v \in  \AFairpre^n(\ErrorSt)$ iff $v' \in {\SymbAFairpre}^n(\ErrorSt)$, for every $n$. 
+The proof is by induction on $n$. The base case is direct. The inductive
+case for Refuter's nodes is also direct (as the predecessors in both games are the same). For Verifier's nodes we proceed as follows. If $v \in  \AFairpre^n(\ErrorSt)$, then
+for all $w \in \post(v')$ we have $\delta(w)( \AFairpre^{n-2}(\ErrorSt) >0)$, that is, $\Eq(w')({\SymbEFairpre}^{n-2}(\ErrorSt))$ has no solutions (with $w'$ satisfying $\pr{i}{w} = \pr{i}{w'}$ for $0 \leq i \leq n$ ). 
+Thus, $w \in {\SymbEFairpre}^{n-1}(\ErrorSt)$, and since it is the unique successor of $w'$ we have that $v' \in {\SymbEFairpre}^n(\ErrorSt)$, the other direction is similar.
+
+	Now, given sets $C \subseteq V^\StochG$ and $C' \subseteq V^\SymbG$	 with $C^* = \{ v \mid \exists v' \in C : \forall 0 \leq i \leq 4 : \pr{i}{v} = \pr{i}{v'}\}$. Let us prove
+that, for every $u \in V^\StochG$ and $u' \in V^\SymbG$ such that $\pr{i}{u} = \pr{i}{v'}$ for every $0 \leq i \leq 4$, we have $u \in \EFairpre^n(C)$ iff $u' \in \EFairpre^n(C^*)$. 
+The proof is by induction on $n$, for $n=0$ it is direct. For $n>0$, assume $w \in \EFairpre^n(C)$, for 
+\hrmkRD{RD2PC Falta la prueba para $n > 0$}
+\end{proof}
+\fi
+%
+% Esta parte esta en el otro paper
+\iffalse
+\begin{theorem} Given a masking stochastic game with milestones $\MilestoneG_{A,A'}$ for any  PTSs $A$ and $A'$. Then:
+\[\adjustlimits
+	\inf_{\strat{\Refuter} \text{ is fair }} \sup_{\strat{\Verifier}} \Expect{\strat{\Verifier}}{\strat{\Refuter}}[\FMask] = \adjustlimits \sup_{\strat{\Verifier}}   \inf_{\strat{\Refuter} \text{ is fair }}  \Expect{\strat{\Verifier}}{\strat{\Refuter}}[\FMask]
+\]
+\end{theorem}
+\begin{proof}
+	The part $ \adjustlimits \sup_{\strat{\Verifier}}   \inf_{\strat{\Refuter} \text{ is fair }}  \Expect{\strat{\Verifier}}{\strat{\Refuter}}[\FMask] \leq \inf_{\strat{\Refuter} \text{ is fair }} \sup_{\strat{\Verifier}} \Expect{\strat{\Verifier}}{\strat{\Refuter}}[\FMask]$ is direct.  For the other inequality consider:
+\begin{align*}
+\adjustlimits \inf_{\strat{\Refuter} \text{ is fair }} \sup_{\strat{\Verifier}} \Expect{\strat{\Verifier}}{\strat{\Refuter}}[\FMask] & & \\
+	&  \leq  \sup_{\strat{\Verifier}} \Expect{\strat{\Verifier}}{\tau(\strat{\Verifier}')}[\FMask] & \text{[Prop. $\inf$]} \\
+	&  =     \Expect{\strat{\Verifier}'}{\tau(\strat{\Verifier}')}[\FMask]  &  \text{[Lemma \ref{lemma:construct-verifier-strat}]}\\
+	&  =     \inf_{\strat{\Refuter} \text{ is fair }} \Expect{\strat{\Verifier}'}{\strat{\Refuter}}[\FMask] & \text{[Lemma \ref{lemma:construct-refuter-strat}]} \\
+	&  \leq \adjustlimits \sup_{\strat{\Verifier}} \inf_{\strat{\Refuter} \text{ is fair }} \Expect{\strat{\Verifier}}{\strat{\Refuter}}[\FMask] &  \text{[Prop. $\sup$]}
+%& \leq  \text{[Prop. Inf]}\\
+% & \sup_{\strat{\Verifier}} \Expect{\strat{\Verifier}}{\tau(\strat{\Verifier}')}[\FMask] \\
+% & =   \text{[Lemma]}\\
+% &  \Expect{\strat{\Verifier}'}{\tau(\strat{\Verifier}')}[\FMask] \\
+% & =   \text{[Lemma]}\\
+% &  \inf_{\strat{\Refuter} \text{ is fair }} \Expect{\strat{\Verifier}'}{\strat{\Refuter}}[\FMask] \\
+% & \leq \text{[Prop. Sup]}\\
+% &\adjustlimits \sup_{\strat{\Verifier}} \inf_{\strat{\Refuter} \text{ is fair }} \Expect{\strat{\Verifier}}{\strat{\Refuter}}[\FMask] \\
+\end{align*}
+	
+\end{proof}
+%
+
+Moreover, the value of the game in this case can be calculated via the greatest fixed point of  the function $U: \mathbb{R}^n \rightarrow \mathbb{R}^n$ defined via the equations of Theorem~\ref{thm:solution_eq_stock_game}.
+	
+\begin{theorem} Let $\MilestoneG_{A,A'}$ be a stochastic game with milestones for some PTSs $A$ and $A'$ that is almost-sure 
+failing for fair Refuter's strategies. 
+Consider the function 
+$I: \mathbb{R}^{(V^\StochG_\Verifier \cup V^\StochG_\Refuter)} \rightarrow  \mathbb{R}^{(V^\StochG_\Verifier \cup V^\StochG_\Refuter)}$, defined by the following set of functional equations.
+\[
+    x(v) =
+    \begin{cases}
+           %\displaystyle \max_{w \in \vertices{\couplings{\pr{3}{v},\pr{4}{v}}}} \{\chi_{\mathcal{M}}(\pr{1}{v}) + \sum_{v' \in \post(v)} w(v,v')  x_{v'} \}& \text{ if }v \in V^{\SymbG}_\Verifier  \\
+           %\displaystyle \max_{w \in \vertices{\couplings{\pr{3}{v}}{\pr{4}{v}}}} \{\chi_{\mathcal{M}}(\pr{1}{v}) + \sum_{v' \in \post(v)} w(\pr{0}{v'},\pr{2}{v'})  x_{v'} \}& \text{ if }v \in V^{\SymbG}_\Verifier  \\
+           \displaystyle \max_{w \in \vertices{\couplings{\pr{3}{v}}{\pr{4}{v}}}} \{\sum_{v' \in \post(v)} w(\pr{0}{v'},\pr{2}{v'})  x(v') \}& \text{ if }v \in V^{\SymbG}_\Probabilistic  \\
+           \displaystyle \max \{\chi_{\mathcal{M}}(\pr{1}{v})  + x(v') \mid v' \in \post(v) \} & \text{ if } v \in  V^{\SymbG}_\Verifier, \\
+           \displaystyle \min \{\chi_{\mathcal{M}}(\pr{1}{v})  + x(v') \mid v' \in \post(v) \} & \text{ if } v \in  V^{\SymbG}_\Refuter, \\
+           \displaystyle 0 & \text{ if } v=\ErrorSt.
+           \displaystyle 
+    \end{cases}
+\]
+then the value of the game under fair Refuter's strategies is the maximum fixed-point of 
+$I: \mathbb{R}^{(V^\StochG_\Verifier \cup V^\StochG_\Refuter)} \rightarrow  \mathbb{R}^{(V^\StochG_\Verifier \cup V^\StochG_\Refuter)}$.
+\end{theorem}
+\begin{proof}
+Idea of the proof.
+\begin{itemize}	
+	\item Given another fixed point (a vector) $\phi : \mathbb{R}^{(V^\StochG_\Verifier \cup V^\StochG_\Refuter)}$ we define strategies $\starredstrat{\Refuter}$ and $\starredstrat{\Verifier}$ where $\starredstrat{\Refuter}$ is fair and   $\Expect{\strat{\Verifier}}{\starredstrat{\Refuter}}[\FMask](v) = \phi(v)$, for every vertex.
+	\item Since $\starredstrat{\Refuter}$ is fair we have $\Expect{\strat{\Verifier}}{\starredstrat{\Refuter}}[\FMask](v) \leq \sup_{fair \strat{\Refuter}} \Expect{\strat{\Verifier}}{\starredstrat{\Refuter}}[\FMask](v)$, and Theorem \ref{lemma:construct-verifier-strat}.
+\end{itemize}
+	 Consider $\phi: \mathbb{R}^{(V^\StochG_\Verifier \cup V^\StochG_\Refuter)}$ be another fix point. Let us define strategies  $\starredstrat{\Refuter}$ and $\starredstrat{\Verifier}$ such that
+$\Expect{\strat{\Verifier}}{\starredstrat{\Refuter}}[\FMask](v) = \phi(v)$, for every vertex, such that $\starredstrat{\Refuter}$ is fair. For those vertexes $v$ such that 
+$\phi(v) > 0$ we define $\starredstrat{\Verifier}$ as follows. $\starredstrat{\Verifier}(v) = \argmax \{ \sum_{w \in \support(\delta)} \delta(v',w)*\phi(w)  \mid v' \in \post(v)  \}$,
+and $\tau(\starredstrat{\Verifier})$ is defined as in Theorem \ref{lemma:construct-refuter-strat}, which is fair. Also, note that by our definition
+we have that $\Expect{\starredstrat{\Verifier}}{\tau(\starredstrat{\Verifier})}[\FMask](v) = \phi(v)$. 
+But by Theorem \ref{lemma:construct-refuter-strat} we have:
+\begin{align*}
+\Expect{\starredstrat{\Verifier}}{\tau(\starredstrat{\Verifier})}[\FMask](v) && \\
+& = \inf_{fair \strat{\Refuter}} \Expect{\starredstrat{\Verifier}}{\strat{\Refuter}}[\FMask](v) & \text{Theorem \ref{lemma:construct-refuter-strat}} \\
+& \leq  \sup_{\strat{\Verifier}} \inf_{fair \strat{\Refuter}} \Expect{\strat{\Verifier}}{\strat{\Refuter}}[\FMask](v) & \text{Properties $\sup$} \\
+\end{align*}
+	Therefore, $ \sup_{\strat{\Verifier}} \inf_{fair \strat{\Refuter}} \Expect{\strat{\Verifier}}{\strat{\Refuter}}[\FMask](v)$ gives us the maximum fixed point.
+\end{proof}
+\fi
+
+	

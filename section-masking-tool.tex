@@ -1,7 +1,7 @@
-\chapter{MaskD: Una Herramienta para medir masking-tolerancia a fallas}
-\label{cap:maskD}
+\section{MaskD: Una Herramienta para Medir Masking-Tolerancia a Fallas}
+\label{sec:maskD}
 
-En este capitulo presentamos {\MaskD}, una herramienta automática diseñada para medir el nivel de tolerancia a fallas entre componentes de software, 
+En esta sección presentamos {\MaskD}, una herramienta automática diseñada para medir el nivel de tolerancia a fallas entre componentes de software, 
 descritos por medio de un lenguaje de comandos con guardas.
 La herramienta se enfoca en medir componentes masking-tolerantes a fallas, es decir, programas que enmascaran fallas de tal manera que no puedan ser observadas por el ambiente. Usualmente se lo clasifica como el el tipo de tolerancia mas beneficioso y es a su vez una propiedad altamente deseable para sistemas críticos. 
 La herramienta toma como entrada un modelo nominal y un modelo de su implementación tolerante a fallas y computa automáticamente la distancia de masking entre ellos. 
@@ -9,7 +9,7 @@ La herramienta toma como entrada un modelo nominal y un modelo de su implementac
 La herramienta está diseñada para darle soporte a ingenieros de software para el análisis y diseño de sistemas tolerantes a fallas. Más precisamente, utiliza una función de distancia de masking de tal forma que el ingeniero pueda medir la masking-tolerancia de una implementación tolerante a fallas dada, i.e., la cantidad de fallas que la implementación es capaz de enmascarar en el peor caso posible. 
 Por lo tanto, los ingenieros pueden medir y comparar la distancia de masking-tolerancia a fallas entre distintas implementaciones y el modelo nominal, y así seleccionar la implementación que mejor se adapte a sus preferencias.
 
-\section{La herramienta} \label{sec:mask_sec}
+\subsection{La Herramienta} \label{sec:mask_sec}
 
 \MaskD~toma como entrada un modelo nominal y su implementación tolerante a fallas, y produce como salida la distancia de masking entre ellos, la cual es un valor en el intervalo $[0,1]$.
 Los modelos de entrada se describen utilizando el lenguaje de comandos con guardas introducido en \cite{AroraGouda93}, un lenguaje de programación simple para describir algoritmos tolerantes a fallas.
@@ -87,7 +87,7 @@ Las figuras \ref{fig:exam_1_mem_cell_nominal} y \ref{fig:exam_1_mem_cell_faulty}
 \MaskD~es software de código abierto escrito en el lenguaje \textsf{Java}. La documentación y las instrucciones de instalación se pueden encontrar en \cite{MaskD}. La arquitectura de la herramienta se muestra en la figura~\ref{fig:arch}.
 \begin{figure}[t]
     \centering
-    \includegraphics[scale=0.50]{Figs/architecture.eps}
+    \includegraphics[scale=0.50]{Figs/architecture-eps-converted-to.pdf}
     \caption{Arquitectura de \textsf{MaskD}.}\label{fig:arch}
 \end{figure}
     Discutiremos brevemente las componentes principales de la herramienta:
@@ -156,7 +156,7 @@ El usuario puede utilizar la opción \verb"-det" para cambiar al algoritmo de di
 \end{figure}
 
 
-\section{Evaluación Experimental} \label{sec:experimental_eval}
+\subsection{Evaluación Experimental} \label{sec:experimental_eval}
 %\subsection{Details of the implementation}
 
 %Las técnicas descritas en el capitulo anterior fueron implementadas en una herramienta utilizando el lenguaje \textsf{Java}, la herramienta se llama \MaskD: 

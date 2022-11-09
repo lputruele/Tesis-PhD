@@ -1,0 +1,20 @@
+\chapter{Medidas para Masking-tolerancia en Sistemas Estocásticos}
+\label{cap:maskProb}
+
+En este capítulo introducimos una noción formal de masking-tolerancia a fallas entre sistemas de transición probabilistas que se basa en el concepto de bisimulación probabilista (al igual que en \ref{cap:maskingMeasure} la llamamos simulación de masking). También proveemos la caracterización correspondiente en términos de un juego estocástico. A pesar de que estos juegos pueden tener una cantidad infinita de estados, proponemos una forma simbólica de representarlos, de tal manera que se pueda decidir en tiempo polinomial si existe una simulación de masking entre dos sistemas de transición probabilistas.
+%they can be solved in
+%polynomial time.
+%
+Utilizamos esta noción de masking para cuantificar el nivel de masking-tolerancia a fallas exhibido por sistemas almost-sure failing, i.e. aquellos sistemas que eventualmente fracasan (llegan a un estado inválido) con probabilidad $1$.
+El nivel de masking-tolerancia a fallas de sistemas almost-sure failing se puede calcular resolviendo una colección de ecuaciones funcionales.
+%
+Producimos esta métrica en un contexto donde el jugador que minimiza se comporta de manera strong fair (adoptando la idea de ambientes fair), y limitando este estudio a estrategias sin memoria debido a la naturaleza infinita de este juego. 
+%% Moreover,  we generalize this approach to cope with systems where  the environment  behaves in a strong fair way, 
+%% an assumption that has been useful  for designing critical software.
+Implementamos estas ideas en una herramienta prototipo y realizamos una evaluación experimental sobre tres casos de estudio.
+
+\input{section-maskingProb-intro.tex}
+\input{section-maskingProb-distance.tex}
+\input{section-maskingProb-almostsure.tex}
+\input{section-maskingProb-experiments.tex}
+\input{section-maskingProb-related.tex}

@@ -1,0 +1,70 @@
+\section{Introducción} \label{sec:intro_prob}
+
+La tolerancia a fallas es una característica importante del software moderno. Esto es particularmente cierto para el software crítico como el software bancario,
+aplicaciones de automoción, protocolos de comunicación, software de aviónica, etc.
+solo por mencionar algunos ejemplos.
+Sin embargo, en la práctica, es difícil cuantificar el nivel de tolerancia a fallas que brindan los sistemas informáticos. En la mayoría de los casos, los sistemas tolerantes a fallas se construyen usando técnicas ad-hoc que son basados en la experiencia y, muchas veces, carecen de fundamento matemático.
+Además, las fallas suelen tener un carácter probabilístico. Por lo tanto, los conceptos provenientes de la teoría de la probabilidad se vuelven necesarios al desarrollar software tolerante a fallas. En este capítulo proporcionamos un framework destinado a analizar la tolerancia a fallas exhibida por sistemas probabilistas concurrentes. Esto abarca la probabilidad de ocurrencia de fallas, así como el uso de algoritmos aleatorios para mejorar la tolerancia a fallas de los sistemas.
+
+ En la práctica, existen diferentes tipos de tolerancia a fallas, \emph{masking-tolerancia a fallas} (cuando tanto las propiedades de safety como las de liveness se conservan ante la ocurrencia de fallas),
+\emph{nonmasking-tolerancia a fallas} (cuando solo se conservan las propiedades de liveness) y \emph{failsafe-tolerancia a fallas} (cuando solo se conservan las propiedades de safety).
+Entre ellos, la masking-tolerancia a fallas se reconoce a menudo como el tipo de tolerancia a fallas más deseable, porque todas las propiedades del sistema nominal (es decir, no defectuoso) se conservan bajo un comportamiento defectuoso.
+Sin embargo, en muchos entornos, no es realista exigir masking-tolerancia a fallas total. En particular, para aquellos sistemas que no están diseñados para terminar y, que con la degradación del hardware o software, los componentes
+ eventualmente conducen a un error (es decir, un comportamiento que se desvía del comportamiento esperado del sistema). Una de las principales aplicaciones del framework descrito en las próximas secciones es la cuantificación de la
+ cantidad de masking-tolerancia a fallas proporcionada por los sistemas antes de que entren a un estado de error. Esta medida proporciona una herramienta para seleccionar un mecanismo de tolerancia a fallas o para equilibrar múltiples mecanismos (por ejemplo, hasta qué punto vale la pena el costo de la redundancia de hardware eficiente frente a los artefactos de software que demandan tiempo).
+	
+Durante la última década, se han logrado avances significativos en cuanto a la definición de métricas o distancias adecuadas para diversos tipos de medidas para modelos cuantitativos, incluyendo sistemas en tiempo real \cite{HenzingerMP05}, modelos probabilísticos \cite{Bacci0LM17,BacciBLMTB19,DesharnaisGJP04,DesharnaisLT11,TangB18},
+y métricas para sistemas lineales y ramificados \cite{CernyHR12,AlfaroFS09,Henzinger13,LarsenFT11,ThraneFL10}.
+Algunos autores ya han señalado que estas métricas pueden ser útiles para razonar
+sobre la robustez y corrección de un sistema, nociones relacionadas con la tolerancia a fallas.
+En el capítulo~\ref{cap:maskingMeasure} se introdujo una noción de masking-tolerancia a fallas
+entre sistemas, la cual se construye sobre una relación de simulación y una correspondiente
+representación del juego con objetivos cuantitativos. En este capítulo ampliamos estas ideas a un entorno probabilístico y definimos una versión probabilística de
+esta caracterización de masking-tolerancia a fallas.
+
+Más específicamente, comenzamos caracterizando la masking-tolerancia a fallas probabilista a través de una variante de bisimulación probabilista. Esta \emph{simulación de enmascaramiento} relaciona dos sistemas de transición probabilistas. El primero actúa como una especificación del comportamiento previsto (es decir, modelo nominal) y el
+el segundo como la implementación tolerante a fallas (es decir, el modelo extendido con comportamiento defectuoso). La existencia de una simulación de enmascaramiento implica
+que la implementación enmascara las fallas. Esta relación de simulación se puede capturar como un juego estocástico jugado por un
+\emph{Verificador} y \emph{Refutador}. Si el \emph{Verificador} gana, hay una simulación de enmascaramiento probabilista.
+Si, en cambio, gana el \emph{Refutador}, la implementación no es masking-tolerante a fallas.
+Estos juegos se basan en la noción de couplings entre distribuciones probabilísticas y, como consecuencia, el número de vértices de sus grafos de juego es infinita. Para abordar este problema, presentamos una representación simbólica de estos juegos en donde los couplings son capturados simbólicamente por medio de sistemas de ecuaciones.
+El tamaño de estos grafos simbólicos
+es polinomial en el tamaño de los sistemas de entrada. Además, los juegos de simulación
+pueden resolverse a través de su representación simbólica.
+
+En la práctica, la masking-tolerancia a fallas tiene una naturaleza cuantitativa, y así enriquecemos nuestros juegos con objetivos cuantitativos. Esto permite cuantificar la
+cantidad de masking-tolerancia proporcionada por implementaciones tolerantes a fallas.
+%
+Nos enfocamos en juegos que llegan a un estado de error \textit{almost-surely} si el Refutador juega
+de manera \textit{fair} (es decir, estos sistemas eventualmente llegaran a un estado de error con probabilidad $1$). Debido a la naturaleza infinita de los juegos, nos restringimos a estrategias aleatorias sin memoria y demostramos que nuestros juegos están
+determinados bajo estas condiciones.
+%
+Probamos que el problema de decidir si un juego es \textit{almost-sure failing} bajo \textit{fairness} se puede resolver en tiempo polinomial. Además, el valor de un juego dado se puede calcular
+resolviendo una colección de ecuaciones funcionales a través de una versión adaptada del algoritmo de \emph{Value Iteration} \cite{ChatterjeeH08,Condon90,Condon92,KelmendiKKW18}. Tomamos dicho valor como una medida de masking-tolerancia a fallas.
+
+En resumen,
+\begin{enumerate}
+\item%
+  definimos una noción de simulación de enmascaramiento probabilista,
+\item%
+  proveemos una caracterización en términos de juegos, y
+\item%
+  demostramos que los juegos resultantes se pueden decidir en tiempo polinomial.
+%
+Además, en la Sección~\ref{sec:almost_sure_prob},
+\item%
+  definimos una extensión de los juegos introducidos al considerar recompensas y proveemos una función de payoff que cuenta la cantidad de ``hitos'' lograda por una implementación;
+\item%
+  demostramos que estos juegos están determinados bajo la condición de que sean almost-surely
+  failing bajo fairness y estrategias sin memoria, y
+\item%
+  proveemos un algoritmo para calcular el valor de estos juegos.
+%
+Adicionalmente,
+\item%
+  proporcionamos un algoritmo polinomial para decidir si un juego es almost-surely failing bajo fairness.
+%
+\item%
+  Presentamos una evaluación experimental sobre algunos casos de estudio conocidos (Sec.~\ref{sec:experimental_eval_prob}).
+\end{enumerate}
+%

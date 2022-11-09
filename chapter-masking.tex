@@ -1,0 +1,30 @@
+\chapter{Medidas para Masking-tolerancia a fallas}
+\label{cap:maskingMeasure}
+
+\myworries{REVISAR PRUEBAS} \\
+Introducimos una noción de distancia de tolerancia a fallas entre sistemas de transición etiquetados. Intuitivamente, esta noción de distancia mide el grado de tolerancia a fallas exhibido por un sistema candidato.
+En la práctica, hay diferentes tipos de tolerancia a fallas, aquí nos restringimos al análisis de masking-tolerancia a fallas ya que suele ser una característica muy deseada para sistemas críticos.
+En términos generales, un sistema es masking-tolerante a fallas cuando es capaz de enmascarar las fallas completamente, sin permitir que estas fallas tengan consecuencias observables para los usuarios.
+Capturamos la masking-tolerancia a fallas mediante una relación de simulación, acompañada por una caracterización correspondiente en términos de juegos.
+Enriquecemos además estos juegos con objetivos cuantitativos para así definir la noción de distancia de masking-tolerancia a fallas.
+Además, investigamos las propiedades básicas de esta noción de distancia de masking y probamos que es una semi-métrica dirigida.
+Demostramos que, en el caso de sistemas deterministas, computar la distancia de masking se puede lograr utilizando un algoritmo de camino más corto.
+Por otro lado, para sistemas no deterministas este cómputo se aborda por medio de algoritmos de punto fijo.
+Estos algoritmos fueron implementados en una herramienta que computa de manera automática la distancia de masking entre un sistema nominal y una versión del mismo que agrega fallas (y mecanismos de tolerancia). Hemos evaluado su desempeño y efectividad sobre varios casos de estudio de diferentes complejidades.
+
+
+
+\input{section-masking-intro.tex}
+\input{section-masking-mSimulation.tex}
+\input{section-masking-quantitative.tex}
+\input{section-masking-experiments.tex}
+%\input{section-masking-tool.tex}
+\input{section-masking-related.tex}
+
+
+
+
+
+
+
+
