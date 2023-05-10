@@ -1,16 +1,17 @@
 \chapter{Jugando contra adversarios fair en juegos estocásticos}
 \label{cap:fairAdversaries}
 
-En este capítulo investigamos juegos estocásticos de suma-cero por turnos de dos jugadores en donde un jugador tiene como objetivo maximizar el monto de recompensas obtenidas durante una jugada, mientras que el otro jugador intenta minimizar tal valor. Particularmente nos enfocamos en juegos donde el minimizador juega de forma fair. Creemos que este tipo de juegos poseen aplicaciones interesantes en verificación de software, donde el maximizador juega el rol de un sistema que intenta maximizar la cantidad de "metas" logradas, y el minimizador representa el comportamiento de un ambiente no cooperativo pero fair.
+El próximo paso de la investigación llevada a cabo en esta tesis fue, naturalmente, extender nuestras nociones de medidas para tolerancia enmascarante a sistemas estocásticos. Sin embargo, observamos que para que nuestras medidas estén bien definidas en este nuevo contexto, era necesario asumir \textit{fairness} en el entorno. De esta manera, surge la investigación de este capítulo  sobre juegos estocásticos con un jugador \textit{fair} que hace el rol de entorno. Este capítulo fue un paso necesario para continuar desarrollando medidas de tolerancia enmascarante en sistemas probabilistas, sobre lo cual entraremos en detalle en el capítulo siguiente.
+En este capítulo investigamos juegos estocásticos de suma-cero por turnos de dos jugadores en donde un jugador tiene como objetivo maximizar el monto de recompensas obtenidas durante una jugada, mientras que el otro jugador intenta minimizar tal valor. Particularmente nos enfocamos en juegos donde el minimizador juega de forma \textit{fair}. Creemos que este tipo de juegos poseen aplicaciones interesantes en verificación de software, donde el maximizador juega el rol de un sistema que intenta maximizar la cantidad de ''hitos'' logrados, y el minimizador representa el comportamiento de un ambiente no cooperativo pero \textit{fair}.
 %%
-Normalmente, para estudiar propiedades de recompensa total, se requiere que los juegos sean terminantes (i.e., alcanzan un estado terminal con probabilidad 1). 
-Relajaremos esta propiedad para requerir que el juego sea terminante solo cuando el minimizador juega de forma fair. La suposición de fairness sobre el ambiente ha sido útil en las ciencias de la computación, particularmente al razonar sobre propiedades de liveness y ambientes falibles.
-Probamos que estos juegos están determinados, i.e., cada estado del juego tiene un valor definido. Además, demostramos que ambos jugadores poseen estrategias óptimas deterministas y sin memoria, y que el valor del juego puede ser computado aproximando el mayor punto fijo de un conjunto de ecuaciones funcionales. La técnica fue implementada en una herramienta prototipo, esta fue evaluada sobre un ejemplo ilustrativo y un caso de estudio sobre vehículos aéreos no tripulados.
+Normalmente, para estudiar propiedades de recompensa total, se requiere que los juegos sean terminantes (es decir alcanzan un estado terminal con probabilidad 1). 
+Relajaremos esta propiedad para requerir que el juego sea terminante solo cuando el minimizador juega de forma \textit{fair}. La suposición de \textit{fairness} sobre el ambiente ha sido útil en las ciencias de la computación, particularmente al razonar sobre propiedades de \textit{liveness} y ambientes falibles.
+Probamos que estos juegos están determinados, es decir, cada estado del juego tiene un valor definido. Además, demostramos que ambos jugadores poseen estrategias óptimas deterministas y sin memoria, y que el valor del juego puede ser computado aproximando el mayor punto fijo de un conjunto de ecuaciones funcionales. La técnica fue implementada en una herramienta prototipo, esta fue evaluada sobre un ejemplo ilustrativo y un caso de estudio sobre vehículos aéreos no tripulados.
 
 
 
 \input{section-fair-intro.tex}
 \input{section-fair-example.tex}
 \input{section-fair-stopping.tex}
-\input{section-fair-related.tex}
 \input{section-fair-experiments.tex}
+\input{section-fair-related.tex}

@@ -1,0 +1,522 @@
+\section{Pruebas del Capítulo 3}
+
+\noindent
+ \textbf{Prueba del Teorema \ref{thm:wingame_strat}.}
+  Sean $A=\langle S, \Sigma, \rightarrow, \InitState \rangle$ y $A'=\langle S', \SigmaF, \rightarrow', \InitStatePrime \rangle$ dos sistemas de transición.
+  Entonces, $A \Masking A'$ si y solo si el Verificador tiene una estrategia ganadora para el grafo de juego de enmascaramiento fuerte $\StrMaskGG$. 
+  \\ \\
+\noindent 
+\begin{proof} 
+	``solo si'': Supongamos que existe una simulación de enmascaramiento $\M \subseteq S \times S'$.
+La estrategia del Verificador (denominada $\pi^*$) se construye de la siguiente forma:  para los estados $(t, \sigma^1, s', V)$ (resp. $(s, \sigma^2, t', V)$) tal que el conjunto $\{ z' \in \post(s'): t \M z' \}$
+(resp. $\{ z \in \post(s): z \M t' \}$) no es vacío y $\sigma \notin \Faults$, definimos $\pi^*(t, \sigma^1, s', \Verifier) = (t, \#, t', \Refuter)$ 
+(resp. $\pi^*(s, \sigma^2, t', \Verifier) = (t, \#, t', \Refuter)$) que se corresponde con el arco $((t, \sigma^1, s', \Verifier), (t, \#, t', \Refuter))$ (resp. $((s, \sigma^2, t', \Verifier),(t, \#, t', \Refuter))$) tal que $t \in \{ z \in \post(s): z \M t' \}$ (resp. $t' \in \{ z' \in \post(s): z' \M t' \}$).  Si $\sigma \in \Faults$, entonces definimos $\pi^*(s, F^2, s', \Verifier) = (s, \#, s', \Refuter)$, para cualquier $F \in \Faults$, correspondiente con el arco $((s, F^2, s', \Verifier),( s, \#, s', \Refuter))$. Si el conjunto $\{ z' \in \post(s'): t \M z' \}$  (resp. $\{ z \in \post(s): z \M t' \}$) 
+es vacío devuelve un vértice correspondiente a un arco arbitrario. 
+
+	Probamos que cualquier jugada: $\rho_0 \rho_1 \dots$ (conforme a la estrategia $\pi^*$) cumple con: 
+	(1) $\pr{3}{\rho_i}=\Verifier \vee \pr{0}{\rho_i} \Masking \pr{2}{\rho_i}$ y 
+	(2) $\rho_i \neq \ErrorSt$, para todo $i\geq 0$. Esto implica que la estrategia es ganadora para el Verificador. 
+La prueba es por inducción sobre $i$. El caso base es directo ya que 
+$\InitVertex^G \neq \ErrorSt$ y $\InitVertex^G = (\InitState, \#, \InitStatePrime, \Refuter)$ y por suposición tenemos $\InitState \Masking \InitStatePrime$. Para el caso inductivo, asumimos que 
+%\myworries{No entiendo esta frase}
+%$\rho_i$ holds
+$\rho_i \neq \ErrorSt$ y que $\pr{3}{\rho_i} = \Verifier$ o $\pr{0}{\rho_i} \Masking \pr{2}{\rho_i}$. 
+Si $\rho_i = (s, \#, s', \Refuter)$, entonces esto significa que $s \Masking s'$. Como asumimos que
+$\rightarrow$ y $\rightarrow'$ son seriales, tenemos que: $\exists \sigma \in \Sigma: s \xrightarrow{\sigma} t$ y $\exists \sigma \in \SigmaF : s' \xrightarrowprime{\sigma} t'$. Es decir, por definición del juego, $\rho_{i+1} \neq \ErrorSt$. 
+Además, $\pr{3}{\rho_{i+1}} = \Verifier$ y entonces las aserciones (1) y (2) valen. 
+Si $\rho_i = (s, \sigma^1, t, \Verifier)$ (resp. $\rho_i = (s, \sigma^2, t, \Verifier)$) y $\sigma \notin \Faults$,
+tenemos que $\rho_{i-1} = (s, \#, s', \Refuter)$ y tenemos una transición $s \xrightarrow{\sigma} t$ (resp. $s' \xrightarrowprime{\sigma} t'$), por hipótesis inductiva, $s \Masking s'$. 
+Por lo tanto, existe una transición $s' \xrightarrowprime{\sigma} t'$ (resp.  $s \xrightarrow{\sigma} t$) tal que $t \Masking t'$. 
+La estrategia juega acorde a una de estas transiciones y entonces
+$\rho_{i+1} = (t, \#, t', \Refuter)$ y $t \Masking t'$ y también $\rho_{i+1} \neq \ErrorSt$. Si $\sigma \in \Faults$, entonces $\rho_i = (s, F^2, t', \Verifier)$ para algún $F \in \Faults$. 
+Por lo tanto, $\rho_{i-1} = (s, \#, s', \Refuter)$ con $s \Masking s'$ (por hipótesis inductiva). Esto significa que hay una transición $s' \xrightarrowprime{F} t'$, y por Definición~\ref{def:masking_rel},
+tenemos que $s \Masking t'$. Además, por definición $\pi^*(s, F^2, t', \Verifier) = (s, \#,t',\Refuter)$, 
+y además $s \Masking t'$. 
+
+``si'': Supongamos que el Verificador tiene una estrategia ganadora (llamémosla $\pi$) 
+desde el estado inicial. Entonces, definimos la relación de simulación de enmascaramiento de la siguiente manera: 
+\[
+\M = \{(s,s') \mid \Verifier \text{ tiene una estrategia ganadora para } (s, \#, s', \Refuter) \}.
+\]
+Vamos a probar que es una simulación de enmascaramiento. 
+Primer, tenemos que $\InitState \M \InitStatePrime$ ya que $\pi$ es ganadora en $\InitVertex^G$. Por la condición (B.1) de la Definición~\ref{def:masking_rel}, si
+$s \M s'$ y $s \xrightarrow{\sigma} t$ para algún $s \in S$ y $s' \in S'$, entonces debemos tener que $\pi$ es ganadora para cualquier estado $(s,\#,s',\Refuter)$. Además, por Definición~\ref{def:strong_masking_game_graph} existe un arco 
+$((s,\#,s',\Refuter), (t,\sigma^1,s',\Verifier))$. 
+Pero como $\pi$ es ganadora, también tenemos que $\pi(t,\sigma^1,s',\Verifier) \neq \ErrorSt$ y 
+por lo tanto $\pi(t,\sigma^1,s',\Verifier)=(t, \#, t', \Refuter)$ y $\pi$ es ganadora desde  $(t, \#, t', \Refuter)$.
+De este modo, hay una transición $t \xrightarrowprime{\sigma} t'$ tal que
+$t \Masking t'$. La prueba para (B.2) es análoga. Para (B.3), asumamos que $s \Masking s'$ y $s' \xrightarrowprime{F} t'$ para algún 
+$F \in \Faults$. 
+Como antes, desde el estado $(s,\#,s',\Refuter)$, $\pi$ es ganadora donde también tenemos un arco $((s,\#,s',\Refuter), (s,F^2,t',\Verifier))$ por definición del juego. 
+Como $\pi$ es ganadora desde $(s,\#,s',\Refuter)$ para el Verificador, existe una jugada $\pi(s,F^2,t',\Verifier) = (s,\#,t',\Refuter)$ tal que $\pi$ gana desde 
+$(s,\#,t',\Refuter)$. Por lo tanto, $s \Masking t'$, y el resultado se deduce.
+\qedhere
+
+\end{proof} \\
+
+
+
+
+
+
+
+
+
+
+
+
+\noindent
+\textbf{Prueba del Lema \ref{lm:RefWinStrat}.} El Refutador tiene una estrategia ganadora en $\mathcal{G}_{A, A'}$ (o $\mathcal{G}^W_{A, A'}$) si y solo si $\InitVertex^G \in U^k$, para algún $k$.
+\noindent
+\\ \\
+\begin{proof} 
+``solo si'': La prueba utiliza resultados estándar de juegos de alcanzabilidad. Mas específicamente, considere el conjunto $V^G \setminus U$, este conjunto es una trampa para el Refutador, es decir, si $(s,\sigma, s', \Verifier) \in V^G \setminus U$, entonces existe un $v \in \post((s,\sigma, s', \Verifier))$ tal que 
+$v \in V^G \setminus U$, sino
+$(s,\sigma, s', \Verifier) \in U^k$ para algún $k$. Similarmente, si $(s,\#, s', R) \in V^G \setminus U$, entonces para todo $v \in \post((s,\#, s', \Refuter))$ 
+tenemos $v \in V^G \setminus U$. Esto significa que $V^G \setminus U$ es una ``trampa'' para el Refutador. 
+Ahora bien, podemos definir una estrategia para el Verificador $\pi_\Verifier$ de la siguiente manera: si $(s, \sigma, s', \Verifier) \in V^G \setminus U$, entonces
+$\pi_\Verifier(s, \sigma, s', \Verifier) = \rho$ para algún $v \in V^G \setminus U$ el (cuya existencia esta garantizada), de lo contrario retorna un nodo arbitrario. 
+Esta estrategia es ganadora para el Verificador desde cualquier $v \in V^G$, es decir, para cualquier jugada $\rho_0 \rho_1 \rho_2 \dots$ 
+si $\rho_0 \in V^G \setminus U$, entonces $\forall i \geq 0: \rho_i \in V^G \setminus U$ 
+(lo cual implica que $\forall i \geq 0: \rho_i \neq \ErrorSt$). 
+La prueba es por inducción sobre $i$. Para $i=0$ el resultado es directo ya que $\rho_0 \in V^G \setminus \{\ErrorSt\}$. Para el caso inductivo,
+supongamos que $\rho_i \in V^G \setminus U$. En el caso de que $\rho_i = (s, \sigma, s', \Verifier)$, entonces por definición de $\pi_\Verifier$, 
+$\rho_{i+1} = \pi_\Verifier(s,\sigma, s', \Verifier) \in V^G \setminus U$.
+Además, si $\rho_i = (s, \#, s', \Refuter)$, entonces $\post((s, \#, s', \Refuter)) \subseteq V^G \setminus U$, 
+y por lo tanto $\rho_{i+1} \notin U$. 
+Ahora bien, como $\InitVertex^G \notin U^k$ para todo $k$, entonces $\InitVertex^G \notin U$ y $\InitVertex^G \in V^G \setminus U$. 
+En consecuencia, por la propiedad demostrada arriba $\Refuter$ tiene una estrategia ganadora desde 
+$\InitVertex^G$. Pero esto es una contradicción porque el Refutador y el Verificador no pueden tener ambos estrategias ganadoras desde los mismos estados.
+Por consiguiente, $\InitVertex^G \in U^k$ para algún $k$.
+	
+``si'': Considere $\InitVertex^G \in U^k$ para algún $k$, es decir, tenemos  $\InitVertex^G \in U^k_i$ para algún $i$ por Definición~\ref{def:U}. 
+Además, para cada $v \in V^G$ definimos $\delta(v) = \min \{ (i,j) \mid v \in U^j_i \}$ (usando orden lexicográfico), por conveniencia asumimos $\min \emptyset = (\infty, \infty)$.
+Entonces, la estrategia ganadora $\pi_R$ para el Refutador se define de la siguiente forma. Si $\delta(v) = (i,j)$ (con $(i,j) < (\infty, \infty)$), entonces $\pi_\Verifier(v) = w$, con $w$ siendo un vértice tal que
+$\delta(w) = (i,j-1)$ (si $\pr{1}{v} \notin \Faults$) o $\delta(w) = (i-1,j-1)$ (si $\pr{1}{v} \in \Faults$), cuya existencia esta garantizada por Definición~\ref{def:U}. De otra forma, $\pi_\Refuter(v)$ retorna
+un vértice arbitrario. Note que para cualquier jugada $\rho_0 \rho_1 \rho_2 \dots$ comenzando en $\InitVertex^G$ tenemos que:  para todo $i \geq 0$, $\delta(\rho_i) > \delta(\rho_{i+1})$, en orden lexicográfico.
+Por lo tanto, para algún $k>0$ tenemos $\delta(\rho_k) = (1,1)$, y por tanto $\rho_k = \ErrorSt$.
+\qedhere
+\end{proof} \\
+
+
+
+
+
+
+
+
+
+
+
+
+\noindent
+\textbf{Prueba del Teorema \ref{thm:quant_game}.}
+  Sea $\QMStrGame$ un grafo de juego de enmascaramiento cuantitativo fuerte.
+  \sloppy Entonces, $\val(\QMStrGame) = \frac{1}{\pr{0}{\delta(\InitVertex^G)}}$, con
+  $\delta(\InitVertex^G) = \min \{ (i,j) \mid  \InitVertex^G \in \setsUs \}$, siempre que
+  $\InitVertex^G \in U$, y $\val(\QMStrGame)=0$ de otro modo, donde los conjuntos
+   $\setsUs$ y $U$ están definidos en Definición~\ref{def:U}.
+\noindent \\ \\
+\begin{proof} La prueba es por casos:
+	
+	Si $\InitVertex^G \notin U$, entonces definimos la siguiente estrategia para el Verificador. Si $v \in V_\Verifier \setminus U$, entonces $\pi^*_\Verifier(v)=v'$ 
+	para algún $v' \in V_\Refuter \setminus U$, y si $v \notin  V_\Verifier \setminus U$, entonces $\pi^*_\Verifier(v) = v'$ para un $v'$ arbitrario. 
+	Probamos por inducción que para cualquier jugada que se conforme a $\pi^*_\Verifier$: $\rho =\rho_0 \rho_1 \dots$ tenemos $\forall i \geq 0: \rho_i \notin V \setminus U$. El caso base es directo. 
+Para el caso inductivo, asumamos que $\rho_i \notin V \setminus U$. En caso que $\rho_i \in V_\Verifier$, la propiedad se deduce por definición de
+$\pi^*_\Verifier$. Si $\rho_i \in V_\Refuter$, como $\rho_i \in V^G \setminus U$, entonces $\post(\rho_i) \subseteq V^G \setminus U$ (por Definición~\ref{def:U}). 
+Por lo tanto, $\rho_{i+1} \in V^G \setminus U$. 
+	 Además, también tenemos $\rho_i \neq \ErrorSt$ ya que $\{ \ErrorSt \} \subseteq U$. También note que cualquier jugada que evite el estado $\ErrorSt$ tiene valor $0$: por definición de $\QMStrGame$, cada transición ejecutada por el Refutador debe ser sucedida por una transición seleccionada por el Verificador. Estas transiciones (las elegidas por el Verificador) tienen costo $(1,0)$ ya que el destino de cualquiera de estas transiciones es diferente de $\ErrorSt$. Como tenemos una cantidad infinita de estos movimientos del Verificador, cuando el estado $\ErrorSt$ no es alcanzado, la valuación de estas jugadas es $\lim_{n\rightarrow \infty} \frac{0}{1+ \sum^n_{i=0} \pr{0}{r_i}} = 0$ (recordemos que $r_i = \reward^G(\rho_i)$). 
+En resumen, $\sup_{\pi_\Refuter \in \Pi_\Refuter} \FMask(\out(\pi_\Refuter, \pi^*_\Verifier)) = 0$, y como $\FMask$ es positiva
+tenemos $\val(\QMStrGame) = \inf_{\pi_\Verifier \in \Pi_\Verifier} \sup_{\pi_\Refuter \in \Pi_\Refuter} \FMask(\out(\pi_\Refuter, \pi_\Verifier)) = 0$.
+
+	Si $\InitVertex^G \in U$, tenemos que $\delta(\InitVertex^G) < (\infty, \infty)$, entonces definimos la siguiente estrategia para el Refutador. 
+	Si $v \in U$, entonces $\pi^*_\Refuter(v)= v'$, donde $\delta(v') < \delta(v)$, sino $\pi^*_\Refuter(v)=v'$, para un $v'$ arbitrario. 
+	La estrategia $\pi^*_R$ esta bien definida ya que si $v \in \setsUs$, entonces existe un $v' \in \post(v)$ tal que $v \in U^{j-1}_i$ (por Definición~\ref{def:U}). Además, $\delta(v') = (\pr{0}{\delta(v)}, \pr{1}{\delta(v)} - 1)$.  
+	Ahora bien, probaremos que para cada estrategia $\pi_\Verifier \in \Pi_\Verifier$ tal que $\out(\pi^*_\Refuter, \pi_\Verifier) = \rho = \rho_0 \rho_1 \dots$ y $\rho_0 \in U$, tenemos:
+\begin{equation}\label{eq:inf-bound}
+	\FMask(\out(\pi^*_\Refuter, \pi_\Verifier)) \geq \frac{1}{ \pr{0}{\delta(\rho_0)}}
+\end{equation} 
+		Para demostrar esto, note que, si $\delta(\rho_0)= (i,j)$, entonces $\rho_j =\ErrorSt$ 
+		ya que $\pr{1}{\delta(\rho_k)} = \pr{1}{\delta(\rho_{k+1})}+1$ para todo $k$. 
+Esto significa que, en $j$ pasos tenemos $\delta(\rho_{j}) = (1,1)$ y entonces $\rho_{j} = \ErrorSt$.
+	Esto implica que $\FMask(\rho) =  \lim_{n \rightarrow \infty}  \frac{\pr{1}{r_n}}{1+ \sum^{n}_{i=0} \pr{0}{r_i}} >0$, y también
+$ \sum^{\pr{1}{\delta(\rho_0)} + k}_{i=0} \pr{0}{r_i} =  \sum^{\pr{1}{\delta(\rho_0)}}_{i=0} \pr{0}{r_i}$.
+	 Es decir, probando que:
+\begin{equation}\label{eq:bottom-sum}
+ 1+ \sum^{\pr{1}{\delta(\rho_0)}}_{i=0} \pr{0}{r_i} \geq \pr{0}{\delta(\rho_0)}
+\end{equation} 
+tenemos $\FMask(\rho) \geq \frac{1}{ \pr{0}{\delta(\rho_0)}}$. La prueba es por inducción sobre $\delta(\rho_0)$, el caso base es directo.
+ Para el caso inductivo, si $\rho_0 \in V_\Refuter$, entonces
+\begin{align*}
+ 	1 + \sum^{\pr{1}{\delta(\rho_0)}}_{i=0} \pr{0}{r_i} & =  1 + \pr{0}{r_0} + \sum^{\pr{1}{\delta(\rho_0)}}_{i=1} \pr{0}{r_i} & \\
+					   %  & =   1+\sum^{\pr{1}{\delta(\rho_0)}}_{i=1} \pr{0}{r_i} & \\
+					    % & =   1+\sum^{\pr{1}{\delta(\rho_1)}+1}_{i=1} \pr{0}{r_i} & \\
+					     & =   1+ \sum^{\pr{1}{\delta(\rho_1)}}_{i=0} \pr{0}{r_{i+1}} &  \text{($\rho_0 \in V_\Refuter$)}\\
+					     & \geq \pr{0}{\delta(\rho_1)} & \text{(I.H.)} \\
+					     & = \pr{0}{\delta(\rho_0)} & \text{($\rho_0 \in V_\Refuter$)}
+\end{align*}
+ Si $\rho_0 \in V_\Verifier$ y $\pr{1}{\rho_0} \notin \Faults$, entonces la prueba es como arriba. Si $\pr{1}{\rho_0} \in \Faults$, entonces:
+\begin{align*}
+ 	1+\sum^{\pr{1}{\delta(\rho_0)}}_{i=0} \pr{0}{r_i} & =  1+\pr{0}{r_0} + \sum^{\pr{1}{\delta(\rho_0)}}_{i=1} \pr{0}{r_i} & \\
+					 %    & =   2 + \sum^{\pr{1}{\delta(\rho_0)}}_{i=1} \pr{0}{r_i} & \text{($\pr{1}{\rho_0} \in \Faults$)}\\
+					  %   & =  2 +  \sum^{\pr{1}{\delta(\rho_1)}+1}_{i=1} \pr{0}{r_i} & \\
+					     & =  2 +  \sum^{\pr{1}{\delta(\rho_1)}}_{i=0} \pr{0}{r_{i+1}} &   \text{($\pr{1}{\rho_0} \in \Faults$)}\\
+					     & \geq 1 + \pr{0}{\delta(\rho_1)} & \text{(I.H.)} \\
+					     & = \pr{0}{\delta(\rho_0)} & \text{($\pr{1}{\rho_0} \in \Faults$)}
+\end{align*}
+Por lo tanto, la inecuación \ref{eq:bottom-sum} vale. Ahora bien, consideremos la estrategia $\pi^*_\Verifier$ para el Verificador que se define a continuación. Para $v \in U$, $\pi^*_\Verifier(v) = v'$ tal que $\delta(v') = \max \{\delta(v'') \mid v'' \in \post(v)\}$, sino $\pi^*_\Verifier(v) = v'$ para un $v'$ arbitrario. 
+Vamos a probar que $\FMask(\out(\pi^*_\Refuter, \pi^*_\Verifier)) = \frac{1}{\pr{0}{\delta(\rho_0)}}$. 
+%Let $(\out(\pi^*_\Verifier, \pi^*_\Refuter)) = \rho_0 \rho_1 \dots$.
+Note que, por definición de $\pi^*_\Verifier$ y $\pi^*_\Refuter$, tenemos que $\pr{1}{\delta(\rho_{i+1})} = \pr{1}{\delta(\rho_i)} - 1$, %$\pr{1}{\delta(\rho_i)} = \pr{1}{\delta(\rho_{i+1})}+1$
+es decir, en a lo sumo $\pr{1}{\delta(\rho_0)}$ pasos alcanzamos $\ErrorSt$. De esta forma, $\lim_{n \rightarrow \infty}  \pr{1}{r_n} =1$. 
+Además, si $\pr{1}{\rho_i} \in \Faults$, entonces $\pr{0}{\delta(\rho_{i+1})} = \pr{0}{\delta(\rho_i)} - 1$
+por definición de $\pi^*_V$. De este modo, ocurrirán a lo sumo $\pr{0}{\rho_0}$ fallas en $\rho$, y entonces
+$\FMask(\out(\pi^*_\Refuter, \pi^*_\Verifier)) = \frac{1}{\pr{0}{\delta(\rho_0)}}$. Por lo tanto, esto y la inecuación \ref{eq:inf-bound} nos da: 
+$\inf_{\pi_\Verifier \in \Pi_\Verifier} \FMask(\out(\pi^*_\Refuter, \pi_\Verifier)) = \frac{1}{\pr{0}{\delta(v^G_0)}}$. 
+
+
+Por último, demostraremos que no existe una estrategia $\pi^+_\Refuter$  de tal forma que $\sup_{\pi_\Verifier} \FMask(\out(\pi^+_\Refuter, \pi_\Verifier)) < \frac{1}{\pr{0}{\delta(v^G_0)}}$. 
+De esta forma, $\pi^*_\Refuter$ es la mejor estrategia. 
+Vamos a hacer una prueba por contradicción, asumamos que tenemos tal estrategia. Consideremos $\out(\pi^+_\Refuter, \pi^*_\Verifier) = \rho = \rho_0 \rho_1 \dots$, 
+y sea $\delta(\rho_0) = (i,j)$. Entonces, note que, si $\rho_i \in V_\Refuter$, entonces $\pr{0}{\delta(\rho_i)} = \pr{0}{\delta(\rho_{i+1})}$, 
+además, si $\rho_i \in V_\Verifier$ entonces $\pr{0}{\delta(\rho_i)} = 1 + \pr{0}{\delta(\rho_{i+1})}$. 
+Por lo tanto, $\lim_{n \rightarrow \infty}\sum^n_{0} \pr{0}{r_i} = \frac{1}{\pr{0}{\delta(\rho_0)}}$, lo cual lleva a una contradicción.
+Entonces, $\val(\QMStrGame) = \inf_{\pi_\Verifier \in \Pi_\Verifier} \sup_{\pi_\Refuter \in \Pi_\Refuter} \FMask(\out(\pi_\Refuter, \pi_\Verifier)) = \frac{1}{\pr{0}{\delta(v^G_0)}}$.
+\qedhere
+.
+
+\end{proof} \\
+
+
+
+
+
+
+
+
+
+
+
+
+\noindent
+\textbf{Prueba del Teorema \ref{thm:det-games}.} Sea  $\QMStrGame = \langle V^G, V_\Refuter,V_\Verifier, E^G, \InitVertex^G, \reward^G \rangle$ un grafo de juego de enmascaramiento cuantitativo fuerte determinista,
+y sea  $G_{\QMStrGame} = \langle V^G,  E^G, \InitVertex^G, w \rangle$ su grafo con pesos subyacente, con la función de peso $w$ 
+definida como:
+\[
+w(v, v') =
+\begin{cases} 1 & \text{si $\pr{1}{v'} \in \Faults$} \\
+		      0 & \text{en caso contrario}	 
+\end{cases}
+\]
+	Si $\rho = \rho_0 \rho_1  \dots \ErrorSt$ es el camino mas corto (con respecto a la función $w$)
+hacia el estado de error en $G_{\QMStrGame}$, y $k$ es la cantidad de fallas que ocurren en $\rho$, entonces: 
+\[
+	\val(\QMStrGame) = \frac{1}{1+k}
+\]
+\noindent \\
+\begin{proof}
+	Definamos la estrategia $\pi_\Refuter \in \Pi_\Refuter$ para el Refutador tal que:
+\[
+	\inf_{\pi_\Verifier \in \Pi_\Verifier} f_m(\out(\pi_\Refuter, \pi_\Verifier)) = \sup_{\pi_\Refuter' \in \Pi_\Refuter} \inf_{\pi_\Verifier \in \Pi_\Verifier} f_m( \out(\pi_\Refuter',\pi_\Verifier))
+\]	
+	donde esta estrategia se conforma con el camino mas corto en el grafo subyacente. Asumamos que: 
+$\rho_0 \rho_1 \dots \ErrorSt$ es el camino mas corto. Podemos asumir de forma segura que ningún vértice aparece mas de una vez en $\rho$, de lo contrario podemos reducir el camino mas corto eliminando ciclos.
+	Teniendo en cuenta esto, definimos la estrategia $\pi_\Refuter$ de la siguiente forma:
+\[
+	\pi_\Refuter(v) = \begin{cases}
+								\rho_{j+1} & \text{si $v = \rho_j$ para algún $j \geq 0$,} \\
+								v' & \text{para un $v' \in V_\Verifier$ arbitrario.}
+						   \end{cases}
+\] 
+Primero, vamos a probar que $\inf_{\pi_\Verifier \in \Pi_\Verifier} f_m (\out(\pi_\Refuter, \pi_\Verifier)) = \frac{1}{1+k}$. Sea $\pi_\Verifier$ una estrategia arbitraria para el Verificador. Probemos que la jugada $\rho'_0 \rho'_1 \dots$ que se conforma a $\pi_\Refuter$ y $\pi_\Verifier$ es igual a $\rho$. Esto lo demostramos por inducción sobre $\rho_i$, vale para $\rho_0 = \InitVertex = \rho'_0$. Asumamos que vale para $i=n$, es decir, $\rho'_n = \rho_n$, si $\rho_n = (t, \sigma^1, s', \Verifier)$ (resp.  $\rho_n = (s, \sigma^2, t', \Verifier)$), como $A$ y $A'$ son deterministas, existe un único arco $((t, \sigma^1, s', \Verifier), (t, \#, t', \Verifier)) \in E^G$ (resp. $((s, \sigma^1, t', \Verifier), (t, \#, t', \Verifier)) \in E^G$) y por lo tanto  $\rho'_{n+1} = \pi_\Verifier( \rho'_n) = (t, \#, t', \Verifier) = \rho_{n+1}$. Si 
+$\rho'_n = \rho_n = (s, \#, s', \Refuter)$ entonces $\rho'_{n+1} = \pi_\Refuter(\rho'_n) = \pi_\Refuter(\rho_n) = \rho_{n+1}$. 
+	
+Adicionalmente, la valuación de $\rho$ es $\frac{1}{1+k}$, es decir, obtenemos:
+\begin{equation} \label{eq1}
+\begin{split}
+ f_m (\out(\pi_\Refuter, \pi_\Verifier))  =  \frac{1}{1+k},
+\end{split}
+\end{equation}	
+y como esto vale para cualquier $\pi_\Verifier$, obtenemos:
+\begin{equation} \label{eq2}
+\begin{split}
+\inf_{\pi_V \in \Pi_V} f_m (\out(\pi_\Refuter, \pi_\Verifier))  =  \frac{1}{1+k}
+\end{split}
+\end{equation}
+
+Ahora bien, asumamos que hay una estrategia $\pi_\Refuter'$ para el Refutador tal que 
+$\inf_{\pi_V \in \Pi_V} f_m (\out(\pi_\Refuter', \pi_\Verifier)) > \inf_{\pi_\Verifier \in \Pi_\Verifier} f_m (\out(\pi_\Refuter, \pi_\Verifier))$.
+De (\ref{eq1}) tenemos que $\inf_{\pi_\Verifier \in \Pi_\Verifier} f_m(\out(\pi_\Refuter', \pi_\Verifier)) > \frac{1}{1+k}$. 
+De esta forma, la cantidad de fallas observadas en 
+$\inf_{\pi_\Verifier \in \Pi_\Verifier} f_m(\out(\pi_\Refuter', \pi_\Verifier))$ debería ser menor a $k$. 
+Pero, seria un camino mas corto en el grafo subyacente, lo cual es una contradicción. Por lo tanto, tenemos que:
+\[	
+	\inf_{\pi_\Verifier \in \Pi_\Verifier} f_m(\out(\pi_\Refuter, \pi_\Verifier)) = \sup_{\pi_\Refuter' \in \Pi_\Refuter} \inf_{\pi_\Verifier \in \Pi_\Verifier} f_m( \out(\pi_\Refuter',\pi_\Verifier)).
+\]	
+\qedhere
+\end{proof} \\
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\noindent
+\textbf{Prueba del Teorema~\ref{thm:alg-correctness}}
+\textbf{(Correctitud)} Al terminar, el Algoritmo \ref{Alg:MainAlg} 
+retorna el valor del grafo juego cuantitativo de enmascaramiento fuerte (respec. débil) $\QMStrGame$.
+\noindent \\ \\
+\begin{proof}
+Consideremos la función  $\delta(v) = \min \{(i,j) \mid v \in \setsUs\}$, donde $\min \emptyset = (\infty, \infty)$.
+También consideramos la extensión de esta función a conjuntos, es decir, $\delta(W) = \{\delta(w) \mid w \in W \}$. 
+Además, las siguientes propiedades de $\delta$ son una consecuencia de la definición \ref{def:U}: \\
+
+\noindent
+Si $v$ es un vértice del Refutador:
+\begin{equation}\label{prop:delta-1}
+ \delta(v)  = \min \{(i,j+1) \mid (i,j) \in \delta(\post(v)) \}
+\end{equation}
+Si $v$ es un vértice del Verificador y $\pr{1}{v} \in \Faults$ entonces:
+\begin{equation}\label{prop:delta-2}
+ \delta(v)  = \max \{(i+1,j+1) \mid (i,j) \in \delta(\post(v)) \}
+\end{equation}
+Si $v$ es un vértice del Verificador y $\pr{1}{v} \notin \Faults$ entonces:
+\begin{equation}\label{prop:delta-3}
+ \delta(v) = \max \{(i,j+1) \mid (i,j) \in \delta(\post(v)) \}
+\end{equation}
+	Ahora bien, probemos que los siguientes predicados siempre valen después de la linea \ref{Alg:While}.
+\begin{equation}\label{Alg:inv0}
+	\forall v \in \STB : \Label(v) < (\infty, \infty)
+\end{equation}
+\begin{equation}\label{Alg:inv1}
+	\forall w, v \in S^G : v \in \STB \wedge \Label(w) < \Label(v) \Rightarrow w \in \STB
+\end{equation}
+%and 
+\begin{equation}\label{Alg:inv2}
+	\forall v \in \STB : \Label(v) = \delta(v)
+\end{equation}
+
+Prueba de la propiedad \ref{Alg:inv0}: vale para la inicialización (linea \ref{Alg:CreateSTB}). Vamos a hacer la prueba por contradicción. 
+Sea $v$ el primer nodo agregado a $\STB$ tal que $\Label(v) = (\infty, \infty)$.
+Si es un vértice del Refutador, entonces $\post(v) \cap \STB \neq \emptyset$ y como $v$ era el primer nodo agregado a $\STB$ con 
+$\Label(v) = (\infty, \infty)$ tenemos que $\forall w \in \post(v) \cap \STB: \Label(w) < (\infty, \infty)$. Pero entonces, en la linea \ref{Alg:R-Update},
+$v$ es etiquetado con una etiqueta diferente de $(\infty, \infty)$ lo cual es una contradicción. 
+De forma similar, si $v$ es un vértice del Verificador, entonces $\post(v) \subseteq \STB$ y 
+por lo tanto se lo etiqueta en la linea \ref{Alg:V-Update} con un valor diferente de $(\infty, \infty)$, lo cual contradice nuestro supuesto inicial. 
+Por consiguiente, $\forall v \in \STB : \Label(v) < (\infty, \infty)$.
+
+Prueba de la propiedad \ref{Alg:inv1}: $\STB$ se inicializa con $\{\ErrorSt \}$ y por lo tanto la propiedad vale antes de la linea \ref{Alg:While}. 
+De nuevo hacemos la prueba por contradicción, asumamos que $v$ es el primer nodo agregado a $\STB$ que no cumple con la propiedad, es decir, existe un $w$ tal que $\Label(w) < \Label(v)$ y
+$w \notin \STB$; además, asumamos que $w$ es e vértice con la etiqueta mas pequeña que satisface esto. 
+Como $v \in \STB$ tenemos $\Label(v)<(\infty, \infty)$ (por Prop.~\ref{Alg:inv0}) y entonces $\Label(w)< (\infty, \infty)$. 
+De hecho, $w$ no puede ser un vértice del Refutador, de lo contrario, al ser etiquetado, tendría que ser agregado a $\STB$ (linea \ref{Alg:R-STB-Update}), 
+contradiciendo nuestros supuestos. 
+Ahora bien, si $w$ es un vértice del Verificado y $\Label(w) < (\infty, \infty)$
+ya que $\Label(w) = \max\{\Label(z) \mid z \in \post(w)\}$ (linea \ref{Alg:R-Update}), tenemos: $\forall z \in \post(w) : \Label(z) < (\infty, \infty)$.
+Además, por transitividad tenemos que $\forall z \in \post(w) : \Label(z) < \Label(v)$. Pero como asumimos que 
+$w$ era el vértice con la menor etiqueta que satisface $\Label(w) < \Label(v)$ y $w \notin \STB$, tenemos que $\forall z \in \post(v) : z \in \STB$. Pero entonces cuando $v$ fue inspeccionado en la linea \ref{Alg:UpdateSTB} este fue agregado a $\STB$, 
+lo cual lleva a una contradicción.
+
+Prueba de la Propiedad \ref{Alg:inv2}: la propiedad vale para $\ErrorSt$. Sea $v$ el primer vértice agregado a $\STB$ tal que $\Label(v) \neq \delta(v)$. En el caso que $v$ es un vértice del Verificador, entonces, como $v \in \STB$, tenemos $\post(v) \subseteq \STB$. Además, asumimos que $v$ era el primer vértice que viola esta propiedad, entonces tenemos que $\forall w \in \post(v):\delta(w)=\Label(w)$. Además, si $\pr{1}{v} \notin \Faults$, entonces: 
+\begin{align*}
+\Label(v) & = \max \{(i,j+1) \mid (i,j) \in \Label(\post(v))\}&  \text{(Lineas \ref{Alg:V-Update} y \ref{Alg:Inc_j})}\\
+	      & =  \max \{(i,j+1) \mid (i,j) \in \delta(\post(v))\}&  \text{(Suposición)}\\
+	      & = \delta(v)& \text{(Prop. \ref{prop:delta-3})}
+\end{align*}
+lo cual es una contradicción. Ahora bien, en el caso que $\pr{1}{v} \in \Faults$ tenemos que:
+\begin{align*}
+\Label(v) & = \max \{(i+1,j+1) \mid (i,j) \in \Label(\post(v))\}&  \text{(Lineas \ref{Alg:V-Update}, \ref{Alg:Inc_j}, y \ref{Alg:Inc_i})}\\
+	      & =  \max \{(i+1,j+1) \mid (i,j) \in \delta(\post(v))\}&  \text{(Suposición)}\\
+	      & = \delta(v)& \text{(Prop. \ref{prop:delta-2})}
+\end{align*}
+lo cual también contradice nuestra suposición. Por lo tanto, $v$ no puede ser un vértice del Verificador. 
+En el caso que $v$ sea un vértice del Refutador, como $v \in \STB$ tenemos que $\Label(v) < (\infty, \infty)$ por la Prop.~\ref{Alg:inv0}. 
+Por lo tanto, cuando $v$ fue agregado a $\STB$, $\Label(v) = \min\{ \Label(w) \mid w \in \post(v)\}$. Por consiguiente, 
+existe un $w \in \post(v)$ tal que $\Label(w) \leq \Label(v)$, pero entonces por la Prop.~\ref{Alg:inv1} 
+tenemos $w \in \STB$. De este modo:
+\begin{align*}
+\Label(v) & = \min \{(i,j+1) \mid (i,j) \in \Label(\post(v))\}&  \text{(Lineas \ref{Alg:R-Update} y \ref{Alg:Inc_j})} \\
+	      & =  \min \{(i,j+1) \mid (i,j) \in \delta(\post(v))\}&  \text{(Suposición)}\\
+	      & = \delta(v)& \text{(Prop. \ref{prop:delta-2})}
+\end{align*}
+lo cual contradice nuestras suposiciones. Por esto, $\Label(v) = \delta(v)$.
+
+Ahora bien, vamos a probar que cuando el ciclo de la linea \ref{Alg:LoopBPre} termina tenemos:
+\begin{equation}\label{Alg:inv3}
+ \forall v \in S^G \setminus \STB : \delta(v)=(\infty, \infty)
+\end{equation}
+
+Vamos a hacer la prueba por contradicción. Sea $v \in S^G \setminus \STB$ tal que $\delta(v) < (\infty, \infty)$ y, además, asumamos que
+%$\delta(v) = \min \{w \in S^G \setminus \STB \mid \delta(w) < (\infty, \infty) \}$.
+$\delta(v)$ es la etiqueta mas pequeña que satisface esto.
+Si $v$ es un vértice del Refutador, entonces existe algún $w \in \post(v)$ tal que $\delta(w) < \delta(v)$. 
+Por lo tanto, tenemos que $w \in \STB$ (por nuestra suposición) lo cual significa que $v$ fue agregado al menos una vez a la cola ya que fue inicializado con $(\infty, \infty)$. 
+De este modo, fue agregado a $\STB$ en la linea \ref{Alg:R-STB-Update}, lo cual contradice nuestro supuesto inicial. 
+Por lo tanto, $v$ debe ser un vértice del Verificador. 
+Si $\pr{1}{v} \in \Faults$, entonces $\delta(v) = \max \{(i+1,j+1) \mid (i,j) \in \delta(\post(v))\}$ 
+y por lo tanto $\delta(v) > \delta(w)$ para todo $w \in \post(w)$.
+Entonces, por nuestras suposiciones, $w \in \STB$ para todo $w \in \post(v)$.
+Además, cuando el ultimo $w \in \post(v)$ fue agregado a $\STB$, $v$ estuvo en la cola debido a la política de recorrido primero en lo ancho (BFS).
+De hecho, cuando la condición $\post(v) \subseteq \STB$ fue evaluada para $v$ (linea \ref{Alg:UpdateSTB}), es verdadera y entonces $v$ 
+debería ser agregado a $\STB$, contradiciendo nuestra suposición. Por lo tanto, $v \in \STB$.
+
+Finalmente, el resultado computado por el Algoritmo \ref{Alg:MainAlg} se deduce de las propiedades \ref{Alg:inv2}, \ref{Alg:inv3}, 
+y el Teorema \ref{thm:quant_game}. 
+Entrando mas en detalle, si $\delta(s_{0}^G) = (\infty, \infty)$, entonces por Prop. ~\ref{Alg:inv0} y \ref{Alg:inv3}, tenemos que cuando termina, $\Label(s_{0}^G) = (\infty, \infty)$. 
+De este modo, el algoritmo retorna $0$ en la linea \ref{Alg:Ret0} lo cual es correcto por el Teorema~\ref{thm:quant_game}. 
+En el caso que $\delta(s_0^G)< (\infty, \infty)$, entonces $s_0^G \in \STB$ y también que Prop.~\ref{Alg:inv2} tenemos $\Label(v) = \delta(v)$. Por lo tanto, el algoritmo retorna el resultado correcto en la linea \ref{Alg:EndB} por el Teorema \ref{thm:quant_game}. 
+\qedhere
+\end{proof} \\
+
+
+
+
+
+
+
+
+
+
+
+
+\noindent
+\textbf{Prueba del Teorema~\ref{thm:triang_ineq}}
+Sean $A = \langle S, \Sigma, \rightarrow, s_0 \rangle$, $A' = \langle S', \Sigma_{\mathcal{F'}}, \rightarrow', s'_0 \rangle$,  y  $A'' = \langle S'', \Sigma_{\mathcal{F''}},\rightarrow'', s''_0 \rangle$ unos sistemas de transición tales que $\Faults' \subseteq \Faults''$, y los juegos correspondientes $\mathcal{Q}_{A,A'}$, $\mathcal{Q}_{A',A''}$ y $\mathcal{Q}_{A,A''}$.
+Entonces $\DeltaMask(A,A'') \leq \DeltaMask(A,A') + \DeltaMask(A', A'')$ y $\DeltaMask^W(A,A'') \leq \DeltaMask^W(A,A') + \DeltaMask^W(A', A'').$
+\noindent \\ \\
+\begin{proof} 
+Probaremos que para cualquier nodo $(s,\#,s'',\Refuter)$ en $\mathcal{Q}_{A,A''}$ y para cualquier par de nodos
+$(s,\#, s', R)$ en $\QMStrGame$ y $(s',\#,s'', R)$ en $\mathcal{Q}_{{A'},A''}$ (para cualquier estado $s'$ en $A'$), se cumple que:
+\[
+\frac{1}{\pr{0}{\delta((s,\#, s'', \Refuter))}} \leq \frac{1}{\pr{0}{(\delta(s,\#, s', R))}} + \frac{1}{\pr{0}{\delta((s',\#, s'', R))}}
+\] 
+donde $\delta(v) = \min \{(i,j) \mid v \in U^i_j\}$, calculado en el juego correspondiente. 
+Como en el Teorema \ref{thm:quant_game}, solo definimos $\max \emptyset = (\infty, \infty)$. 
+El resultado se deduce de este hecho y el Teorema \ref{thm:quant_game}. La prueba es por inducción sobre $\delta((s,\#, s'', \Refuter))$.
+
+Primero, observemos que para cualquier nodo $(s, \#, s'', \Refuter)$ del juego $\mathcal{Q}_{A,A''}$ debemos tener $\delta((s, \#, s'', \Refuter)) \geq (1,3)$.
+De hecho, este nodo no puede ser el estado de error, lo cual significa que $j \neq 1$. Además, luego del movimiento del Refutador tenemos al menos un movimiento del Verificador y por lo tanto $j \geq 3$. Es decir que el caso base es $\delta((s,\#, s'', \Refuter)) = (1,3)$.
+\begin{description}
+\item [Caso Base] Si $\delta((s,\#, s'', \Refuter)) = (1,3)$. Asumamos que $(s, \#, s'', R) \in U^3_1$. Esto significa que tenemos una transición 
+$((s, \#, s'', \Refuter), (w, \sigma^t, w'', \Verifier))$, donde $t \in \{1,2\}$, que no puede ser emparejada por el Verificador. 
+En el caso que $t=1$, entonces este movimiento es una transición $((s, \#, s'', \Refuter), (w, \sigma^1, s'', \Verifier))$ de $A$. 
+Ahora bien, sean $(s, \#, s', \Refuter)$ y $(s', \#, s'', \Refuter)$ un par de estados de $\QMStrGame$ y $\mathcal{Q}_{A',A''}$, respectivamente. 
+Por definición, tenemos una transición $((s, \#, s', \Refuter), (w, \sigma^1, s', \Verifier))$ en $Q_{A,A'}$. 
+En el caso que el Verificador no pueda emparejar este movimiento en ese juego, tenemos que $(s, \#, s', \Refuter) \in U^3_1$. 
+Esto finaliza la prueba ya que $1 \leq 1 + k''$, independientemente del valor de $k''$. 
+De lo contrario, el Verificador escoge un movimiento que empareja al de su contrincante, es decir, $((w, \sigma^1, s', \Verifier), (w, \#, w', \Refuter))$ en $\mathcal{Q}_{A,A'}$. 
+Además, tenemos una transición $((s', \#, s'', \Refuter), (w', \sigma^1, s'', \Verifier))$ en $\mathcal{Q}_{A',A''}$. 
+Pero, esta no puede ser emparejada debido a nuestro supuesto inicial. Por lo tanto, $\delta((s', \#, s'', \Refuter))= (1,3)$, y tenemos que:
+\begin{align*}
+	\frac{1}{\pr{0}{\delta((s,\#, s'', \Refuter))}}  & = 1\\
+							& \leq \frac{1}{\pr{0}{\delta((s, \#, s', \Refuter))}} + 1\\
+							& =   \frac{1}{\pr{0}{\delta((s, \#, s', \Refuter))}}  + \frac{1}{\pr{0}{\delta((s', \#, s'', \Refuter))}}
+\end{align*}
+Para $t=2$,  el razonamiento es similar usando las transiciones de $A''$. 
+
+\item [Paso Inductivo] Para $(i,j) > (1,3)$ la prueba es como sigue. 
+Asumamos que $\delta((s, \#, s'', \Refuter)) = (i,j)$. Como $1<i \leq j$, tenemos una transición 
+$((s, \#, s'', \Refuter), (w, \sigma^t, w'', \Verifier))$ en $\mathcal{Q}_{A,A''}$. vamos a proceder por casos.
+
+  En el caso $\sigma^t = F^2$ para algún $F \in \Faults''$. Como $\delta((s, \#, s'', \Refuter)) > (1,3)$,
+debemos tener una transición $((s, F^2, w'', \Verifier), (s, \#, w'', \Refuter)) \in Q_{A,A''}$ y $\delta((s, \#, w'', \Refuter)) = (i-1,j-2)$. 
+Por lo tanto, por definición de $\mathcal{Q}_{A',A''}$, tenemos una transición 
+$((s', \#, s'', \Refuter), (s', F^2, w'', \Verifier))$ en $\mathcal{Q}_{A',A''}$. 
+En el caso de que $F \in \Faults'$, entonces $F \in \Sigma_{\Faults'}$. 
+Si no puede ser emparejada, entonces:
+\begin{align*}
+\frac{1}{\pr{0}{\delta((s,\#, s'', \Refuter))}}  & \leq 1	\\
+							     &= \frac{1}{\pr{0}{\delta((s', \#, s'', \Refuter))}}  \\
+							     &\leq  \frac{1}{\pr{0}{\delta((s, \#, s', \Refuter))}} +  \frac{1}{\pr{0}{\delta((s', \#, s'', \Refuter))}}   
+\end{align*}
+y el resultado se deduce. De lo contrario, tenemos una colección de transiciones  $((s', F^2, w'', \Verifier), (w', \#, w'', \Refuter))$ en $\mathcal{Q}_{A',A''}$. 
+Así que, en el juego $\QMStrGame$, tenemos al menos un arco $((s, \#, s', \Refuter), (s, F^2, w', \Verifier))$. 
+Entonces, como $((s, F^2, w'', \Verifier), (s, \#, w'', \Refuter)) \in Q_{A,A''}$, también tenemos una transición $((s, F^2, w', \Verifier), (s, \#, w', \Refuter))$ en $Q_{A,A'}$. 
+Por hipótesis inductiva, tenemos $\delta((s, \#, w', \Refuter))= i'$ y $\max \{ \delta(v) \mid v \in \post((s', F^2, w'', \Verifier)) \}=i''$ tal que:
+\begin{equation}\label{eq:hi1}
+\frac{1}{i-1} \leq \frac{1}{i'} + \frac{1}{i''}.
+\end{equation} 
+y por lo tanto:
+\begin{equation}\label{eq:hi1a}
+\frac{1}{i} \leq \frac{1}{i'+1} + \frac{1}{i''}.
+\end{equation}
+Además, notemos que $\delta((s, F^2, w', \Verifier)) \geq (i'+1,j'+1)$ y tenemos una transición (de enmascaramiento) única desde $(s, F^2, w', \Verifier)$. 
+De este modo, 
+\begin{equation}\label{eq:hi2}
+	\delta((s, \#, s', \Refuter)) \geq (i'+1,j'+2)
+\end{equation}
+De manera similar, como $F \in \Sigma_{\Faults'}$ tenemos que:
+\begin{equation}\label{eq:hi3}
+	\delta((s', \#, s'', \Refuter)) \geq (i'',j'+2)
+\end{equation}
+Por esto, teniendo en cuenta las inecuaciones \ref{eq:hi1a}, \ref{eq:hi2} y \ref{eq:hi3}, obtenemos:
+\begin{align*}
+	\frac{1}{\pr{0}{\delta((s,\#, s'', \Refuter))}} & = \frac{1}{i} & \text{(Suposición)} \\
+									      & \leq \frac{1}{i'+1} + \frac{1}{i''} & \text{Ineq.~\ref{eq:hi1a}} \\
+									      &  = \frac{1}{\pr{0}{\delta((s, \#, s', \Refuter))}} \ +  \\ &\phantom{=\ } \frac{1}{\pr{0}{\delta((s', \#, s'', \Refuter))}} &
+\end{align*}
+	Si $F \notin \Faults'$, entonces debemos tener una transición $((s', F^2, w'', \Verifier), (s', \#, w'', \Refuter))$ en $\mathcal{Q}_{A',A''}$. 
+Ahora bien, por hipótesis inductiva, tenemos $\delta((s, \#, s', \Refuter)) = (i',j')$ y $\delta((s', \#, w'', \Refuter)) = (i'',j'')$ tal que 
+$\frac{1}{i-1} \leq \frac{1}{i'} + \frac{1}{i''}$. De este modo, $\delta((s', \#, s'', \Refuter)) = (i''+1, j''+2)$ y de forma similar a lo previo, el resultado se deduce.
+
+	En el caso $\sigma^t \neq F^2$. Si $t=1$, entonces tenemos una transición $((s, \#, s'', R), (w, \sigma^1, s'', V))$ en $\mathcal{Q}_{A,A''}$, y 
+	como $\delta((s, \#, s'', \Refuter)) > (1,3)$,
+debemos tener una transición $((s, \sigma^1, w'', \Verifier), (w, \#, w'', \Refuter))$ en $Q_{A,A''}$ tal que $\delta((s, \#, w'', \Refuter)) = (i,j-2)$. 
+Por definición del juego $Q_{A, A'}$, tenemos una transición
+$((s, \#, s', \Refuter), (w, \sigma^1, s', \Verifier))$. En el caso que no pueda ser emparejada, entonces esta lleva al resultado que buscamos. De lo contrario, vamos a definir $(i',j') = \max \{\delta(v) \mid v \in \post((w, \sigma^1, s', \Verifier)) \}$. 
+Como $\post((w, \sigma^1, s', \Verifier)) \neq \{\ErrorSt\}$, también debe existir una transición $((s', \#, s'', R), (w', \sigma^1, s'', V))$ en $Q_{A',A''}$. 
+En el caso que esta no pueda ser emparejada, entonces tenemos $\delta((s', \#, s'', R)) = (1,3)$ y la prueba finaliza. 
+En otro caso, definamos $i'' = \max \{\delta(v) \mid v \in \post((w', \sigma^1, s'', V)) \}$ donde por hipótesis inductiva tenemos
+\begin{equation}
+	\frac{1}{i} \leq \frac{1}{i'} + \frac{1}{i''}
+\end{equation}	
+	Por esto, 
+\begin{equation}
+	\frac{1}{\pr{0}{\delta((s, \#, s'', R))}} \leq \frac{1}{\pr{0}{\delta((s, \#, s', R))}} + \frac{1}{\pr{0}{\delta((s', \#, s'', R))}}
+\end{equation}	
+	Para el caso $t=2$ la prueba es similar.
+\end{description}
+
+
+\qedhere
+\end{proof}\\
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

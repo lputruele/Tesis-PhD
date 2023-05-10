@@ -43,13 +43,15 @@
 % max brp
 \def\MaxBRP{M}
 % the projection operator
-\def\pr#1#2{\operatorname{pr}_{#1}(#2)}
+%\def\pr#1#2{\operatorname{pr}_{#1}(#2)}
 %SigmaF
 \def\SigmaF{\Sigma_{\mathcal{F}}}
 %SigmaM
 \def\SigmaM{\Sigma_{M}}
 %MaskD
 \def\MaskD{\textsf{MaskD}}
+%Tolerange
+\def\Tolerange{\textsf{Tolerange}}
 %big O
 \def\BigO{\mathcal{O}}
 % Strong Masking Game Graph
@@ -129,11 +131,17 @@
 \newcommand{\hrmkLP}[1]{\highlightedremark{darkpurple}{lightpurple}{LP}{#1}}
 
 \newtheorem{definition}{Definición}
+\numberwithin{definition}{chapter} % important bit
 \newtheorem{theorem}{Teorema}
+\numberwithin{theorem}{chapter} % important bit
 \newtheorem{corollary}{Corolario}
+\numberwithin{corollary}{chapter} % important bit
 \newtheorem{lemma}{Lema}
+\numberwithin{lemma}{chapter} % important bit
 \newtheorem{example}{Ejemplo}
+\numberwithin{example}{chapter} % important bit
 \newtheorem{proposition}{Proposición}
+\numberwithin{proposition}{chapter} % important bit
 
 
 
@@ -220,7 +228,7 @@
 \def\couplings#1#2{\mathbb{C}(#1,#2)}
 \def\vertices#1{\mathbb{V}(#1)}
 % the projection operator
-\def\pr#1#2{\operatorname{pr}_{#1}(#2)}
+%\def\pr#1#2{\operatorname{pr}_{#1}(#2)}
 \DeclareMathOperator*{\argmin}{argmin}
 \DeclareMathOperator*{\argmax}{argmax}
 
@@ -299,7 +307,8 @@
 \newenvironment{claim}[1]{\par\noindent\underline{Afirmación:}\space#1}{}
 \newenvironment{proofofclaim}[1]{\par\noindent\underline{Demostración:}\space#1}{\hfill $\blacksquare$}
 \renewcommand{\algorithmcfname}{Algoritmo}
-\newcommand\myworries[1]{\textbf{\textcolor{red}{!!!!!!!!!!!!!!!!!!!  #1  !!!!!!!!!!!!!!!!!!!}}}
+\newcommand\myworries[1]{\textbf{\textcolor{red}{  #1  }}}
+\newcommand\todostatus[1]{\textbf{\textcolor{green}{  #1  }}}
 
 
 
@@ -488,6 +497,11 @@
 \newcommand{\milestones}{\mathcal{M}}
 \newcommand{\mreward}{\reward_\milestones}
 
+% tools
+\def\Prism{\textsf{Prism}}
+\def\Java{\textsf{Java}}
+\def\Gurobi{\textsf{Gurobi}}
+\def\SSC{\textsf{SSC}}
 
 
 %PALABRAS EN INGLES DUDOSAS PARA TRADUCIR

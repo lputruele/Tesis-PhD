@@ -1,0 +1,1215 @@
+\section{Pruebas del Capítulo 4}
+
+
+\noindent
+\textbf{Prueba del lema \ref{lm:memoryless-strat}}
+  Sea $\StochG = (V, (V_1, V_2, V_\Probabilistic), \delta)$ un juego estocástico, $v \in V$, y sea $T$ el conjunto de estados terminales en $\StochG$.
+  %
+  Si $\Prob{\strat{1}}{\strat{2}}_{\mathcal{G}, v}(\Diamond T) < 1$
+  para alguna
+  $\strat{1} \in \Strategies{1}$ y $\strat{2} \in \FairStrats{2}$,
+  entonces, para alguna estrategia determinista y sin memoria
+  $\strat{1}' \in \DetMemorylessStrats{1}$ y alguna estrategia fair
+  $\strat{2}' \in \FairStrats{2}$,
+  $\Prob{\strat{1}'}{\strat{2}'}_{\mathcal{G}, v}(\Diamond T) < 1$.
+\noindent \\
+
+\begin{proof}
+  Fijemos las estrategias $\strat{1} \in \Strategies{1}$, $\strat{2} \in
+  \FairStrats{2}$ y un vértice $v \in V$ tales que
+  $\Prob{\strat{1}}{\strat{2}}_{\mathcal{G}, v}(\Diamond T) < 1$.
+  Observemos que que podemos definir un MDP (que llamamos $\StochG^{V_1{+}V_2}$) a partir de
+  $\StochG$ considerando que $V_1$ y $V_2$ pertenecen al mismo jugador.  Para este MDP consideremos el conjunto $U = \{ (V',\delta')
+  \mid(V',\delta') \in \EndComp(\StochG^{V_1{+}V_2}) \text{ and }
+  V'\cap T = \emptyset \}$ de los componentes finales que no contienen vértices terminales. Entonces, definimos una estrategia para este jugador al combinar
+  $\strat{1}$ y $\strat{2}$ (la cual llamaremos $\strat{1}{+}\strat{2}$) de la siguiente manera
+  : se comporta como $\strat{1}$ en los caminos finitos cuyos últimos estados pertenecen a $V_1$, y se comporta como $\strat{2}$ en los caminos finitos cuyos últimos estados pertenecen a $V_2$. Observemos que tenemos que
+  $\MDPProb{\strat{1}{+}\strat{2}}_{\StochG^{V_1+V_2},v}(\Diamond T) <
+  1$. Por las propiedades de límite de los MDPs (Teorema 10.120 \cite{BaierK08})
+  tenemos que:
+  %
+  \begin{equation}\label{lm:memoryless-strat-eq1}
+    \MDPProb{\strat{1}{+}\strat{2}}_{\StochG^{V_1+V_2},v} \left(\{ \omega \in \MDPPaths{\strat{1}{+}\strat{2}}_{\StochG^{V_1+V_2},v} \mid \limit(\omega)  \in U \}\right) > 0,
+  \end{equation}
+  %
+  donde $\limit(\omega)$ denota la componente final que se repite con infinita frecuencia en $\omega$, como se define en \cite{BaierK08}.  Notemos que
+  , el hecho de que $\strat{2}$ sea \emph{fair} y
+  (\ref{lm:memoryless-strat-eq1}) implican que hay una componente final alcanzable $\EC{C}= (V',\delta') \in U$ tal que, para todo
+  $v' \in V_2 \cap V'$, $\post^\delta(v') \subseteq V'$ $(\dag)$.
+  %
+  Esto se puede demostrar por contradicción: si $(\dag)$ no vale tenemos que para todo componente final en $U$ tiene que existir
+  algún vértice en
+  $V_2$ tal que algunos de sus sucesores no estén en el componente; pero,
+  como $\strat{2}$ es fair, tendríamos que
+  %
+  $\MDPProb{\strat{1}{+}\strat{2}}_{\StochG^{V_1+V_2},v} \left ( \{ \omega \in \MDPPaths{\strat{1}{+}\strat{2}}_{\StochG^{V_1+V_2},v} \mid \limit(\omega) \in U \}\right) = 0$
+  %
+  contradiciendo (\ref{lm:memoryless-strat-eq1}). Por lo tanto $(\dag)$ debe valer.
+
+  Por consiguiente, existe algún camino finito $\hat{\omega} = v_0 v_1 v_2 \dots v_k$
+  en este MDP tal que $v_i \notin T$ para todo $i$, $v_k \in V'$, y
+  $\MDPProb{\strat{1}{+}\strat{2}}_{\StochG^{V_1+V_2},v}(v_0\dots v_k) > 0$.
+
+  Ahora bien, definimos $\strat{1}'$ de la siguiente manera:
+  %
+  $\strat{1}'(v') = \hat{\omega}_{i+1}$, si $i < k$ es el índice mas grande tal que $v' = \hat{\omega}_{i}$;
+  %
+  $\strat{1}'(v') = v''$ para algún $v'' \in
+  V'\cap\post^\delta(v)$ arbitrario, si $v' \in V'$;
+  %
+  en otro caso $\strat{1}'(v') = v''$ para algún
+  $v'' \in \post^\delta(v')$ arbitrario.
+  %
+  $\strat{2}'$ se define usando una distribución uniforme, es decir:
+  $\strat{2}'(v')(v'') = \frac{1}{\# \post^\delta(v')}$, para todo $v'
+  \in V_2$ y $v'' \in \post^\delta(v')$.
+  $\strat{1}'$ se define de tal modo que salta adelante de $\hat{\omega}$
+  evitando todos los bucles que $\strat{1}$ pueda introducir.  Sea
+  $\hat{\omega}{\downharpoonleft}_{\strat{1}'}$ el camino finito obtenido al seguir $\hat{\omega}$ salteando todos los bucles de acuerdo a $\strat{1}'$.
+  %
+  Observemos que $\hat{\omega}{\downharpoonleft}_{\strat{1}'}$ es un camino válido en $\StochG$, que todavía termina en el estado $v_k$, y que
+  $\MDPProb{\strat{1}',\strat{2}'}_{\StochG,v}({\hat{\omega}{\downharpoonleft}_{\strat{1}'}})>0$.
+  Además, por ($\dag$) y por la definición de $\strat{1}'$, tenemos que $\MDPProb{\strat{1}',\strat{2}'}_{\StochG, v_k}(\Box V') = 1$.
+  Por lo tanto $\MDPProb{\strat{1}',\strat{2}'}_{\StochG, v}(\Diamond T) < 1$.
+  Además, notemos que $\strat{1}'$ es estacionaria y $\strat{2}'$
+  es fair.
+%%   Now, we define $\strat{1}'$ as follows: $\strat{1}'(v') = \hat{\omega}_{i+1}$, if $v' = \hat{\omega}_{i}$ for some $i <k$; 
+%% $\strat{1}'(v') = v''$ for some arbitrary $v'' \in \post^\delta(v')$, if $v' \neq \hat{\omega}_{i}$ for all $i \leq k$ and $v' \notin V'$; $\strat{1}'(v') = v''$ for some arbitrary $v'' \in V'\cap \post^\delta(v)$, if
+%% $v' \in V'$. $\strat{2}'$ is defined as the uniform strategy, that is: $\strat{2}'(v')(v'') = \frac{1}{\# \post^\delta(v')}$, for every $v' \in V_2$ and $v'' \in \post^\delta(v')$. Note that, $\MDPProb{\strat{1}',\strat{2}'}_{\StochG,v}(v_0\dots v_k) >0$, and 
+%% also (by definition of $\strat{1}'$ and ($\dag$)) we have that $\MDPProb{\strat{1}',\strat{2}'}_{\StochG, v_k}(\Box V') = 1$, thus $\MDPProb{\strat{1}',\strat{2}'}_{\StochG, v}(\Diamond T) < 1$. Furthermore, note that $\strat{1}'$ is memoryless and $\strat{2}'$ is fair.%we can define strategies
+%% %$\strat{1}'$ and $\strat{2}'$ such that they collaborate to reach $\EC{C}$, and for any vertex $\hat{v} \in V_1 \cap V'$ we set 
+%% %$\strat{1}'(\hat{v})=v'$ (for some $v' \in V'$); while $\strat{2}'$ behaves as $\strat{2}$ in nodes belonging to $V_2$. Note that this
+%% %ensures that $\strat{2}'$ is \emph{fair} and $\strat{1}'$ is memoryless. Since the probability of reaching $\EC{C}$ is positive, and no node in $T$ is reached when playing $\strat{1}'$ and $%\strat{2}'$,  we get that $\Prob{\strat{1}'}{\strat{2}'}_{\StochG, v}(\Diamond T) < 1$.
+\qedhere
+\end{proof} \\
+
+
+
+
+
+
+
+
+
+
+
+
+\noindent
+\textbf{Prueba del Teorema \ref{thm:uniform-prob}}
+  Sea $\StochG = (V, (V_1, V_2, V_\Probabilistic), \delta)$ un juego estocástico y sea $T$ su conjunto de estados terminales.
+  Consideremos la estrategia (sin memoria) del Jugador $2$
+  $\uniformstrat{2} : V_2 \rightarrow \Dist(V)$ definida como
+  $\uniformstrat{2}(v)(v') = \frac{1}{\# \post(v)}$, para todo $v \in
+  V_2$ y $v' \in post(v)$.
+  %
+  Entonces, $\StochG$ es terminante bajo \emph{fairness} si y solo si
+  $\Prob{\strat{1}}{\uniformstrat{2}}_{\StochG,v}(\Diamond T)=1$ para
+  todo $v\in V$ y $\strat{1} \in \Strategies{1}$.
+%% Then, for all $v \in V$ it holds that:  $\Prob{\strat{1}}{\strat{2}}_{\StochG,v}(\Diamond T)=1$, for 
+%% every  $\strat{1} \in \Strategies{1}$ and \emph{fair} $\strat{2} \in \FairStrats{2}$, iff  
+%% $\Prob{\strat{1}}{\uniformstrat{2}}_{\StochG,v}(\Diamond T)=1$ for every $\strat{1} \in \Strategies{1}$.
+\noindent \\ 
+
+\begin{proof}
+``Si'': Supongamos que $\Prob{\strat{1}}{\uniformstrat{2}}_{\StochG,v}(\Diamond T)=1$ para toda estrategia $\strat{1}$ del Jugador $1$.  Además, 
+asumamos por contradicción, que
+$\Prob{\strat{1}'}{\strat{2}'}_{\StochG,v}(\Diamond T) < 1$ para alguna $\strat{1}'\in \Strategies{1}$ y alguna $\strat{2}'\in \FairStrats{2}$. 
+Por el Lema \ref{lm:memoryless-strat}, podemos asumir de forma segura que $\strat{1}'$ es estacionaria y determinista.
+Por lo tanto, al fijar $\strat{1}'$, obtenemos un proceso de decisión de Markov (finito) denotado por $\StochG^{\strat{1}'}$.
+Por asunción, tenemos que
+$\inf_{\strat{2} \in \FairStrats{2}} \MDPProb{\strat{2}}_{\StochG^{\strat{1}'},v}(\Diamond T) < 1 $. Adicionalmente, por el Teorema 10.133 en \cite{BaierK08}, tenemos que $\inf_{ \strat{2} \in \FairStrats{2}}\MDPProb{\strat{2}}_{\StochG^{\strat{1}'},v}(\Diamond T) = 1 - \sup_{\strat{2} \in \FairStrats{2}} \MDPProb{\strat{2}}_{\StochG^{\strat{1}'},v}(\neg T \U U)$, donde $T$ es el conjunto de estados terminales,  $\neg T$ es su complemento, y
+$U = \bigcup \{ V' \mid (V', \delta') \in \EndComp(\StochG^{\strat{1}'}) \text{ y }  T \cap V' = \emptyset\}$.
+%Furthermore, in \cite{BaierK08} it is shown how we can define a \emph{fair} strategy that maximizes the probabilities. 
+Sea $\strat{2}''$ la estrategia \emph{fair} que maximiza el valor de $\MDPProb{\strat{2}''}_{\StochG^{\strat{1}'},v}(\neg T \U U)$, el cual existe como se ha demostrado en la prueba del Teorema 10.133 en \cite{BaierK08}.
+Entonces tenemos que $\MDPProb{\strat{2}''}_{\StochG^{\strat{1}'},v}(\neg T \U U) > 0$ y por lo tanto existe
+un camino $v_0 v_1 \dots v_n$ con probabilidad positiva tal que $v_i \notin T$ y $v_n$ pertenece a un componente final $\EC{C} = (V'', \delta'')$
+tal que $T \cap V'' = \emptyset$. Como $\strat{2}''$ es fair, por nuestra definición de estrategia fair, el componente final $\EC{C}$ contiene todas las transiciones en $\StochG^{\strat{1}'}$ cuando se lo restringe a $V''$.
+% when restricted  to $\EC{C}$. 
+Por lo tanto, $\MDPProb{\uniformstrat{2}}_{\StochG^{\strat{1}'},v}(\Diamond V'') > 0$, y 
+$\MDPProb{\uniformstrat{2}}_{\StochG^{\strat{1}'},v''}(\Box V'') = 1 $ 
+desde cualquier estado en $v'' \in V''$, lo cual implica que $\MDPProb{\uniformstrat{2}}_{\StochG{\strat{1}'},v}(\neg T \U V'') > 0$. 
+Entonces, $\MDPProb{\uniformstrat{2}}_{\StochG^{\strat{1}'},v}(\Diamond T) < 1$, lo cual contradice nuestro supuesto inicial.
+
+\noindent ``Solo si'': Esta parte de la demostración es directa ya que $\uniformstrat{2}$ es una estrategia fair.
+%Suppose that  $\Prob{\strat{1}}{\strat{2}}(\mathcal{A})=1$ for 
+%every $\strat{1} \in \Strategies{1}$ and  $\strat{2} \in \FairStrats{2}$, and 
+%$\Prob{\strat{1}'}{\starredstrat{2}}(\mathcal{A})<1$, for some Verifier's strategy $\strat{1}'$, that is, there is a path 
+%$v_0, v_1, \dots, v_n$ in the Markov chain $\StochG^{\strat{1}', \starredstrat{2}}$ such that $v_i \notin T$ and 
+%$v_n \in B$ for some BSCC $B$ satisfying $T \cap B = \emptyset$. By the definition of $\starredstrat{2}$, $B$ is also a 
+%maximal end component in the MDP  $\StochG^{\strat{1}'}$. 
+%Thus, we can define a \emph{fair} strategy $\strat{2}'$ that takes path 
+%$v_0, \dots, v_n$ in   $\StochG^{\strat{1}'}$ and afterwards behaves in a \emph{fair} way in the maximal end-component $B$, since 
+%$T \cap B = \emptyset$ we have $\Prob{\strat{1}'}{\strat{2}'}(\mathcal{A})<1$ which contradicts our initial assumption.
+\qedhere
+\end{proof} \\ 
+
+
+
+
+
+
+
+
+
+\noindent
+\textbf{Prueba del Lema \ref{lm:semimarkov2}}
+  Sea $\StochG$ un juego estocástico bajo fairness,  y sea
+  $\strat{2} \in \SemiMarkovFairStrats{2}$ una estrategia semi-Markov
+  fair. Entonces, para toda $\strat{1} \in \Strategies{1}$, existe una estrategia
+  semi-Markov $\starredstrat{1} \in \SemiMarkovStrats{1}$
+  tal que
+  $\Expect{\strat{1}}{\strat{2}}_{\StochG, v}[\Rewards] =
+  \Expect{\starredstrat{1}}{\strat{2}}_{\StochG, v}[\Rewards]$.
+\noindent \\
+%
+\begin{proof}
+  Consideremos el evento $\Diamond^{k} v' = \{ \omega \in
+  \GamePaths_\StochG \mid \omega_k = v'\}$, para $k\geq 0$. Es decir,
+  el conjunto de corridas en las cuales $v'$ es alcanzado en exactamente $k$ pasos.
+  %
+  Definimos $\starredstrat{1}$ de la siguiente manera:
+  \[
+  \starredstrat{1}(\hat{\omega}v')(v'') =  \Prob{\strat{1}}{\strat{2}}_{\StochG,v}(\Diamond^{k+1} v'' \mid \Diamond^k v') 
+  \]
+  para todo $\hat{\omega}$ tal que
+  $\Prob{\strat{1}}{\strat{2}}_{\StochG,v}(\hat{\omega}v') > 0$ y
+  $|\hat{\omega}v'| = k$.  Para $\hat{\omega}$ con
+  $\Prob{\strat{1}}{\strat{2}}_{\StochG,v}(\hat{\omega}v') = 0$ definimos $\starredstrat{1}(\hat{\omega}v')$ como una distribución arbitraria cualquiera.
+  %for $|\hat{\omega}v'| = k$.
+
+  Probamos que esta estrategia satisface las condiciones del teorema.
+  Primero, demostramos que
+  %
+  \begin{equation}\label{equ:diamondk}
+    \Prob{\strat{1}}{\strat{2}}_{\StochG,v}(\Diamond^{k} v') =
+    \Prob{\starredstrat{1}}{\strat{2}}_{\StochG,v}(\Diamond^{k} v').
+  \end{equation}
+  %
+  Notemos que para $k=0$ tenemos que,
+  \[\Prob{\strat{1}}{\strat{2}}_{\StochG,v}(\Diamond^{0} v') =
+  \Prob{\strat{1}}{\strat{2}}_{\StochG,v}(v') = \Delta_v(v') =
+  \Prob{\starredstrat{1}}{\strat{2}}_{\StochG,v}(v')=
+  \Prob{\starredstrat{1}}{\strat{2}}_{\StochG,v}(\Diamond^{0} v').\]
+  %
+  Para $k + 1 > 0$, notamos que
+  \[
+  \Prob{\strat{1}}{\strat{2}}_{\StochG,v}(\Diamond^{k+1} v') = \sum_{\hat{\omega} \in V^{k+1}} \Prob{\strat{1}}{\strat{2}}_{\StochG,v}(\hat{\omega}v')  = \sum_{v'' \in \pre(v')}\sum_{\hat{\omega} \in V^k} \Prob{\strat{1}}{\strat{2}}_{\StochG,v}(\hat{\omega}v''v'),
+  \] 
+  y por lo tanto, para este caso, basta con mostrar que, para todo
+  $v''\in\pre(v)$,
+  %
+  \[
+    \sum_{\hat{\omega} \in V^k} \Prob{\strat{1}}{\strat{2}}_{\StochG,v}(\hat{\omega}v''v') = \sum_{\hat{\omega} \in V^k} \Prob{\starredstrat{1}}{\strat{2}}_{\StochG,v}(\hat{\omega}v''v').
+  \]
+
+  La prueba usa inducción en $k$ haciendo análisis por casos. Observamos que
+  el caso base sigue de manera similar al caso inductivo y lo señalaremos debidamente cuando corresponda.
+  %
+  Si $v'' \in V_2$, procedemos de la siguiente manera.
+  %
+  \begin{align}	
+    \label{lm:semimarkov2-eq1-l1}
+    \sum_{\hat{\omega} \in V^k}\Prob{\strat{1}}{\strat{2}}_{\StochG,v}(\hat{\omega}v''v')
+    & = \sum_{\hat{\omega} \in V^k}\Prob{\strat{1}}{\strat{2}}_{\StochG,v}(\hat{\omega}v'') \strat{2}(\hat{\omega}v'')(v')\\
+    \label{lm:semimarkov2-eq1-l2}
+    & = \alpha \sum_{\hat{\omega} \in V^k}\Prob{\strat{1}}{\strat{2}}_{\StochG,v}(\hat{\omega}v'') \\
+    \label{lm:semimarkov2-eq1-l3}
+    & = \alpha \sum_{\hat{\omega} \in V^k}\Prob{\starredstrat{1}}{\strat{2}}_{\StochG,v}(\hat{\omega}v'') \\
+    \label{lm:semimarkov2-eq1-l4}
+    & = \sum_{\hat{\omega} \in V^k}\Prob{\starredstrat{1}}{\strat{2}}_{\StochG,v}(\hat{\omega}v''v')
+  \end{align}
+  %
+  (\ref{lm:semimarkov2-eq1-l1}) se deduce por definición.
+  %
+  Para (\ref{lm:semimarkov2-eq1-l2}), definimos $\alpha =
+  \strat{2}(\hat{\omega}v'')(v')$ si $\hat{\omega}$ comienza en $v$. Al recordar que la naturaleza semi-Markoviana de $\strat{2}$ define el
+  mismo $\alpha$ para cualquier $\hat{\omega}\in V^k$ a partir de $v$, y que
+  $\Prob{\strat{1}}{\strat{2}}_{\StochG,v}(\hat{\omega}v'') = 0$ si
+  $\hat{\omega}$ no comienza en $v$, $\alpha$ resulta ser factor común.
+  %
+  (\ref{lm:semimarkov2-eq1-l3}) se deriva ya sea por hipótesis inductiva, o, en el caso base, al observar que
+  $\Prob{\strat{1}}{\strat{2}}_{\StochG,v}(v'') =
+  \Delta_v(v'')=\Prob{\starredstrat{1}}{\strat{2}}_{\StochG,v}(v'')$.
+  %
+  (\ref{lm:semimarkov2-eq1-l4}) resuelve tal y como
+  (\ref{lm:semimarkov2-eq1-l2}).
+
+  Para el caso en el que $v'' \in V_1$, procedemos de la siguiente manera.
+  %
+  \begin{align}	
+    \sum_{\hat{\omega} \in V^k}\Prob{\strat{1}}{\strat{2}}_{\StochG,v}(\hat{\omega}v''v') \hspace{-6em} & \notag\\
+    \label{lm:semimarkov2-eq2-l1}
+    & = \sum_{\hat{\omega} \in V^k}\Prob{\strat{1}}{\strat{2}}_{\StochG,v}(\hat{\omega}v'') \strat{1}(\hat{\omega}v'')(v')\\
+    \label{lm:semimarkov2-eq2-l2}
+    & = \left( \sum_{\hat{\omega} \in V^k}\Prob{\strat{1}}{\strat{2}}_{\StochG,v}(\hat{\omega}v'') \right) \frac{\displaystyle\sum_{\hat{\omega} \in V^k}\Prob{\strat{1}}{\strat{2}}_{\StochG,v}(\hat{\omega}v'') \strat{1}(\hat{\omega}v'')(v')}{\displaystyle\sum_{\hat{\omega} \in V^k}\Prob{\strat{1}}{\strat{2}}_{\StochG,v}(\hat{\omega}v'')} \\
+    \label{lm:semimarkov2-eq2-l3}
+    & = \sum_{\hat{\omega} \in V^k}\Prob{\strat{1}}{\strat{2}}_{\StochG,v}(\hat{\omega}v'') \Prob{\strat{1}}{\strat{2}}_{\StochG,v}(\Diamond^{k+1} v' \mid \Diamond^k v'') \\
+    \label{lm:semimarkov2-eq2-l4}
+    & = \sum_{\hat{\omega} \in V^k}\Prob{\starredstrat{1}}{\strat{2}}_{\StochG,v}(\hat{\omega}v'') \starredstrat{1}(\hat{\omega}v'')(v)\\
+    \label{lm:semimarkov2-eq2-l5}
+    & = \sum_{\hat{\omega} \in V^k}\Prob{\starredstrat{1}}{\strat{2}}_{\StochG,v}(\hat{\omega}v''v')
+  \end{align}
+  %
+  (\ref{lm:semimarkov2-eq2-l1}) se deduce por definición.
+  %
+  (\ref{lm:semimarkov2-eq2-l2}) se obtiene al multiplicar y dividir el término por
+  $\sum_{\hat{\omega}v'' \in V^k}\Prob{\strat{1}}{\strat{2}}_{\StochG,v}(\hat{\omega}v'')$.
+  %
+  (\ref{lm:semimarkov2-eq2-l3}) se deduce de la definición de probabilidad condicional al observar que
+  $\Prob{\strat{1}}{\strat{2}}_{\StochG,v}({\Diamond^{k+1} v'} \cap {\Diamond^k v''}) =
+  \sum_{\hat{\omega} \in V^k}\Prob{\strat{1}}{\strat{2}}_{\StochG,v}(\hat{\omega}v'') \strat{1}(\hat{\omega}v'')(v')$
+  y 
+  $\Prob{\strat{1}}{\strat{2}}_{\StochG,v}(\Diamond^{k} v'') =
+  \sum_{\hat{\omega} \in V^k}\Prob{\strat{1}}{\strat{2}}_{\StochG,v}(\hat{\omega}v'')$.
+  %
+  Finalmente, (\ref{lm:semimarkov2-eq2-l4}) se deduce por la definición de
+  $\starredstrat{1}$ y (\ref{lm:semimarkov2-eq2-l5}) por la definición de 
+  $\Prob{\starredstrat{1}}{\strat{2}}_{\StochG,v}$.
+
+  La prueba para el caso $v'' \in V_\Probabilistic$ se deduce de igual manera que para el primer caso, con la diferencia de que en vez de considerar
+  $\strat{2}(\hat{\omega}v'')(v')$ necesitamos considerar
+  $\delta(v'',v')$.
+
+
+
+  Usando (\ref{equ:diamondk}), podemos realizar el cálculo de la siguiente manera
+  %
+  \begin{align}
+  \Expect{\strat{1}}{\strat{2}}_{\StochG,v}[\Rewards]   &  = \sum^\infty_{N=0} \sum_{\hat{\omega} \in V^{N+1}} \Prob{\strat{1}}{\strat{2}}_{\StochG,v}(\hat{\omega})\reward(\hat{\omega}_N) \label{equ:expect:semimarkov:a}\\
+  & = \sum^\infty_{N=0} \sum_{v' \in V} \Prob{\strat{1}}{\strat{2}}_{\StochG,v}(\Diamond^N v')\reward(v') \label{equ:expect:semimarkov:b}\\
+  & =  \sum^\infty_{N=0} \sum_{v' \in V} \Prob{\starredstrat{1}}{\strat{2}}_{\StochG,v}(\Diamond^N v')\reward(v') \label{equ:expect:semimarkov:c}\\
+  &  = \Expect{\starredstrat{1}}{\strat{2}}_{\StochG,v}[\Rewards] \label{equ:expect:semimarkov:d}
+  \end{align}
+  %
+  La igualdad (\ref{equ:expect:semimarkov:a}) se deriva del hecho que 
+  $\Expect{\strat{1}}{\strat{2}}_{\StochG,v}[\Rewards]= \reward(v) + \xi(v)(v') \cdot \Expect{\strat{1}}{\strat{2}}_{\StochG,v'}[\Rewards]$
+  con $\xi(v)(v')=\strat{1}(v)(v')$ si $v\in V_1$,
+  $\xi(v)(v')=\strat{2}(v)(v')$ si $v\in V_2$, y $\xi(v)(v')=\delta(v,v')$
+  si $v\in V_\Probabilistic$.
+  %
+  La igualdad (\ref{equ:expect:semimarkov:b}) se deduce por
+  $\Prob{\strat{1}}{\strat{2}}_{\StochG,v}(\Diamond^N v')=\sum_{\hat{\omega} \in V^{N}v'} \Prob{\strat{1}}{\strat{2}}_{\StochG,v}(\hat{\omega})$.
+  %
+  (\ref{equ:expect:semimarkov:c}) es el resultado de aplicar
+  (\ref{equ:diamondk}).
+  %
+  Siguiendo la misma lógica que antes nos da (\ref{equ:expect:semimarkov:d}).
+\qedhere
+\end{proof} \\ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\noindent
+\textbf{Prueba del Lema \ref{lm:games-are-bounded}}
+  Sea $\StochG$ un juego estocástico que es terminante bajo fairness
+  y sea $T$ el conjunto de estados terminales. Adicionalmente, sea
+  $\strat{1} \in \Strategies{1}$ una estrategia para el Jugador $1$ y
+  $\strat{2} \in \MemorylessFairStrats{2}$ una estrategia \emph{fair} y sin memoria para el Jugador $2$.  Entonces
+  %\[
+  $\sum^\infty_{N=0} \sum_{\hat{\omega} \in v(V \setminus T)^N} \Prob{\strat{1}}{\strat{2}}_{\StochG,v}(\hat{\omega}) < \infty$.
+  %\]
+\noindent \\
+
+\begin{proof}
+  En lugar de realizar las reducciones apropiadas para aplicar el Teorema 4.2.12 de \cite[p.~174]{FilarV96}, realizamos una prueba directa basada en las ideas
+  de la prueba de ese teorema.
+  
+  Fijemos una estrategia \emph{fair} $\strat{2} \in \MemorylessFairStrats{2}$ y
+  consideremos el MDP
+  $\StochG^{\strat{2}} = (V, (V_1, \emptyset, V_2 \cup V_\Probabilistic), \delta^{\strat{2}})$.
+  %
+  Definimos el siguiente funcional:
+  %\remarkPRD{No deberia ser $v \in (V_2 \cup V_\Probabilistic)\setminus T$?}
+  %
+  \[
+  \Gamma'(f)(v) =
+  \begin{cases}
+    1 + \sum_{v' \in \post(v)} \delta^{\strat{2}}(v,v')  f(v') & \text{ if } v \in (V_2 \cup V_\Probabilistic) \setminus T  \\
+    \max \{1  + f(v') \mid v' \in \post(v) \} & \text{ if } v \in  V_1 \setminus T \\
+    0 & \text{ if } v \in T.
+  \end{cases}
+  \]
+  %
+  %\textcolor{red}{It is well-known that, since $\StochG^{\strat{2}}$ is stopping, this
+  %functional is a contraction mapping and then it has a unique
+  %fixpoint (see, e.g., proof of Theorem 4.2.6 in \cite{FilarV96}),
+  %which gives us the optimal value for Player~1 in MDP
+  %$\StochG^{\strat{2}}$.  Let $\mu \Gamma'$ denote the fixpoint of $\Gamma'$.}
+  
+  Observemos que por el Lema \ref{lm:bound-prob-stationary-strats} y por el Teorema 4.2.2 de \cite{FilarV96},  $\StochG^{\strat{2}}$
+  es un juego transitorio de 1 jugador. Por lo tanto, por el Teorema 4.2.6 de \cite{FilarV96} $\Gamma'$ es un \textit{contraction mapping} y tiene un punto fijo único (denotado $\mu \Gamma' \in [0,\mathbb{R}]^V$), el cual a su vez es la solución del juego.
+  
+  Como $\mu \Gamma'(v_n)$ es el valor óptimo para un vértice dado $v_{n}$ tenemos que:
+ % \remarkPRD{para que esto sea cierto me parece que se necesita que la primera l\'inea en la definici\'on de $\Gamma'$ sea $1+\sum_{v' \in \post(v)} \delta^{\strat{2}}(v,v')  f(v')$}
+  %
+  \begin{equation}\label{eq:lm:games-are-bounded-eq1}
+    \mu \Gamma'(v_n) \geq 1 + \sum_{v_{n+1} \in \post(v_n)} \delta^{\strat{1}^n, \strat{2}}(v_n, v_{n+1}) \mu \Gamma'(v_{n+1})
+  \end{equation}
+  %
+  para cualquier estrategia sin memoria $\strat{1}^n$ (el valor obtenido a partir del punto fijo es
+  óptimo entre las estrategias sin memoria, por lo que no puede mejorar con  $\strat{1}^n$).
+  %
+  Tomemos cualquier secuencia $\hat{\omega} = v_0 \dots v_n$ con
+  $\hat{\omega}_n = v_n$ y multipliquemos
+  (\ref{eq:lm:games-are-bounded-eq1}) por
+  $\prod^{n-1}_{i=0} \delta^{\strat{1}^i, \strat{2}}(\hat{\omega}_i, \hat{\omega}_{i+1})$
+  en ambos lados. Esto nos da
+  %
+  \begin{align}
+    \prod^{n-1}_{i=0} \delta^{\strat{1}^i, \strat{2}}(\hat{\omega}_i, \hat{\omega}_{i+1}) \mu \Gamma'(\hat{\omega}_n)  \hspace{-6.5em}& \notag\\
+    \geq \ & \prod^{n-1}_{i=0} \delta^{\strat{1}^i, \strat{2}}(\hat{\omega}_i, \hat{\omega}_{i+1}) \label{eq:lm:games-are-bounded-eq2} \\
+    & + \ \prod^{n-1}_{i=0} \delta^{\strat{1}^i, \strat{2}}(\hat{\omega}_i, \hat{\omega}_{i+1})\sum_{v_{n+1} \in \post(v_n)} \delta^{\strat{1}^n, \strat{2}}(v_n, v_{n+1}) \mu \Gamma'(v_{n+1}) \notag
+  \end{align}
+  %
+  En la ecuación de arriba, asumimos que
+  $\prod^{-1}_{i=0} \delta^{\strat{1}^i, \strat{2}}(\hat{\omega}_i, \hat{\omega}_{i+1}) = 1$
+  para el caso en que $n=0$.
+  
+  Considerando todas las secuencias de longitud $n+1$ en $v(V \setminus T)^n$,
+  a partir de (\ref{eq:lm:games-are-bounded-eq2}), y reescribiendo la última linea de la desigualdad, obtenemos
+  %
+  \begin{align}
+    \sum_{\hat{\omega} \in v(V \setminus T)^n}\prod^{n-1}_{i=0} \delta^{\strat{1}^i, \strat{2}}(\hat{\omega}_i, \hat{\omega}_{i+1}) \mu \Gamma'(\hat{\omega}_n)  \hspace{-5.5em}& \notag\\
+    \geq \ & \sum_{\hat{\omega} \in v(V \setminus T)^n}\prod^{n-1}_{i=0} \delta^{\strat{1}^i, \strat{2}}(\hat{\omega}_i, \hat{\omega}_{i+1}) \label{eq:lm:games-are-bounded-eq3}\\
+    & + \ \sum_{\hat{\omega} \in v(V \setminus T)^{n+1}}(\prod^{n}_{i=0} \delta^{\strat{1}^i, \strat{2}}(\hat{\omega}_i, \hat{\omega}_{i+1}) \mu \Gamma'(\hat{\omega}_{n+1})) \notag
+  \end{align}
+  %
+  Sumando todas las posibles secuencias hasta $N$ obtenemos
+  \begin{align}
+    \sum^{N}_{n=0}\sum_{\hat{\omega} \in v(V \setminus T)^n}\prod^{n-1}_{i=0} \delta^{\strat{1}^i, \strat{2}}(\hat{\omega}_i, \hat{\omega}_{i+1}) \mu \Gamma'(\hat{\omega}_n)   \hspace{-6.5em}& \notag\\
+    \geq \ & \sum^{N}_{n=0} \sum_{\hat{\omega} \in v(V \setminus T)^n}\prod^{n-1}_{i=0} \delta^{\strat{1}^i, \strat{2}}(\hat{\omega}_i, \hat{\omega}_{i+1}) \label{eq:lm:games-are-bounded-eq4} \\
+    & + \ \sum^{N}_{n=0} \sum_{\hat{\omega} \in v(V \setminus T)^{n+1}}(\prod^{n}_{i=0} \delta^{\strat{1}^i, \strat{2}}(\hat{\omega}_i, \hat{\omega}_{i+1}) \mu \Gamma'(\hat{\omega}_{n+1})) \notag
+  \end{align}
+  %
+  (\ref{eq:lm:games-are-bounded-eq4}) puede ser reescrito equivalentemente como
+  \begin{align}
+    \sum^{N}_{n=0}\sum_{\hat{\omega} \in v(V \setminus T)^n}\prod^{n-1}_{i=0} \delta^{\strat{1}^i, \strat{2}}(\hat{\omega}_i, \hat{\omega}_{i+1}) \mu \Gamma'(\hat{\omega}_n)  \hspace{-6.5em}& \notag\\
+    \geq \ & \sum^{N}_{n=0} \sum_{\hat{\omega} \in v(V \setminus T)^n}\prod^{n-1}_{i=0} \delta^{\strat{1}^i, \strat{2}}(\hat{\omega}_i, \hat{\omega}_{i+1}) \label{eq:lm:games-are-bounded-eq5}\\
+    & + \ \sum^{N+1}_{n=1} \sum_{\hat{\omega} \in v(V \setminus T)^{n}}(\prod^{n-1}_{i=0} \delta^{\strat{1}^i, \strat{2}}(\hat{\omega}_i, \hat{\omega}_{i+1}) \mu \Gamma'(\hat{\omega}_{n})) \notag
+  \end{align}
+  %
+  Al sustraer
+  $\sum^{N+1}_{n=1} \sum_{\hat{\omega} \in v(V \setminus T)^{n}}(\prod^{n-1}_{i=0} \delta^{\strat{1}^i, \strat{2}}(\hat{\omega}_i, \hat{\omega}_{i+1}) \mu \Gamma' (v_{n}))$
+  de ambos lados de la desigualdad
+  (\ref{eq:lm:games-are-bounded-eq5}), obtenemos
+  %
+  \begin{align}
+    \label{eq:lm:games-are-bounded-eq6}
+    \mu \Gamma'(v)  - \sum_{\hat{\omega} \in v(V \setminus T)^{N+1}}\prod^{N}_{i=0} \delta^{\strat{1}^i, \strat{2}}(\hat{\omega}_i,\hat{\omega}_{i+1}) \mu \Gamma'(\hat{\omega}_{N+1})  \hspace{-6.5em}& \\
+    \geq \ & \sum^{N}_{n=0} \sum_{\hat{\omega} \in v(V \setminus T)^n}\prod^{n-1}_{i=0} \delta^{\strat{1}^i, \strat{2}}(\hat{\omega}_i, \hat{\omega}_{i+1}) \notag
+  \end{align}
+  %
+  Aplicando límites a ambos lados de la desigualdad
+  (\ref{eq:lm:games-are-bounded-eq6}) obtenemos
+  %
+  \begin{align}
+    \label{eq:lm:games-are-bounded-eq7}
+    \mu \Gamma(v)  - \lim_{N \to \infty} \sum_{\hat{\omega} \in v(V \setminus T)^{N+1}}\prod^{N}_{i=0} \delta^{\strat{1}^i, \strat{2}}(\hat{\omega}_i,\hat{\omega}_{i+1}) \mu \Gamma'(\hat{\omega}_{N+1})  \hspace{-8.5em}& \\
+    \geq \ & \lim_{N \to \infty} \sum^{N}_{n=0} \sum_{\hat{\omega} \in v(V \setminus T)^n}\prod^{n-1}_{i=0} \delta^{\strat{1}^i, \strat{2}}(\hat{\omega}_i, \hat{\omega}_{i+1}) \notag
+  \end{align}
+  %
+  %\remarkPRD{No entiendo como aplica el Lemma~\ref{lm:bound-prob-stationary-strats}  aqu\'i. Me parece que $\Gamma'$ deber\'ia ser distinto para poder aplicar el lemma.}
+  Ahora,  $\mu \Gamma'(v) \in \mathbb{R}^V$ es acotado para todo $v$. Adicionalmente,
+  \[
+  \lim_{N \to \infty}\sum_{\hat{\omega} \in v(V \setminus T)^{N+1}}\prod^{N}_{i=0} \delta^{\strat{1}^i, \strat{2}}(\hat{\omega}_i,\hat{\omega}_{i+1}) \nu(\hat{\omega}_{N+1}) = 0,
+  \]
+  %
+  Por lo tanto, el término derecho de la desigualdad
+  (\ref{eq:lm:games-are-bounded-eq7}) es un número finito.  Esto significa que
+  para toda secuencia de estrategias sin memoria
+  $\strat{1}^0,\strat{1}^1, \dots$ obtenemos
+  %
+  \[
+  \lim_{N \to \infty} \sum^{N}_{n=0} \sum_{\hat{\omega} \in v(V \setminus T)^n}\prod^{n-1}_{i=0} \delta^{\strat{1}^i, \strat{2}}(\hat{\omega}_i, \hat{\omega}_{i+1}) < \infty,
+  \]
+  %
+  Observando que cualquier estrategia semi-Markoviana $\strat{1}'$ puede pensarse como una
+  secuencia de estrategias sin memoria, se deduce que
+  \[
+  \lim_{N \to \infty} \sum^{N}_{n=0} \sum_{\hat{\omega} \in v(V \setminus T)^n} \MDPProb{\strat{1}'}_{\StochG^{\strat{2}}, v}(\hat{\omega}) < \infty,
+  \]
+  %
+  para toda $\strat{1}'$ semi-Markoviana.  Además, como toda
+  estrategia $\strat{1}$ tiene una estrategia semi-Markoviana equivalente (ver prueba del Lema \ref{lm:semimarkov2}), el resultado se deduce.
+  %\remarkPRD{Quiz'as esta parte e la prueba del Theorem \ref{lm:semimarkov2} necesite un lema aparte(Esto es a modo de comentario, no para hacer ahora)}
+% First, we describe how a  stochastic game as defined in this paper can be equivalently defined as a \emph{transient game} as defined in \cite{FilarV96}.
+%A transient game consists of a finite set of states $S$, for each state $s \in S$, $A^i(s)$ is a finite set of actions for Player $i$ (for $i \in \{0,1\}$).  A probabilistic transition function noted $p(s' \mid s, a_1,a_2)$ giving the probability of reaching state $s'$ from state $s$ when actions $a_1 \in A_1$ and $a_2 \in A_2$ are selected, and a reward function $r(s,a_1,a_2) \in \mathbb{R}$ given the rewards obtained if actions $a_1$ and $a_2$ are executed from state $s$.  A strategy for Player $1$ is a 
+%sequence $f_0,f_1,\dots$ of functions $f : S^* A^1 A^2 S \rightarrow  \Dist$
+  \qedhere
+\end{proof}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\noindent
+\textbf{Prueba del Lema \ref{lm:infima-in-dmf}}%
+  Sea $\StochG= (V, (V_1, V_2, V_\Probabilistic), \delta, \reward)$ un
+  juego estocástico que es terminante bajo \emph{fairness} y sea
+  $\strat{1} \in \MemorylessStrats{1}$ una estrategia sin memora para el Jugador $1$.  Existe una estrategia \emph{fair} determinista sin memoria
+  $\starredstrat{2}\in\DetMemorylessFairStrats{2}$ tal que
+  %% \[
+  %%   \inf_{\strat{2} \in \FairStrats{2}} \Expect{\strat{1}}{\strat{2}}_{\StochG,v}[\Rewards]
+  %%   =
+  %%   \Expect{\strat{1}}{\starredstrat{2}}_{\StochG,v}[\Rewards].
+  %% \]  
+  $\inf_{\strat{2} \in \FairStrats{2}} \Expect{\strat{1}}{\strat{2}}_{\StochG,v}[\Rewards]
+   =
+   \Expect{\strat{1}}{\starredstrat{2}}_{\StochG,v}[\Rewards]$, para todo $v \in V$.
+\noindent \\
+%
+\iffalse
+\begin{proof}[Sketch]
+  Though it differs in the details, the proof strategy is inspired by
+  the proof of Lemma~10.102 in~\cite{BaierK08}.
+  %
+  We first construct a reduced MDP $\StochG^{\strat{1}}_{\min}$ which
+  preserves exactly the optimizing part of the MDP
+  $\StochG^{\strat{1}}$.
+  %
+  Thus $\delta^{\strat{1}}_{\min}(v,v')=\delta^{\strat{1}}(v,v')$ if
+  $v\in V_1\cup V_\Probabilistic$, or $v\in V_2$ and
+  $x_v=\reward(v)+x_{v'}$, where, for every $v\in V$,
+  $x_v = \inf_{\strat{2} \in \FairStrats{2}} \Expect{\strat{1}}{\strat{2}}_{\StochG,v}[\Rewards]$
+  (which exists due to Theorem~\ref{thm:memoryless-strat-p2-bounded-expectation}).
+  %
+  Otherwise, $\delta^{\strat{1}}_{\min}(v,v')=0$.
+  %
+  $\StochG^{\strat{1}}_{\min}$ can be proved to be stopping under fairness.
+
+  Then, the strategy $\starredstrat{2}$ for
+  $\StochG^{\strat{1}}_{\min}$ is constructed as follows.  For every
+  $v\in V$, let $\disttoT{v}$ be the length of the shortest path
+  fragment to some terminal vertex in $T$ in the MDP
+  $\StochG^{\strat{1}}_{\min}$.  Define $\starredstrat{2}(v)(v')=1$
+  for some $v'$ such that $\delta^{\strat{1}}_{\min}(v,v')=1$ and
+  $\disttoT{v}=\disttoT{v'}+1$.
+  %
+  By definition, $\starredstrat{2}$ is  memoryless.  We prove first that
+  $\starredstrat{2}$ yields the optimal solution of
+  $\StochG^{\strat{1}}$ by showing that the vector $(x_v)_{v\in V}$
+  (i.e, the optimal values of $\StochG^{\strat{1}}$) is a solution to
+  the set of equations for expected rewards of the Markov chain
+  $\StochG^{\strat{1},\starredstrat{2}}$.  Being the solution unique,
+  we have that
+  $x_v=\ExpectMDP{}_{\StochG^{\strat{1},\starredstrat{2}},v}[\Rewards]$
+  for all $v\in V$ and hence the optimality of $\starredstrat{2}$.
+  %
+  To conclude the proof we show by contradiction that
+  $\starredstrat{2}$ is fair.
+\qedhere
+\end{proof}
+\fi
+\begin{proof}
+  Al fijar la estrategia $\strat{1}$ en $\StochG$ obtenemos un MDP
+  $\StochG^{\strat{1}} = (V, (\emptyset,V_2,V_1\cup V_\Probabilistic),\delta^{\strat{1}})$
+  donde $\delta^{\strat{1}}(v,\cdot)=\strat{1}(v)$ si $v\in V_1$, y
+  $\delta^{\strat{1}}(v,\cdot)=\delta(v,\cdot)$ si $v\in V_2\cup V_\Probabilistic$.
+  %
+  Observemos que el conjunto $V_1$ de vértices del Jugador $1$ en $\StochG$ se vuelve
+  parte de los vértices probabilistas de $\StochG^{\strat{1}}$.  Por lo tanto,
+  las elecciones no deterministas solo están presentes en los vértices  $V_2$.
+  %
+  Por definición,
+  $\inf_{\strat{2} \in \FairStrats{2}} \ExpectMDP{\strat{2}}_{\StochG^{\strat{1}},v}[\Rewards] =
+  \inf_{\strat{2} \in \FairStrats{2}} \Expect{\strat{1}}{\strat{2}}_{\StochG,v}[\Rewards]$
+  para todo $v\in V$.
+
+  A pesar de que la prueba es diferente en general, la estrategia básica esta inspirada por la prueba del Lema~10.102 en~\cite{BaierK08}: Primero construimos
+  un MDP reducido $\StochG^{\strat{1}}_{\min}$ el cual preserva los valores optimizadores de $\StochG^{\strat{1}}$ en cada vértice, y luego usamos la estructura de $\StochG^{\strat{1}}_{\min}$ para derivar una estrategia determinista sin memoria óptima.
+
+  Para todo $v\in V$,
+  sea $x_v = \inf_{\strat{2} \in \FairStrats{2}} \Expect{\strat{1}}{\strat{2}}_{\StochG,v}[\Rewards]$
+  %(by Corollary~\ref{coro:inf-for-strat2-is-bounded} this value is well-defined) and,
+  (por el Lema~\ref{lm:memoryless-strat-p2-bounded-expectation} este valor está bien definido) y,
+  para todo $v\in V_2$, sea
+  \begin{equation}\label{lm:infima-in-dmf-def-postmin}
+ 	\postmin(v) = \{{v'\in V} \mid {\delta^{\strat{1}}(v,v')=1} \land {x_v=\reward(v)+x_{v'}}\}.
+  \end{equation}
+  %
+  Definimos el MDP
+  $\StochG^{\strat{1}}_{\min} = (V, (\emptyset,V_2,V_1\cup V_\Probabilistic),\delta^{\strat{1}}_{\min})$
+  donde $\delta^{\strat{1}}_{\min}(v,v')=\delta^{\strat{1}}(v,v')$ si $v\in V_1\cup
+  V_\Probabilistic$, o $v\in V_2$ y $v'\in\postmin(v)$. De lo contrario
+  $\delta^{\strat{1}}_{\min}(v,v')=0$.
+  %
+  Por lo tanto, $\StochG^{\strat{1}}_{\min}$ es lo mismo que $\StochG^{\strat{1}}$ excepto que todas las transiciones $\delta^{\strat{1}}(v,v')=1$ donde $v\in V_2$ y
+  $x_v < \reward(v)+x_{v'}$ han sido eliminadas.
+  %
+  Observemos que
+  $\inf_{\strat{2} \in \FairStrats{2}} \ExpectMDP{\strat{2}}_{\StochG^{\strat{1}}_{\min},v}[\Rewards] =
+  \inf_{\strat{2} \in \FairStrats{2}} \ExpectMDP{\strat{2}}_{\StochG^{\strat{1}},v}[\Rewards] =
+  x_v$
+%  \inf_{\strat{2} \in \FairStrats{2}} \Expect{\strat{1}}{\strat{2}}_{\StochG,v}[\Rewards] =
+%  x_v$
+  para todo $v\in V$.
+
+  Antes de continuar, demostramos la siguiente afirmación
+  %
+  \begin{claim}
+    $\StochG^{\strat{1}}_{\min}$ es terminante bajo fairness.
+  \end{claim}
+  %
+  \begin{proofofclaim}
+    Procedemos por contradicción. Supongamos que hay una estrategia \emph{fair} $\strat{2}'$ tal que, para algún nodo $v \in V$ tenemos
+    $\MDPProb{\strat{2}'}_{\StochG_{\min}^{\strat{1}},v}(\Diamond T) < 1$.
+    Por esto,  $\MDPProb{\strat{2}'}_{\StochG_{\min}^{\strat{1}},v}(\Box \neg T) > 0$.
+    %
+    Esto implica que existe un componente final $\EC{C} = (V',
+    \delta')$ en el MDP $\StochG_{\min}^{\strat{1}}$ tal que
+    $T \cap V' = \emptyset$ y
+    $\MDPProb{\strat{2}'}_{\StochG_{\min}^{\strat{1}},v}(\Diamond V') > 0$
+    (Teorema 10.133 \cite[p.~889]{BaierK08}).
+    %
+    Como $\StochG_{\min}^{\strat{1}}$ es un sub-MDP de
+    $\StochG^{\strat{1}}$, $\EC{C}$ también es un componente final de
+    $\StochG^{\strat{1}}$.
+%%%%%
+    Además, notemos que $\EC{C}$ no puede ser un componente final máxima en
+    $\StochG^{\strat{1}}$, de lo contrario habríamos encontrado una estrategia \emph{fair} que alcanza un componente final máxima y que no alcanza a $T$, por lo tanto
+    violando el supuesto de que $\StochG$ es terminante bajo
+    fairness.
+    
+    Sea $m = \min \{ x_{v'} \mid v' \in V' \}$ y
+    $\hat{v} \in \argmin  \{ x_{v'}  \mid v' \in V' \}$.
+    %
+    Si $\hat{v}\in V_2$, por definición de $\postmin(v)$,
+    $x_{\hat{v}} = \reward(\hat{v}) + x_{v'}$, para todo
+    $v' \in \postmin(v)$, y entonces, necesariamente $\reward(\hat{v})=0$
+    y $x_{\hat{v}} = x_{v'}$ ya que todos los valores son no-negativos.
+    %
+    Lo mismo vale en caso de que $\hat{v}$ sea un vértice probabilista,
+    debido a que $x_{\hat{v}}$ depende de una combinación convexa de valores de sus sucesores.
+    %
+    Por lo tanto, inductivamente, $x_{\hat{v}} = x_{v'}$ y $\reward(v')=0$ para
+    todo $v'\in V'$.
+
+    Ahora bien, sea
+    $M =  \min \{ \inf_{\strat{2} \in \FairStrats{2}}  \ExpectMDP{\strat{2}}_{\StochG^{\strat{1}},v'}[\Rewards] \mid v' \in (\post(V') \setminus V')\}$
+    y 
+    $F=\{v \in V \mid v \in (\post(V') \setminus V')\}$.
+    %
+    Observemos que, por definición de $\StochG_{min}^{\strat{1}}$, tenemos que $M > m$.
+    %
+    Consideremos $\epsilon = \frac{M -m}{2}$ y una estrategia $\epsilon$-óptima
+    $\hat{\strat{2}}$ para el vértice $\hat{v}$, es decir,
+    $\ExpectMDP{\hat{\strat{2}}}_{\StochG^{\strat{1}},\hat{v}}[\Rewards] \leq x_{\hat{v}} + \epsilon$.
+    
+    Observemos que, como $\StochG^{\strat{1}}$ es terminante bajo fairness,
+    al usar la estrategia $\hat{\strat{2}}$, cualquier jugada abandona $\EC{C}$ de forma almost-sure (recordemos que $V' \cap T = \emptyset$) y por lo tanto
+    $\MDPProb{\hat{\strat{2}}}_{\StochG^{\strat{1}},\hat{v}} (\Diamond F) = 1$.
+    %
+    Como todas las recompensas de los vértices en $\EC{C}$ son $0$ (como fue probado anteriormente) podemos demostrar que
+    $\ExpectMDP{\hat{\strat{2}}}_{\StochG^{\strat{1}},\hat{v}}[\Rewards]
+    \geq M$ de la siguiente manera:
+    %
+    \begin{align}	
+      \ExpectMDP{\hat{\strat{2}}}_{\StochG^{\strat{1}},\hat{v}}[\Rewards] \hspace{-4em} & \notag\\
+      \label{lm:infima-in-dmf-eq1-l1}
+      &= \sum_{\hat{\omega} \in (V \setminus T)^*T} \MDPProb{\hat{\strat{2}}}_{\StochG^{\strat{1}},\hat{v}}(\hat{\omega})\ \Rewards(\hat{\omega}) \\
+      \label{lm:infima-in-dmf-eq1-l2}
+      &=\sum_{\hat{\omega} \in \hat{v}{V'}^*F(V \setminus T)^*T} \MDPProb{\hat{\strat{2}}}_{\StochG^{\strat{1}},\hat{v}}(\hat{\omega})\ \Rewards(\hat{\omega}) \\
+      \label{lm:infima-in-dmf-l3}
+      &= \sum_{v' \in F} \sum_{\hat{\omega} \in \hat{v}{V'}^*v'} \MDPProb{\hat{\strat{2}}}_{\StochG^{\strat{1}},\hat{v}}(\hat{\omega}) \sum_{\hat{\omega}' \in v' (V \setminus T)^*T}  \MDPProb{\hat{\strat{2}}}_{\StochG^{\strat{1}},v'}(\hat{\omega}')\ \Rewards(\hat{\omega}')\\
+      \label{lm:infima-in-dmf-l4}
+      &\geq \sum_{v' \in F} \sum_{\hat{\omega} \in \hat{v}{V'}^*v'} \MDPProb{\hat{\strat{2}}}_{\StochG^{\strat{1}},\hat{v}}(\hat{\omega})\ x_{v'} \\
+      \label{lm:infima-in-dmf-l5}
+      &\geq \sum_{v' \in F} \sum_{\hat{\omega} \in \hat{v}{V'}^*v'} \MDPProb{\hat{\strat{2}}}_{\StochG^{\strat{1}},\hat{v}}(\hat{\omega})\ M \\
+      \label{lm:infima-in-dmf-l6}
+      &= M  \sum_{v' \in F} \sum_{\hat{\omega} \in \hat{v}{V'}^*v'} \MDPProb{\hat{\strat{2}}}_{\StochG^{\strat{1}},\hat{v}}(\hat{\omega}) \\
+      \label{lm:infima-in-dmf-l7}
+      &= M
+    \end{align}
+    %
+    (\ref{lm:infima-in-dmf-eq1-l1}) es la definición de esperanza.
+    %
+    (\ref{lm:infima-in-dmf-eq1-l2}) se deduce por la observación de que cualquier camino $\hat{\omega} \in (V \setminus T)^*T$ tiene que empezar en
+    $\hat{v}\in V'$ y tiene que pasar por la frontera $F$ para abandonar $\EC{C}$ y alcanzar algún estado terminal en $T$.
+    %
+    (\ref{lm:infima-in-dmf-l3}) se obtiene al tener en cuenta que $\reward(v) = 0$ para todo $v \in V'$.
+    %
+    (\ref{lm:infima-in-dmf-l4}) se deduce del hecho de que 
+    $x_{v'} \leq \sum_{\hat{\omega}' \in v' (V \setminus T)^*T}  \MDPProb{\hat{\strat{2}}}_{\StochG^{\strat{1}},v'}(\hat{\omega}')\ \Rewards(\hat{\omega}')$.
+    %
+    (\ref{lm:infima-in-dmf-l5}) se deduce por la definición de $M$ y
+    (\ref{lm:infima-in-dmf-l6}) al factorizar $M$.
+    %
+    Finalmente, (\ref{lm:infima-in-dmf-l7}) se deduce del hecho 
+    $\sum_{v' \in F} \sum_{\hat{\omega} \in \hat{v}{V'}^*v'} \MDPProb{\hat{\strat{2}}}_{\StochG^{\strat{1}},\hat{v}}(\hat{\omega}) =
+    \MDPProb{\hat{\strat{2}}}_{\StochG^{\strat{1}},\hat{v}} (\Diamond F) = 1$.
+    %
+    Por lo tanto tenemos que
+    $x_{\hat{v}} + \epsilon \geq \ExpectMDP{\hat{\strat{2}}}_{\StochG^{\strat{1}},\hat{v}}[\Rewards] \geq M$.
+    Como también es cierto que $M >  x_{\hat{v}} + \epsilon$, llegamos a una contradicción.
+    Por lo tanto $\StochG^{\strat{1}}_{\min}$ debe ser terminante bajo fairness.
+    \hfill\emph{(Fin de afirmación)}\qedhere
+  \end{proofofclaim}
+
+  %%   Let
+  %%   $\val(v')= \inf_{\strat{2} \in \FairStrats{2}} \ExpectMDP{\strat{2}}_{\StochG,v'}[\Rewards]$,
+  %%   for every $v' \in V$.
+  %%   Due to Corollary~\ref{coro:inf-for-strat2-is-bounded} this value
+  %%   is well-defined.
+  %%   %
+  %%   Let $m = \min \{ \mathit{val}(v') \mid v' \in V' \}$ and
+  %%   $\hat{v} \in \argmin  \{ \val(v') \mid v' \in V' \}$.
+  %%   Note that $\EC{C}$ cannot be a maximal end component in
+  %%   $\StochG^{\strat{1}}$, otherwise we have found a \emph{fair} strategy
+  %%   reaching a maximal end component and not reaching $T$, thus
+  %%   violating the assumption that $\StochG$ is stopping under
+  %%   fairness.
+
+  %%   If $\hat{v}\in V_2$,
+  %%   $\mathit{val}(\hat{v}) \geq \reward(v) + \min \{ \val(v') \mid v' \in \postmin(\hat{v}) \}$
+  %%   since any strategy starting at $\hat{v}$ cannot improve
+  %%   the value obtained from the best strategy possible.
+  %%   However, since $\hat{v}$ is the node with the minimum value and
+  %%   the rewards are non-negative we also have
+  %%   $\val(\hat{v}) \leq \reward(\hat{v}) + \val(v')$, thus 
+  %%  we have  that $\val(\hat{v}) = \reward(\hat{v}) + \val(v')$ for some $v' \in \postmin(v)$, but then also $\reward(\hat{v})=0$. Furthermore, due to the definition of $\postmin$ and taking into account that $\reward(v'')$ is non-negative for all vertices $v''$,
+  %%  we also have that $\val(\hat{v}) = \val(v'')$ for all $v'' \in \postmin(v)$.
+  %%  If $\hat{v}$ is a probabilistic vertex, then the same is true,  because its value is a convex combination of its successors' value. Thus, applying this reasoning $| V' |$ times and taking into account that 
+  %%   $\EC{C}$ is a connected component we obtain that for all the vertices $v' \in V'$: $\val(v') = \val(\hat{v})$ and  also $r(v') = 0$. Now, 
+  %%   let $M =  \min \{ \inf_{\strat{2} \in \FairStrats{2}}  \ExpectMDP{\strat{2}}_{\StochG^{\strat{1}},v'}[\Rewards] \mid v' \in (\post(V') \setminus V')\}$ and 
+  %%   $F=\{v \in V \mid v \in (\post(V') \setminus V')\}$.  Note that, by definition of $\StochG_{min}^{\strat{1}}$, we have that $M > m$.
+  %%   %
+  %%   Set
+  %%   $\epsilon = \frac{M -m}{2}$ and consider an $\epsilon$-optimal strategy $\hat{\strat{2}}$ for vertex $\hat{v}$, es decir:
+  %%   $\ExpectMDP{\hat{\strat{2}}}_{\StochG^{\strat{1}},\hat{v}}[\Rewards] \leq \mathit{val}(\hat{v}) + \epsilon$.  Note that,  since $\StochG^{\strat{1}}$ is stopping under fairness,
+  %%   when using strategy $\hat{\strat{2}}$ any play almost surely goes out $\EC{C}$ (recall that $V' \cap T = \emptyset$), and since all the rewards of the vertices in $\EC{C}$ 
+  %%   are $0$ (as proven above) we can prove that: $\ExpectMDP{\hat{\strat{2}}}_{\StochG^{\strat{1}},\hat{v}}[\Rewards] \geq M$ as follows:
+  %%   \begin{align}	
+  %%       \label{thm:infima-in-dmf-eq1-l1}	\ExpectMDP{\hat{\strat{2}}}_{\StochG^{\strat{1}},\hat{v}}[\Rewards] & = 
+  %%       			\sum_{\hat{\omega} \in \hat{v}{C'}^*(V \setminus T)^*T} \MDPProb{\hat{\strat{2}}}_{\StochG^{\strat{1}},\hat{v}}(\hat{\omega}) \Rewards(\hat{\omega}) \\
+  %%       \label{thm:infima-in-dmf-eq1-l2}		&=\sum_{\hat{\omega} \in \hat{v}{V'}^*F(V \setminus T)^*T} \MDPProb{\hat{\strat{2}}}_{\StochG^{\strat{1}},\hat{v}}(\hat{\omega}) \Rewards(\hat{\omega}) \\
+  %%       \label{thm:infima-in-dmf-l3}		&=  \sum_{v' \in F} \sum_{\hat{\omega} \in \hat{v}{V'}^*v'} (\MDPProb{\hat{\strat{2}}}_{\StochG^{\strat{1}},\hat{v}}(\hat{\omega}) \sum_{\hat{\omega}' \in v' (V \setminus T)^*T}  \MDPProb{\hat{\strat{2}}}_{\StochG^{\strat{1}},\hat{v}}(\hat{\omega}') \Rewards(\hat{\omega}') )\\
+  %%       \label{thm:infima-in-dmf-l4}		&\geq   \sum_{v' \in F} \sum_{\hat{\omega} \in \hat{v}{V'}^*v'} \MDPProb{\hat{\strat{2}}}_{\StochG^{\strat{1}},\hat{v}}(\hat{\omega}) \val(v') \\
+  %%       \label{thm:infima-in-dmf-l5}		&\geq   \sum_{v' \in F} \sum_{\hat{\omega} \in \hat{v}{V'}^*v'} \MDPProb{\hat{\strat{2}}}_{\StochG^{\strat{1}},\hat{v}}(\hat{\omega})M \\
+  %%       \label{thm:infima-in-dmf-l6}		&= M   \sum_{v' \in F} \sum_{\hat{\omega} \in \hat{v}{V'}^*v'} \MDPProb{\hat{\strat{2}}}_{\StochG^{\strat{1}},\hat{v}}(\hat{\omega}) \\
+  %%       \label{thm:infima-in-dmf-l6}		&= M
+  %%       \end{align}
+  %%       Line \ref{thm:infima-in-dmf-eq1-l1} follows from the definition of expectation. Line \ref{thm:infima-in-dmf-eq1-l2} is due to the fact that every path leaving $\EC{C}$ must pass through $F$. 
+  %%       Line \ref{thm:infima-in-dmf-l3} is obtained taking into account that $\reward(v) = 0$ for any $v \in C$.  Line \ref{thm:infima-in-dmf-l4} follows from the fact that 
+  %%       $\val(v') \leq \sum_{\hat{\omega}' \in v' (V \setminus T)^*T}  \MDPProb{\hat{\strat{2}}}_{\StochG^{\strat{1}},\hat{v}}(\hat{\omega}') \Rewards(\hat{\omega}') )$.  Line \ref{thm:infima-in-dmf-l5} 
+  %%       follows form the definition of $M$,  Line \ref{thm:infima-in-dmf-l6} follows by standard properties of sums, and Line \ref{thm:infima-in-dmf-l6} follows from the fact 
+  %%       $ \sum_{v' \in F} \sum_{\hat{\omega} \in \hat{v}{V'}^*v'} \MDPProb{\hat{\strat{2}}}_{\StochG^{\strat{1}},\hat{v}}(\hat{\omega}) =  \MDPProb{\hat{\strat{2}}}_{\StochG^{\strat{1}},\hat{v}} (\Diamond F) = 1$. Thus we have $\val(\hat{v})+ \epsilon \geq \ExpectMDP{\hat{\strat{2}}}_{\StochG^{\strat{1}},\hat{v}}[\Rewards] \geq M$
+  %%    but also $M >  \val(\hat{v}) + \epsilon$,  a contradiction. Hence $\StochG^{\strat{1}}_{\min}$ must be stopping under fairness.
+  %%    \hfill\emph{(End of calim)}\qed
+  %% \end{proof}
+
+  
+  Para todo $v\in V$, sea $\disttoT{v}$ la longitud del fragmento de camino más corto hacia algún vértice terminal de $T$ en el MDP
+  $\StochG^{\strat{1}}_{\min}$.   En particular, $\disttoT{v}=0$ para todo $v\in T$.  Notemos que $\disttoT{v}$ está definido para todo
+  $v\in V$ ya que $\StochG^{\strat{1}}_{\min}$ hereda de $\StochG$ la
+  propiedad de ser terminante bajo estrategias \emph{fair} (y por lo tanto alcanza
+  $T$ de forma almost-sure para cualquier estrategia \emph{fair} en $\FairStrats{2}$).
+  
+  Ahora bien,  para todo $v\in V_2$
+  tal que $\disttoT{v} \geq 1$, define $\starredstrat{2}(v)(v')=1$
+  para algún $v'$ tal que $\delta^{\strat{1}}_{\min}(v,v')=1$ y
+  $\disttoT{v}=\disttoT{v'}+1$; y $\starredstrat{2}(v)(v'')=0$ para $v''\neq v'$.  Notemos que tal $v'$ siempre existe,
+  y que $\starredstrat{2}$ es una estrategia determinista y sin memoria.
+
+  $\starredstrat{2}$ induce la cadena de Markov (finita)
+  $\StochG^{\strat{1},\starredstrat{2}} = (V, (\emptyset,\emptyset,V_1\cup V_2\cup V_\Probabilistic),\delta^{\strat{1},\starredstrat{2}})$,
+  donde
+  \[\delta^{\strat{1},\starredstrat{2}}(v,v') =
+    \begin{cases}
+      \delta(v,v')     & \text{ si } v\in V_\Probabilistic \\
+      \strat{1}(v)(v') & \text{ si } v\in V_1 \\
+      \starredstrat{2}(v)(v') & \text{ si } v\in V_2.
+    \end{cases}
+  \]
+  %
+  Teniendo en cuenta la definición de $\delta^{\strat{1},\starredstrat{2}}$,
+  los valores de recompensa esperada
+  $\ExpectMDP{}_{\StochG^{\strat{1},\starredstrat{2}},v}[\Rewards]$ se obtienen
+  por la solución única del siguiente sistema de ecuaciones lineales:
+  %
+  \begin{align*}
+    y_v = {} & 0 && \text{ si } v\in T \\
+    y_v = {} &\textstyle \reward(v) + \sum_{v\in V} \delta(v,v') \cdot y_{v'} && \text{ si } v\in V_\Probabilistic \setminus T\\
+    y_v = {} &\textstyle \reward(v) + \sum_{v\in V} \strat{1}(v)(v') \cdot y_{v'}  && \text{ si } v\in V_1 \setminus T\\
+    y_v = {} & \reward(v) +  y_{v'} && \text{ si } v\in V_2 \setminus T \text{ y } \starredstrat{2}(v)(v') = 1
+  \end{align*}
+  %
+  Para ver que este sistema de ecuaciones tiene una solución única, consideremos su forma matricial $y = Ay+ r$, en donde $A$ es una matriz definida por
+  $A_{i,j} = \delta^{\pi_1,\pi^*_2}(v_i,v_j)$ si $v_i \notin T$ y
+  $A_{i,j} = 0$ si $v_i \in T$, y $r$ es el vector de recompensa donde
+  $r_i = \reward(v_i)$.
+  %
+  $A$ es una matriz sub-estocástica cuadrada \cite{DBLP:journals/moc/Azimzadeh19} en donde existe un camino desde cualquier vértice hacia un vértice terminal.
+  %
+  Por lo tanto, por el Corolario 2.6 de \cite{DBLP:journals/moc/Azimzadeh19},
+  $(I-A)^{-1}$ existe y por lo tanto $(I-A)^{-1} r$ es la solución única del sistema de ecuaciones visto anteriormente.
+
+  Como $\starredstrat{2}(v)(v') = 1$ implica que $v'\in\postmin(v)$,
+  se deduce que $(x_v)_{v\in V}$ también soluciona el sistema de ecuaciones anterior.  Por la unicidad de la solución obtenemos
+  %
+  \[\Expect{\strat{1}}{\starredstrat{2}}_{\StochG,v}[\Rewards] = 
+    \ExpectMDP{}_{\StochG^{\strat{1},\starredstrat{2}},v}[\Rewards] =
+    y_v = x_v =
+    \inf_{\strat{2} \in \FairStrats{2}} \Expect{\strat{1}}{\strat{2}}_{\StochG,v}[\Rewards].
+  \]
+
+  En este último paso de la prueba demostramos que $\starredstrat{2}$ es fair.
+  %
+  Por contradicción, supongamos que este no es el caso.  Entonces,
+  $\Prob{\strat{1}}{\starredstrat{2}}_{\StochG,v}(\FP^2) < 1$ para algún
+  $v\in V$.  Por lo tanto, deben existir vértices $\hat{v}\in V_2$
+  y $\hat{v}'\in\post(\hat{v})$ tales que 
+  $\Prob{\strat{1}}{\starredstrat{2}}_{\StochG,v}({\Box\Diamond\hat{v}}\land{\Diamond\Box\neg\hat{v}'})>0$,
+  donde
+  ${\Box\Diamond\hat{v}}\land{\Diamond\Box\neg\hat{v}'} =\{ {\omega\in\GamePaths_{\StochG}} \mid {\hat{v} \in \inf(\omega)} \land {\hat{v}' \notin \inf(\omega)} \}$.
+
+  Por el Teorema 10.56 en~\cite{BaierK08}, existe un BSCC
+  %% \footnote{A \emph{bottom strongly connected component (BSCC)} is a
+  %% strongly connected component $B\subseteq V$ that cannot reach any
+  %% vertex outside $B$, that is
+  %% $\delta^{\strat{1},\starredstrat{2}}(v,B)=1$ for all $v\in B$.}%
+  $B$ en $\StochG^{\strat{1},\starredstrat{2}}$ que satisface $\hat{v}\in
+  B$ y $\hat{v}'\notin B$, tal que
+  $\Prob{\strat{1}}{\starredstrat{2}}_{\StochG,v}({\Box\Diamond\hat{v}}\land{\Diamond\Box\neg\hat{v}'})
+  = \Prob{\strat{1}}{\starredstrat{2}}_{\StochG,v}({\Diamond B})$.
+%
+  Un \emph{componente final fuertemente conexo (BSCC)} es un componente fuertemente conexo $B\subseteq V$ que no puede alcanzar ningún vértice fuera de $B$, esto es $\delta^{\strat{1},\starredstrat{2}}(v,B)=1$
+  para todo $v\in B$.)
+
+  Tomemos $v^*\in B$ con una distancia minimal en
+  $\StochG^{\strat{1}}_{\min}$ a un vértice terminal en $T$, esto es
+  $\disttoT{v^*}\leq\disttoT{v}$ para todo $v\in B$.  Como los vértices terminales son absorbentes, tenemos que $\hat{v}\notin T$, y por lo tanto
+  $T\cap B=\emptyset$.  Luego $\disttoT{v^*}>0$.
+  %
+  Si $v^*\in V_1 \cup V_\Probabilistic$, por definición de
+  $\disttoT{v^*}$, $\delta^{\strat{1}}_{\min}(v^*,v')>0$
+  para algún $v'$ tal que $\disttoT{v'}+1=\disttoT{v^*}$. Entonces
+  $v'\notin B$, contradiciendo el hecho de que
+  $\delta^{\strat{1}}_{\min}(v^*,B)=\delta^{\strat{1},\starredstrat{2}}(v^*,B)=1$.
+  Entonces, $v^*\notin V_1 \cup V_\Probabilistic$ $(\dagger)$.
+  %
+  Si $v^*\in V_2$, por definición,
+  $\starredstrat{2}(v^*)(v')=1$ si y solo si
+  $\delta^{\strat{1}}_{\min}(v^*,v')=1$ y
+  $\disttoT{v^*}=\disttoT{v'}+1$. De nuevo $v'\notin B$, 
+  lo cual contradice el hecho de que
+  $\starredstrat{2}(v^*)(B)=\delta^{\strat{1},\starredstrat{2}}(v^*,B)=1$.
+  Luego $v^*\notin V_2$ $(\ddagger)$.
+  
+  Por $(\dagger)$ y $(\ddagger)$, $v^*\notin V \supseteq B$
+  contradiciendo nuestro supuesto de que $v^*\in B$.  Entonces,
+  $\starredstrat{2}$ es fair.
+  %
+  \qedhere
+\end{proof}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\noindent
+\textbf{Prueba del Lema \ref{lm:semimarkov-to-detmemoryless}} Para cualquier juego estocástico $\StochG$  que sea terminante bajo fairness, y para cualquier vértice $v$, se cumple que:
+\[\adjustlimits
+	\sup_{\strat{1} \in \SemiMarkovStrats{1}} \inf_{\strat{2} \in \DetMemorylessFairStrats{2}} \Expect{\strat{1}}{\strat{2}}_{\StochG,v}[\Rewards]
+	= \adjustlimits
+	\sup_{\strat{1} \in \DetMemorylessStrats{1}} \inf_{\strat{2} \in \DetMemorylessFairStrats{2}} \Expect{\strat{1}}{\strat{2}}_{\StochG,v}[\Rewards]
+\]
+\noindent \\
+
+Para demostrar el Lema \ref{lm:semimarkov-to-detmemoryless},  necesitamos el siguiente lema.
+
+
+
+\begin{lemma}\label{lm:sum-of-nonterminal-is-zero}
+  Sea $\StochG$ un juego estocástico que es terminante bajo fairness.
+  Entonces para cualquier $\strat{1} \in \Strategies{1}$,
+  $\strat{2} \in \FairStrats{2}$, y $v \in V$ se cumple que:
+  \[
+  \lim_{N \to \infty} \sum_{\hat{\omega} \in (V \setminus T)^N} \Prob{\strat{1}}{\strat{2}}_{\StochG,v}(\hat{\omega}) = 0
+  \]
+  donde $T$ es el conjunto de nodos terminales de $\StochG$.
+\end{lemma}
+%
+\begin{proof}
+  %\remarkPRD{simplifiqu\'e significativamente esta prueba. Verificar}
+  Primero notemos que el complemento de $(V \setminus T)^N$ es
+  $\Diamond^{\leq N} T = \cup^N_{i=0} \Diamond^i T$.
+  %
+  Además, $\Diamond^{\leq N} T \subseteq \Diamond^{\leq N+1} T$, para todo $N\geq 0$,
+  y $\lim_{N \to \infty} \Diamond^{\leq N} T = \Diamond T$.
+  %
+  Entonces,
+  %
+  \begin{align*}
+    \lim_{N \to \infty} \sum_{\hat{\omega} \in (V \setminus T)^N} \Prob{\strat{1}}{\strat{2}}_{\StochG,v}(\hat{\omega}) \
+    & = \lim_{N \to \infty} \Prob{\strat{1}}{\strat{2}}_{\StochG,v}((V \setminus T)^N) \\
+    & = \lim_{N \to \infty} 1 - \Prob{\strat{1}}{\strat{2}}_{\StochG,v}(\Diamond^{\leq N} T ) \\
+    & = 1 - \lim_{N \to \infty} \Prob{\strat{1}}{\strat{2}}_{\StochG,v}(\Diamond^{\leq N} T ) \\
+    & = 1 - \Prob{\strat{1}}{\strat{2}}_{\StochG,v}(\Diamond T ) \\
+    & = 0
+  \end{align*}
+  %
+  La ultima desigualdad se debe a la terminación bajo fairness, y todas las anteriores, a resultados estándar de la teoría de la medida.
+  %%
+  %% 	Let $\strat{1} \in \Strategies{1}$ and $\strat{2} \in \FairStrats{2}$ arbitrary strategies.  
+  %% Fix vertex $v \in V$ and consider the following event:
+  %% \[
+  %% 	\Diamond^{k} T =  \bigcup \{ \cylinder{\hat{\omega}} \mid \omega \in (vV^k \cap (V \setminus T)^k T)\}
+  %% \]	
+  %% es decir, the set of executions in which $T$ is reached in exactly $k$ steps.  Similarly we can define:
+  %% \begin{equation}
+  %% 	\Diamond^{\leq k} T = \cup^k_{i=0} \Diamond^k T
+  %% \end{equation}
+  %% Note that for any $k$ we have:
+  %% \begin{equation}
+  %% 	\Prob^{\strat{1},\strat{2}}_{\StochG,v}(\Diamond^{\leq k} T  \cup \Box^{\leq  k} \neg T) = 1
+  %% \end{equation}
+  %% where $\Box^{\leq k} \neg T$ is the complement of $\Diamond^{\leq k} T$.
+  %% Since $\StochG$ is stopping under \emph{fairness} we have that:
+  %% \begin{equation}
+  %% 	\sum^\infty_{k=0}  \Prob{\strat{1}}{\strat{2}}_{\StochG,v}( \Diamond^k T) = \Prob{\strat{1}}{\strat{2}}_{\StochG,v}(\bigcup^\infty_{k=0} \Diamond^k T) = \Prob{\strat{1}}{\strat{2}}_{\StochG,v}(\Diamond T )  = 1,
+  %% \end{equation}
+  %% where the first equality holds since  the events $ \Diamond^k T$, for $k \in \mathbb{N}$, are mutually disjoint events. Hence, for every
+  %% $1 > \epsilon >0$ there is an $N$ such that:
+  %% \begin{equation}
+  %% \sum^N_{k=0}  \Prob{\strat{1}}{\strat{2}}_{\StochG,v}( \Diamond^k T)  \geq 1 - \epsilon
+  %% \end{equation}
+  %% Thus:
+  %% \begin{equation}
+  %% \sum^N_{k=0}  \Prob{\strat{1}}{\strat{2}}_{\StochG,v}( \Diamond^k T) =   \Prob{\strat{1}}{\strat{2}}_{\StochG,v}( \Diamond^{\leq N} T) \geq 1 - \epsilon
+  %% \end{equation}	
+  %% From it we obtain, 
+  %% \begin{equation}
+  %%  \Prob{\strat{1}}{\strat{2}}_{\StochG,v}( \Box^{\leq N} \neg T) < \epsilon
+  %% \end{equation}	
+  %% Noting that $\bigcup \{ \cylinder{\hat{\omega}} \mid \hat{\omega} \in v(V \setminus T)^N\} = \Box^{\leq N} \neg T$, and that the  events in the set $ \{ \cylinder{\hat{\omega}} \mid \hat{\omega} \in v(V \setminus T)^N\}$  are mutually disjoint, we obtain that:
+  %% \[
+  %% 	 \sum_{\hat{\omega} \in v(V \setminus T)^N} \Prob{\strat{1}}{\strat{2}}_{\StochG,v}(\hat{\omega}) < \epsilon
+  %% \]
+  %% thus:
+  %% \[
+  %% 	 \lim_{N \to \infty }\sum_{\hat{\omega} \in v(V \setminus T)^N} \Prob{\strat{1}}{\strat{2}}_{\StochG,v}(\hat{\omega}) = 0
+  %% \]
+  \qedhere
+\end{proof}
+
+\begin{proof}
+  Consideremos un juego estocástico $\StochG$ que es terminante bajo fairness, y un vértice $v$. Primero, notemos que cualquier estrategia semi-Markoviana $\strat{1}$ puede verse como una secuencia de estrategias sin memoria: $\strat{1}^{0},\strat{1}^{1},\strat{1}^{2}, \dots$,  definida de la siguiente manera:
+  %
+  \begin{equation}\label{eq:def-memoryless-strat-for-semimarkov}
+    \strat{1}^{n}(\hat{\omega}v)(v') = \strat{1}(v_0 \dots v_n)(v'), \text{ para todo $\hat{\omega}$ y $v_0 \dots v_n$ con $v_n = v$}
+  \end{equation}
+
+  Ahora,  para cualquier par de estrategias $\strat{1} \in \SemiMarkovStrats{1}$ y $\strat{2} \in \DetMemorylessFairStrats{2}$, tenemos que:
+  \[
+  \Expect{\strat{1}}{\strat{2}}_{\StochG,v}[\Rewards] = 
+  \sum^\infty_{n=0} \sum_{\hat{\omega} \in vV^n} \prod^{n-1}_{i=0} \delta^{\strat{1}^i,\strat{2}}(\hat{\omega}_i, \hat{\omega}_{i+1}) \reward(\hat{\omega}_n),
+  \]
+  %
+  donde $\delta^{\strat{1}^i,\strat{2}}$ es la función de transición probabilista de la cadena de Markov $\StochG^{\strat{1}^i,\strat{2}}$.  Asumimos que $\prod^{-1}_{i=0} \delta^{\strat{1}^i,\strat{2}}(\hat{\omega}_i, \hat{\omega}_{i+1}) = 1$.
+%
+  Fijemos una $\strat{2} \in \DetMemorylessFairStrats{2}$, y sea $\starredstrat{1} \in \MemorylessStrats{1}$ una estrategia determinista sin memoria óptima para el Jugador $1$  en respuesta a la estrategia $\strat{2}$.
+
+  Primero probamos la siguiente afirmación:
+  %\remarkPRD{This claim added to conclude directly on memoryles \textbf{deterministic} strategies}
+
+  \begin{claim}
+  %
+  Para cualquier estrategia sin memoria $\strat{1}^n$ del Jugador $1$ y cualquier vértice $v$ 
+  \begin{equation*}
+    \reward(v) + \sum_{v' \in \post(v)} \delta^{\strat{1}^n,\strat{2}}(v, v') \Expect{\starredstrat{1}}{\strat{2}}_{\StochG,v'}[\Rewards] \leq \Expect{\starredstrat{1}}{\strat{2}}_{\StochG,v}[\Rewards]
+  \end{equation*}
+  \end{claim}
+  %
+  \begin{proofofclaim}
+    Como $\strat{1}^n$ no tiene memoria, para todo $v$ existen $k$ estrategias deterministas sin memoria
+    $\strat{1}^{n,1},\ldots,\strat{1}^{n,k}\in\DetMemorylessStrats{1}$ y
+    $p_1,\ldots,p_k \in(0,1]$ tal que $\sum_{i=1}^kp_i =1$ y para todo $v'$
+    %
+    \begin{equation}\label{eq:def-detmemoryless-strat-for-memoryless}
+      \strat{1}^{n}(v)(v')=\textstyle\sum_{i=1}^k p_i\cdot\strat{1}^{n,i}(v)(v').
+    \end{equation}
+    %
+    Observemos que, ya que $\starredstrat{1}$ es óptima para estrategias deterministas sin memoria, tenemos:
+    %
+    \begin{equation}\label{eq:semimarkov-to-detmemoryless:optimality}
+      \reward(v) + \sum_{v' \in \post(v)} \delta^{\strat{1}^{n,i},\strat{2}}(v, v') \Expect{\starredstrat{1}}{\strat{2}}_{\StochG,v'}[\Rewards] \leq \Expect{\starredstrat{1}}{\strat{2}}_{\StochG,v}[\Rewards]
+    \end{equation}
+    %
+    para cualquier vértice $v$ y cualquier estrategia determinista sin memoria
+    $\strat{1}^i$ como se define en
+    (\ref{eq:def-detmemoryless-strat-for-memoryless}), donde
+    $\delta^{\strat{1}^{n,i},\strat{2}}$ es la función de transición probabilista de la cadena de Markov $\StochG^{\strat{1}^{n,i},\strat{2}}$.
+
+    Al multiplicar por $p_i$ ambos lados de~(\ref{eq:semimarkov-to-detmemoryless:optimality}) obtenemos
+    %
+    \begin{equation*}\label{eq:semimarkov-to-detmemoryless:step-i}
+      p_i \reward(v) + \sum_{v' \in \post(v)} p_i \delta^{\strat{1}^{n,i},\strat{2}}(v, v') \Expect{\starredstrat{1}}{\strat{2}}_{\StochG,v'}[\Rewards] \leq p_i \Expect{\starredstrat{1}}{\strat{2}}_{\StochG,v}[\Rewards]
+    \end{equation*}
+    %
+    y, al sumar a ambos lados de las $k$ ecuaciones y recordando que 
+    $\sum_{i=1}^kp_i =1$, obtenemos:
+    %
+    \begin{equation}\label{eq:semimarkov-to-detmemoryless:step-ii}
+      \reward(v) + \sum_{v' \in \post(v)}\sum_{i=1}^k p_i \delta^{\strat{1}^{n,i},\strat{2}}(v, v') \Expect{\starredstrat{1}}{\strat{2}}_{\StochG,v'}[\Rewards] \leq \Expect{\starredstrat{1}}{\strat{2}}_{\StochG,v}[\Rewards]
+    \end{equation}
+    %
+    Ahora bien, observemos que,
+    \begin{itemize}
+    \item%
+    si $v\in V_1$ entonces
+    $\sum_{i=1}^k p_i \delta^{\strat{1}^{n,i},\strat{2}}(v, v') = \sum_{i=1}^k p_i \strat{1}^{n,i}(v)(v') = \strat{1}(v)(v') = \delta^{\strat{1},\strat{2}}(v, v')$,
+    \item%
+    si $v\in V_2$ entonces
+    $\sum_{i=1}^k p_i \delta^{\strat{1}^{n,i},\strat{2}}(v, v') = \sum_{i=1}^k p_i \strat{2}(v)(v') = \strat{2}(v)(v') = \delta^{\strat{1},\strat{2}}(v, v')$, y 
+    \item%
+    si $v\in V_\Probabilistic$ entonces
+    $\sum_{i=1}^k p_i \delta^{\strat{1}^{n,i},\strat{2}}(v, v') = \delta^{\strat{1}^{n,i},\strat{2}}(v, v') = \sum_{i=1}^k p_i \delta(v,v') = \delta^{\strat{1},\strat{2}}(v, v')$,
+    \end{itemize}
+    donde $\delta^{\strat{1},\strat{2}}$ es la función de transición probabilista de la cadena de Markov $\StochG^{\strat{1},\strat{2}}$.
+    Esto nos da que
+    $\sum_{i=1}^k p_i \delta^{\strat{1}^{n,i},\strat{2}}(v, v') = \delta^{\strat{1},\strat{2}}(v, v')$
+    y por (\ref{eq:semimarkov-to-detmemoryless:step-ii}) concluimos esta afirmación.
+    \hfill\emph{(Fin de la afirmación)}\qedhere
+  \end{proofofclaim}
+
+Vamos a probar que no existe una estrategia semi-Markoviana que mejore el valor obtenido por $\starredstrat{1}$.  Sea $\strat{1}$ una estrategia semi-Markoviana arbitraria fijada para el Jugador $1$.  Por la afirmación, tenemos:
+  %
+  \begin{equation}\label{eq:optimality-appendix}
+    \reward(v_n) + \sum_{v_{n+1} \in \post(v_n)} \delta^{\strat{1}^n,\strat{2}}(v_n, v_{n+1}) \Expect{\starredstrat{1}}{\strat{2}}_{\StochG,v_{n+1}}[\Rewards] \leq \Expect{\starredstrat{1}}{\strat{2}}_{\StochG,v_n}[\Rewards]
+  \end{equation}
+  %
+para cualquier vértice $v_n$ y toda estrategia sin memoria $\strat{1}^n$ como se define en (\ref{eq:def-memoryless-strat-for-semimarkov}).  Ahora bien, sea $\hat{\omega}$ alguna secuencia tal que $\hat{\omega}_n = v_n$, multiplicamos ambos lados de (\ref{eq:optimality-appendix}) por $\prod^{n-1}_{i=0} \delta^{\strat{1}^i,\strat{2}}(\hat{\omega}_i,\hat{\omega}_{i+1})$, y obtenemos:
+  %
+  \begin{align*}
+    & \prod^{n-1}_{i=0}\delta^{\strat{1}^i, \strat{2}}(\hat{\omega}_i, \hat{\omega}_{i+1}) \reward(\hat{\omega}_n) \\
+    & \quad + \ \prod^{n-1}_{i=0}\delta^{\strat{1}^i,\strat{2}}(\hat{\omega}_i, \hat{\omega}_{i+1}) \sum_{v_{n+1} \in \post(\hat{\omega}_n)}  \delta^{\strat{1}^n,\strat{2}}(\hat{\omega}_n, v_{n+1}) \Expect{\starredstrat{1}}{\strat{2}}_{\StochG,v_{n+1}}[\Rewards] \\
+    & \hspace{18em} \leq 
+    \prod^{n-1}_{i=0}\delta^{\strat{1}^i,\strat{2}}(\hat{\omega}_i,\hat{\omega}_{i+1}) \Expect{\starredstrat{1}}{\strat{2}}_{\StochG,v_n}[\Rewards]
+  \end{align*}
+  %
+Por lo tanto,  considerando todas las secuencias $\hat{\omega}$ de longitud $n+1$ obtenemos:
+  %
+  \begin{align*}
+    & \sum_{\hat{\omega} \in vV^{n}} \prod^{n-1}_{i=0}\delta^{\strat{1}^i,\strat{2}}(\hat{\omega}_i,  \hat{\omega}_{i+1}) \reward(\hat{\omega}_n) \\
+    & \quad + \ \sum_{\hat{\omega} \in vV^{n+1}} \prod^{n}_{i=0}\delta^{\strat{1}^i,\strat{2}}(\hat{\omega}_i,\hat{\omega}_{i+1})  \Expect{\starredstrat{1}}{\strat{2}}_{\StochG,\hat{\omega}_{n+1}}[\Rewards]\\
+    & \hspace{13em} \leq 
+	\sum_{\hat{\omega} \in vV^{n}} \prod^{n-1}_{i=0}\delta^{\strat{1}^i,\strat{2}}(\hat{\omega}_i, \hat{\omega}_{i+1}) \Expect{\starredstrat{1}}{\strat{2}}_{\StochG,\hat{\omega}_n}[\Rewards]
+  \end{align*}
+  %
+  Realizando la sumatoria desde $n=0$ hasta $N$:
+  %
+  \begin{align*}
+    & \sum^{N}_{n=0}\sum_{\hat{\omega} \in vV^{n}} \prod^{n-1}_{i=0}\delta^{\strat{1}^i,\strat{2}}(\hat{\omega}_i,\hat{\omega}_{i+1}) \reward(\hat{\omega}_n) \\
+    & \quad + \ \sum^{N}_{n=0} \sum_{\hat{\omega} \in vV^{n+1}} \prod^{n}_{i=0}\delta^{\strat{1}^i,\strat{2}}(\hat{\omega}_i,\hat{\omega}_{i+1})  \Expect{\starredstrat{1}}{\strat{2}}_{\StochG,\hat{\omega}_{n+1}}[\Rewards] \\
+    & \hspace{15em} \leq 
+	\sum^{N}_{n=0}
+	\sum_{\hat{\omega} \in vV^{n}} \prod^{n-1}_{i=0}\delta^{\strat{1}^i,\strat{2}}(\hat{\omega}_i, \hat{\omega}_{i+1}) \Expect{\starredstrat{1}}{\strat{2}}_{\StochG,\hat{\omega}_n}[\Rewards],
+  \end{align*}
+  %
+  %(we assume that $\prod^{-1}_{i=0} \delta^{\strat{1}^i,\strat{2}}(\hat{\omega}_i, \hat{\omega}_{i+1}) = 1$)
+  Esto es lo mismo que:
+  %
+  \begin{align*}
+    & \sum^{N}_{n=0}\sum_{\hat{\omega} \in vV^{n}} \prod^{n-1}_{i=0}\delta^{\strat{1}^i,\strat{2}}(\hat{\omega}_i,\hat{\omega}_{i+1}) \reward(\hat{\omega}_n) \\
+    & \quad + \
+	\sum^{N+1}_{n=1} \sum_{\hat{\omega} \in vV^{n}} \prod^{n-1}_{i=0}\delta^{\strat{1}^i,\strat{2}}(\hat{\omega}_i,\hat{\omega}_{i+1})  \Expect{\starredstrat{1}}{\strat{2}}_{\StochG,\hat{\omega}_{n}}[\Rewards] \\
+    & \hspace{13em} \leq 
+	 \sum^{N}_{n=0}
+	\sum_{\hat{\omega} \in vV^{n}} \prod^{n-1}_{i=0}\delta^{\strat{1}^i,\strat{2}}(\hat{\omega}_i, \hat{\omega}_{i+1}) \Expect{\starredstrat{1}}{\strat{2}}_{\StochG,\hat{\omega}_n}[\Rewards]
+  \end{align*}
+  %
+  Por lo tanto, al sustraer $\sum^{N+1}_{n=1} \sum_{\hat{\omega} \in vV^{n}} \prod^{n-1}_{i=0}\delta^{\strat{1}^i,\strat{2}}(\hat{\omega}_i,\hat{\omega}_{i+1})  \Expect{\starredstrat{1}}{\strat{2}}_{\StochG,\hat{\omega}_{n}}[\Rewards]$ de ambos lados obtenemos:
+  %
+  \begin{align*}
+    & \sum^{N}_{n=0}\sum_{\hat{\omega} \in vV^{n}} \prod^{n-1}_{i=0}\delta^{\strat{1}^i,\strat{2}}(\hat{\omega}_i, \hat{\omega}_{i+1}) \reward(v_n)\\
+    & \hspace{2.5em} \leq 
+      \Expect{\starredstrat{1}}{\strat{2}}_{\StochG,v}[\Rewards] \ - \sum_{\hat{\omega} \in vV^{N+1}}\prod^{N}_{n=1}\delta^{\strat{1}^n,\strat{2}}(\hat{\omega}_i,\hat{\omega}_{i+1}) \Expect{\starredstrat{1}}{\strat{2}}_{\StochG, \hat{\omega}_{N+1}}[\Rewards]
+  \end{align*}
+  %
+  Aplicando límites a ambos lados, conseguimos
+
+  %
+  \begin{align}
+    & \lim_{N \rightarrow \infty} \sum^{N}_{n=0}\sum_{\hat{\omega} \in vV^{n}} \prod^{n-1}_{i=0}\delta^{\strat{1}^i,\strat{2}}(\hat{\omega}_i, \hat{\omega}_{i+1}) \reward(v_n) \label{thm:semimarkov-to-memoryless-eq0}\\
+    & \hspace{2.5em} \leq 
+      \Expect{\starredstrat{1}}{\strat{2}}_{\StochG,v}[\Rewards] \ - \lim_{N \rightarrow \infty} \sum_{\hat{\omega} \in vV^{N+1}}\prod^{N}_{n=1}\delta^{\strat{1}^n,\strat{2}}(\hat{\omega}_i,\hat{\omega}_{i+1}) \Expect{\starredstrat{1}}{\strat{2}}_{\StochG, \hat{\omega}_{N+1}}[\Rewards] \notag
+  \end{align}
+  Observemos que
+  %
+  \begin{align}
+    \lim_{N \rightarrow \infty} \sum_{\hat{\omega} \in vV^{N+1}}\prod^{N}_{n=1}\delta^{\strat{1}^n,\strat{2}}(\hat{\omega}_i,\hat{\omega}_{i+1}) \Expect{\starredstrat{1}}{\strat{2}}_{\StochG, \hat{\omega}_{N+1}}[\Rewards] \hspace{-16em} & \notag \\
+    = \ & \lim_{N \rightarrow \infty} \sum_{\hat{\omega} \in v(V\setminus T)^{N+1}}\prod^{N}_{n=1}\delta^{\strat{1}^n,\strat{2}}(\hat{\omega}_i,\hat{\omega}_{i+1}) \Expect{\starredstrat{1}}{\strat{2}}_{\StochG, \hat{\omega}_{N+1}}[\Rewards] \label{thm:semimarkov-to-memoryless-lim-eq1}\\
+    & \phantom{\lim_{N \rightarrow \infty}} + \
+    \sum_{\hat{\omega} \in v\bigcup_{i=0}^N(V\setminus T)^iT^{N+1-i}}\prod^{N}_{n=1}\delta^{\strat{1}^n,\strat{2}}(\hat{\omega}_i,\hat{\omega}_{i+1}) \Expect{\starredstrat{1}}{\strat{2}}_{\StochG, \hat{\omega}_{N+1}}[\Rewards] \notag \\
+    = \ & \lim_{N \rightarrow \infty} \sum_{\hat{\omega} \in v(V\setminus T)^{N+1}}\prod^{N}_{n=1}\delta^{\strat{1}^n,\strat{2}}(\hat{\omega}_i,\hat{\omega}_{i+1}) \Expect{\starredstrat{1}}{\strat{2}}_{\StochG, \hat{\omega}_{N+1}}[\Rewards] \label{thm:semimarkov-to-memoryless-lim-eq2}\\
+    \leq \ & \lim_{N \rightarrow \infty} \sum_{\hat{\omega} \in v(V\setminus T)^{N+1}}\prod^{N}_{n=1}\delta^{\strat{1}^n,\strat{2}}(\hat{\omega}_i,\hat{\omega}_{i+1}) \ M \label{thm:semimarkov-to-memoryless-lim-eq3}\\
+    = \ & M \ \lim_{N \rightarrow \infty} \sum_{\hat{\omega} \in v(V\setminus T)^{N+1}} \Prob{\strat{1}}{\strat{2}}_{\StochG,v}(\hat{\omega}) \label{thm:semimarkov-to-memoryless-lim-eq4}\\
+    = \ & 0  \label{thm:semimarkov-to-memoryless-lim-eq5}
+  \end{align}
+  %
+  (\ref{thm:semimarkov-to-memoryless-lim-eq1}) se deduce al observar que,
+  como los estados terminales en el conjunto $T$ son absorbentes,
+  $V^{N+1}=(V\setminus T)^{N+1}\cup\bigcup_{i=0}^N(V\setminus T)^iT^{N+1-i}$.
+  %
+  Ya que
+  $\Expect{\starredstrat{1}}{\strat{2}}_{\StochG, \hat{\omega}_{N+1}}[\Rewards]=0$
+  para todo $\hat{\omega}_{N+1}\in T$, (\ref{thm:semimarkov-to-memoryless-lim-eq2})
+  se deduce.
+  %
+  Al tomar
+  $M = \max_{v\in V} \Expect{\starredstrat{1}}{\strat{2}}_{\StochG, v}[\Rewards]$,
+  el cual sabemos que existe por el Lema~\ref{lm:memoryless-strat-p2-bounded-expectation}, podemos concluir que
+  (\ref{thm:semimarkov-to-memoryless-lim-eq3}).
+  %
+  (\ref{thm:semimarkov-to-memoryless-lim-eq4}) se deriva por definición de
+  $\Prob{\strat{1}}{\strat{2}}_{\StochG,v}(\hat{\omega})$ y concluimos
+  (\ref{thm:semimarkov-to-memoryless-lim-eq5}) utilizando
+  el Lema~\ref{lm:sum-of-nonterminal-is-zero}.
+  
+  %%   and taking into account that:
+  %% \[ \lim_{N \rightarrow \infty}\sum_{\hat{\omega} \in vV^{N+1}}\prod^{N}_{n=1}\delta^{\strat{1}^n,\strat{2}}(\hat{\omega}_i,\hat{\omega}_{i+1}) \Expect{\starredstrat{1}}{\strat{2}}_{\StochG, \hat{\omega}_{N+1}}[\Rewards] = 0,
+  %% \]
+  %% which follows from Lemma \ref{lm:sum-of-nonterminal-is-zero} and Theorem \ref{thm:memoryless-strat-p2-bounded-expectation}.
+
+  Considerando esta última observación, de
+  (\ref{thm:semimarkov-to-memoryless-eq0}), obtenemos que
+  %
+  \[
+  \lim_{N \rightarrow \infty}	\sum^{N}_{n=0}\sum_{\hat{\omega} \in vV^{n}} \prod^{n-1}_{i=0}\delta^{\strat{1}^i,\strat{2}}(\hat{\omega}_i, \hat{\omega}_{i+1}) \reward(v_n) \ \leq \ \Expect{\starredstrat{1}}{\strat{2}}_{\StochG,v}[\Rewards]
+  \]
+  %
+  lo cual es equivalente a:
+  \[
+  \Expect{\strat{1}}{\strat{2}}_{\StochG,v}[\Rewards] \leq \Expect{\starredstrat{1}}{\strat{2}}_{\StochG,v}[\Rewards].
+  \]
+  Por lo tanto, la estrategia semi-Markoviana arbitraria $\strat{1}$ no mejora por sobre $\starredstrat{1}$.
+  \qedhere
+\end{proof} \\ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\noindent
+\textbf{Prueba de la Proposición \ref{pn:continuity}} $\Bellman$ es monótona y Scott-continua.
+\noindent \\ 
+
+\begin{proof}
+    
+    Primero, vamos a demostrar que $\Bellman$ es monótona. Consideremos $f,f' \in [0,\UpperBound]^V$  tal que
+$f \leq f'$ por lo que $f(v) \leq f'(v')$ para todo $v \in V$.  La prueba es por casos:
+
+    SI $v \in V_\Probabilistic$ y $\reward(v) + \sum_{v' \in \post(v)} \delta(v,v')* f(v') < \UpperBound$:
+\begin{align}
+    \Bellman(f)(v) & = \min (\reward(v) + \sum_{v' \in \post(v)} \delta(v,v')* f(v'), \UpperBound)\label{pn:continuity-eq1-l1} \\
+            & = \reward(v) + \sum_{v' \in \post(v)} \delta(v,v')* f(v') \label{pn:continuity-eq1-l2} \\
+           & \leq \min (\reward(v) + \sum_{v' \in \post(v)} \delta(v,v') * f'(v'), \UpperBound)          \label{pn:continuity-eq1-l3} \\
+           & = \Bellman(f')(v)  
+\end{align}
+    donde la linea \ref{pn:continuity-eq1-l3} se deduce por nuestras asunciones.
+   
+    Si $v \in V_\Probabilistic$ y $\reward(v) + \sum_{v' \in \post(v)} \delta(v,v')* f(v') \geq \UpperBound$, observemos que en este caso también $\reward(v) + \sum_{v' \in \post(v)} \delta(v,v')* f'(v') \geq \UpperBound$:
+\begin{align}
+    \Bellman(f)(v) & = \min(\reward(v) + \sum_{v' \in \post(v)} \delta(v,v')* f(v'), \UpperBound) \label{pn:continuity-eq2-l1} \\
+                            & = \UpperBound                                                                  \label{pn:continuity-eq2-l2} \\
+                            & = \min( \reward(v) + \sum_{v' \in \post(v)} \delta(v,v') * f'(v'), \UpperBound) \label{pn:continuity-eq2-l3} \\
+                            & = \Bellman(f')(v)   \label{pn:continuity-eq2-l4}
+\end{align}
+donde las lineas \ref{pn:continuity-eq2-l2} y  \ref{pn:continuity-eq2-l3} son debido a la definición de $\Bellman$ y la asunción de $f \leq f'$.
+    Los casos $v \in V_1$ y $v \in V_2$ son similares.
+    
+    La prueba de Scott-continuidad es como se detalla a continuación. Necesitamos probar que, para todo conjunto dirigido $D$, tenemos $\sup_{d \in D} \Bellman(d) =  \Bellman(\sup_{d \in D} d)$.
+    La parte $\leq$ es directa por monotonía de $\Bellman$: $d \leq \sup_{d \in D} d$, entonces $\Bellman(d) \leq \Bellman( \sup_{d \in D} d)$ para todo $d$,
+    por lo que, por propiedades de los supremos: $\sup_{d \in D} \Bellman(d) \leq  \Bellman(\sup_{d \in D} d)$.
+    
+    Probamos ahora la parte $\geq$.   Procedemos por cases:
+    
+    Si   $v \in V_1$,  entonces:
+     \begin{align}
+     \Bellman (\sup_{d \in D} d)(v) & = \min ( \max \{ \reward(v) + (\sup_{d \in D} d)(v') \mid v' \in \post(v)\},  \UpperBound ) \\                                                                                       
+                                                     & =\min(  \sup_{d \in D} ( \max \{\reward(v) + d(v') \mid v' \in \post(v) \}, \UpperBound ) \\
+                                                     & = \sup_{d \in D} (\min( \max \{ \reward(v) + d(v') \mid v' \in \post(v) \}, \UpperBound)) \\
+                                                     & =  \sup_{d \in D} \Bellman(d)
+    \end{align}
+    
+    Si $v \in V_2$  y $\min \{ \reward(v) + (\sup_{d \in D} d)(v') \mid v' \in \post(v)\} > \UpperBound$. Por lo que, para
+    cualquier $v' \in \post(v)$ tenemos  $\reward(v) + (\sup_{d \in D} d)(v') > \UpperBound$, o equivalentemente: 
+    $\sup_{d \in D} (\reward(v) + d(v')) > \UpperBound$. Entonces, para todo $v' \in \post(v)$ existe algún $d \in D$: $(\reward(v) + d(v')) > \UpperBound$.
+    Por lo tanto, como $D$ es dirigido tenemos un $d^* \in D$ tal que para todo $v' \in \post(v)$: $(\reward(v) + d^*(v')) > \UpperBound$, entonces 
+    $\sup_{d \in D} \min ( \min \{ \reward(v) + d(v') \mid v' \in \post(v)\}, \UpperBound) = \UpperBound$.
+     
+     Si $v \in V_2$  y $\min \{ \reward(v) + (\sup_{d \in D} d)(v') \mid v' \in \post(v)\} < \UpperBound$.  Tenemos que
+     $\Bellman((\Sup_{d \in D} d) v) = \min \{ \reward(v) + (\sup_{d \in D} d)(v') \mid v' \in \post(v)\}$. En aras de la contradicción asumamos que $\Bellman((\Sup_{d \in D} d)(v)) > \sup_{d \in D} \Bellman(d)(v)$, lo que implica que
+    $\min \{ \reward(v) + (\sup_{d \in D} d)(v') \mid v' \in \post(v)\} > \sup_{d \in D} \Bellman(d)(v)$. Esto implica
+    que para todo $v' \in \post(v)$ existe un $d \in D$ tal que  $\reward(v) + d(v')  > \sup_{d \in D} \Bellman(d)(v)$.
+    Como $D$ es dirigido esto significa que existe un $d^* \in D$ tal que para todo $v' \in \post(v)$: $\reward(v) + d^*(v')  > \sup_{d \in D} \Bellman(d)(v)$,
+    por lo tanto $\min \{ \reward(v) + d^*(v') \mid v' \in \post(v)  \} > \sup_{d \in D} \Bellman(d)(v)$, o equivalentemente:
+    $\min \{ \reward(v) + d^*(v') \mid v' \in \post(v)  \} > \sup_{d \in D} \min \{ \reward(v) + d(v') \mid v' \in \post(v)\}$ lo cual es una contradicción ya que $d^* \in D$.
+     
+    Para $v \in V_\Probabilistic$ la prueba es similar al caso de $v \in V_1$.\qedhere
+\end{proof} \\ 

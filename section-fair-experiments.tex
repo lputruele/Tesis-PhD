@@ -11,17 +11,17 @@ Para evaluar la viabilidad de nuestro enfoque, hemos ampliado sobre el model che
 La herramienta toma como entrada un modelo que describe el juego en notación {\Prism} y devuelve como salida
 la recompensa total esperada óptima para un estado inicial dado, así como la estrategia de controlador óptima sintetizada (bajo supuestos de fairness sobre el ambiente).
 %Los modelos de entrada se especifican usando un lenguaje parecido a la notación {\Prism} \cite{DBLP:conf/cav/KwiatkowskaNP11}.
-La evaluación experimental muestra que nuestro enfoque puede hacer frente a estudios de casos no triviales. Para calcular estos valores establecemos un error relativo de como máximo $\varepsilon = 10^{-6}$.
+La evaluación experimental muestra que nuestro enfoque puede hacer frente a casos de estudio no triviales. Para calcular estos valores establecemos un error relativo de como máximo $\varepsilon = 10^{-6}$.
 
 
 %We have considered variations of two examples:
 %For the model presented in Sec.~\ref{sec:mot_example}, the expected total reward when $\verb"P"=0.1$ and $\verb"Q"=0$ is $5.55$. Moreover, 
 %the non-trivial part of the synthesized strategy is illustrated with the black arrows in Fig.~\ref{fig:robot_game_grid}.
 \paragraph{Roborta vs. la Luz fair.}
-Consideramos tres variantes del caso de estudio: versión A (la luz no falla), versión B (la luz solo puede fallar cuando intenta dar una luz verde) y versión C (la luz puede fallar cuando intenta señalar cualquier tipo de luz).
-Asumimos que, cuando Roborta falla, no puede moverse (esto es beneficioso para Roborta ya que puede recuperar la recompensa);
+Consideramos tres variantes del caso de estudio: versión A (la luz no falla), versión B (la luz solo puede fallar cuando intenta dar una luz verde) y versión C (la luz puede fallar cuando intenta activar cualquier tipo de luz).
+Asumimos que, cuando Roborta falla, esta no puede moverse (esto es beneficioso para Roborta ya que nuevamente puede recolectar la recompensa asignada a esa posición);
 cuando falla la luz, el robot puede moverse libremente en cualquier dirección permitida.
-La configuración de la matriz (restricciones de movimiento y recompensas) se genera aleatoriamente. Para cada configuración, la Tabla~\ref{table:resultsRobot} describe los resultados para tres escenarios diferentes generados a partir de semillas diferentes. La primera columna describe el tamaño de la matriz. La segunda columna indica la probabilidad de fallo del robot ($P$) y la luz ($Q$).
+La configuración de la matriz (restricciones de movimiento y recompensas) se genera aleatoriamente. Para cada configuración, la Tabla~\ref{table:resultsRobot} describe los resultados para tres escenarios diferentes generados a partir de semillas diferentes. La primera columna describe el tamaño de la matriz. La segunda columna indica la probabilidad de falla del robot ($P$) y la luz ($Q$).
 Las otras columnas describen el tamaño del modelo, la recompensa total esperada para la estrategia óptima y el número de iteraciones realizadas, respectivamente para tres configuraciones diferentes generadas aleatoriamente.
 Para la configuración de matriz que se muestra en Sección~\ref{sec:mot_example_fair} con parámetros $P=0.1$ y $Q=0$, la herramienta derivó la estrategia óptima representada en la Figura~\ref{fig:robot_game_grid} e informa una recompensa total esperada de $5.55$.
 
@@ -34,12 +34,13 @@ Para la configuración de matriz que se muestra en Sección~\ref{sec:mot_example
   \centering\noindent%
   %\vspace{-0.5cm}
   %\vspace{-0.8cm}
-  \scalebox{0.7}{
+  \scalebox{0.72}{
     \small
-    \begin{tabular}{|c|c|c|c|c|c|g|h|c|g|h|c|}
-      \hline
-      \multirow{2}{*}{Versión} & \multicolumn{2}{c|}{Prob.Falla} & \multicolumn{3}{c|}{Tamaño (Estados/Transiciones)} & \multicolumn{3}{c|}{Rec.\ Total.\ Esp. Opt.} & \multicolumn{3}{c|}{Iteraciones}\\ \hhline{|~|-|-|-|-|-|-|-|-|-|-|-|}
-      & $P$ & $Q$ &  \cellcolor{white}s.\ 1 & \cellcolor{white}s.\ 2 & \cellcolor{white}s.\ 3 & \cellcolor{white}\makebox[3.4em][c]{s.\ 1} & \cellcolor{white}\makebox[3.4em][c]{s.\ 2} & \cellcolor{white}\makebox[3.4em][c]{s.\ 3} & \cellcolor{white}\makebox[1.8em][c]{s.\ 1} & \cellcolor{white}\makebox[1.8em][c]{s.\ 2} & \cellcolor{white}\makebox[1.8em][c]{s.\ 3}  \\  
+    \renewcommand{\arraystretch}{1.5}%
+    \begin{tabular}{c|c|c|c|c|c|c|c|c|c|c|c}
+      
+      \multirow{2}{*}{Versión} & \multicolumn{2}{c|}{Prob.Falla} & \multicolumn{3}{c|}{Tamaño (Estados/Transiciones)} & \multicolumn{3}{c|}{Rec.\ Total.\ Esp. Opt.} & \multicolumn{3}{c}{Iteraciones}\\ \hhline{|~|-|-|-|-|-|-|-|-|-|-|-|}
+      & $P$ & $Q$ &  s.\ 1 & s.\ 2 & s.\ 3 & \makebox[3.4em][c]{s.\ 1} & \makebox[3.4em][c]{s.\ 2} & \makebox[3.4em][c]{s.\ 3} & \makebox[1.8em][c]{s.\ 1} & \makebox[1.8em][c]{s.\ 2} & \makebox[1.8em][c]{s.\ 3}  \\  
       \hline
        \multirow{2}{3em}{\centering $A$ \\ $60{\times}8$}
        & $0.1$ & $-$ & \multirow{2}{*}{\centering $\displaystyle \begin{array}{c} \text{st. }1448 \\ \text{tr. }3220 \end{array}$} & \multirow{2}{*}{\centering $\displaystyle \begin{array}{c} \text{st. }1418 \\ \text{tr. }3112 \end{array}$}  & \multirow{2}{*}{\centering $\displaystyle \begin{array}{c} \text{st. }1421 \\ \text{tr. }3132 \end{array}$}  & $26.66$ & $31.11$ & $27.77$ & $711$ & $681$ & $252$\\ \hhline{|~|-|-|~|~|~|-|-|-|-|-|-|}
@@ -88,33 +89,53 @@ Para la configuración de matriz que se muestra en Sección~\ref{sec:mot_example
 %\vspace{-11mm}
 %\fontsize{6.6}{6.6}\selectfont\ttfamily
 \centering
-\includegraphics[scale=0.80]{Figs/uav.eps}
+\scalebox{1.0}{
+  \begin{tikzpicture}[on grid,auto,align at top]
+    \node[draw,fill=white,circle,thick,align=center,inner sep=3pt,minimum size=7mm] (v0)                   {$w_0(1,1,1)$};
+    \node[draw,fill=pink,circle,thick,align=center,inner sep=3pt,minimum size=7mm] (v1) [right=3 of v0]                  {$w_1(1,3,3)$};
+    \node[draw,fill=white,circle,thick,align=center,inner sep=3pt,minimum size=7mm] (v2) [above=2 of v1]                   {$w_2(1,1,1)$};
+    \node[draw,fill=white,circle,thick,align=center,inner sep=3pt,minimum size=7mm] (v3) [above=2 of v2]                  {$w_3(1,1,1)$};
+    \node[draw,fill=pink,circle,thick,align=center,inner sep=3pt,minimum size=7mm] (v4) [left=3 of v3]                  {$w_4(1,1,2)$};
+    \node[draw,fill=pink,circle,thick,align=center,inner sep=3pt,minimum size=7mm] (v5) [above=2 of v0]              {$w_5(1,4,4)$};
+    
+    \draw (v0) -- (v1);
+    \draw (v1) -- (v2);
+    \draw (v2) -- (v3);
+    \draw (v3) -- (v4);
+    \draw (v4) -- (v5);
+    \draw (v4) -- (v1);
+    \draw[red,dashed] (v5) -- (v1);
+    \draw (v5) -- (v0);
+  \end{tikzpicture}
+  }
+%\includegraphics[scale=0.80]{Figs/uav.eps}
 %\vspace{-10mm}
 \caption{Red UAV para misiones ISR} \label{fig:uav_game_map}
 %\caption{A robot game on a $4 \times 4$ grid starting on location (0,0). Each location has an assigned positive reward. The sideway movement restrictions are depicted as white arrows on the bottom-right of each location. The best strategy for the robot when the light is yellow is shown in black arrows on the top-right of the locations without movement restrictions. The path taken by the robot to achieve the goal is highlighted in yellow} \label{fig:robot_game_grid}
 \end{figure}
 %
-\paragraph{UAV autónomo vs. Operador humano.} Adaptamos el caso de estudio analizado en \cite{DBLP:conf/iccps/FengWHT15}. Se utiliza un vehículo aéreo no tripulado (UAV) controlado a distancia para realizar misiones de inteligencia, vigilancia y reconocimiento (ISR) en una red de carreteras. El UAV realiza funciones de pilotaje de forma autónoma (seleccionando una ruta para volar entre \emph{puntos de referencia}). El operador humano (entorno) controla el sensor a bordo para capturar imágenes en un punto de ruta, así como las funciones de pilotaje en ciertos puntos de ruta (llamados puntos de control). Tenga en cuenta que un operador puede tratar continuamente de obtener una mejor imagen haciendo que el UAV merodee alrededor de un determinado punto de referencia, lo que puede conducir a un comportamiento infair.
+\paragraph{UAV autónomo vs. Operador humano.} Adaptamos el caso de estudio analizado en \cite{DBLP:conf/iccps/FengWHT15}. Se utiliza un vehículo aéreo no tripulado (UAV) controlado a distancia para realizar misiones de inteligencia, vigilancia y reconocimiento (ISR) en una red de carreteras. El UAV realiza funciones de pilotaje de forma autónoma (seleccionando una ruta para volar entre \emph{puntos de referencia}). El operador humano (entorno) controla el sensor a bordo para capturar imágenes en un punto de referencia, así como las funciones de pilotaje en ciertos puntos de referencia (llamados puntos de control). Tengamos en cuenta que un operador puede tratar continuamente de obtener una mejor imagen haciendo que el UAV merodee alrededor de un determinado punto de referencia, lo que puede conducir a un comportamiento unfair.
 %Asignamos recompensas a una captura exitosa de un waypoint no visitado.
 Cada captura exitosa de un punto de referencia no visitado otorga una recompensa.
 
 %
-La Figura~\ref{fig:uav_game_map} muestra un ejemplo de red de carreteras que consta de seis puntos de referencia de vigilancia etiquetados $w_0,w_2,...,w_5$, los bordes representan rutas de conexión, una línea discontinua roja significa que la ruta es lo suficientemente peligrosa como para hacer que el UAV deje de funcionar con una probabilidad de $1$, mientras que en cualquier otro camino, esta probabilidad es de $S$. Los puntos de control se representan como nodos rosas, en los que el operador aún puede delegar la tarea de pilotaje al UAV con probabilidad $D$. Cada nodo está anotado con tres posibles recompensas. Por ejemplo, para $S=0.3$ y $D=0.5$ y los valores de recompensa más a la izquierda en cada terna, la estrategia sintetizada para el UAV intenta seguir el circuito óptimo $w_0,w_1,w_2,w_3,w_4,w_5$. Mientras que para los valores de recompensa del medio y más a la derecha, los circuitos óptimos a seguir son $w_0,w_5,w_0,w_1,w_2,w_3,w_4$ y $w_0,w_5,w_4,w_1,w_2,w_3$, respectivamente. 
+La Figura~\ref{fig:uav_game_map} muestra un ejemplo de red de carreteras que consta de seis puntos de referencia de vigilancia etiquetados $w_0,w_2,...,w_5$, los arcos representan rutas de conexión, una línea discontinua roja significa que la ruta es lo suficientemente peligrosa como para hacer que el UAV deje de funcionar con una probabilidad de $1$, mientras que en cualquier otro camino, esta probabilidad es de $S$. Los puntos de control se representan como nodos rosas, en los que el operador aún puede delegar la tarea de pilotaje al UAV con probabilidad $D$. Cada nodo está anotado con tres posibles recompensas. Por ejemplo, para $S=0.3$ y $D=0.5$ y los valores de recompensa más a la izquierda en cada terna, la estrategia sintetizada para el UAV intenta seguir el circuito óptimo $w_0,w_1,w_2,w_3,w_4,w_5$. Mientras que para los valores de recompensa del medio y más a la derecha, los circuitos óptimos a seguir son $w_0,w_5,w_0,w_1,w_2,w_3,w_4$ y $w_0,w_5,w_4,w_1,w_2,w_3$, respectivamente. 
 La Tabla~\ref{table:resultsUAV} muestra los resultados obtenidos para este juego para varias redes de carreteras generadas aleatoriamente. La primera columna describe el número de puntos de referencia utilizados. La segunda columna indica la probabilidad de delegación ($D$) y la probabilidad de que el UAV deje de funcionar ($S$).
 Las otras columnas muestran el tamaño del modelo, la recompensa total esperada para la estrategia óptima y el número de iteraciones realizadas, respectivamente, para tres configuraciones diferentes de mapas de ruta generadas aleatoriamente.
 
 Las tablas~\ref{table:resultsRobot} y~\ref{table:resultsUAV} no informan el tiempo necesario para calcular los resultados, pero en todos los casos la salida se calculó en menos de 400 segundos. Todos los experimentos se realizaron en un MacBook Air con Intel Core i5 a 1,3 GHz y 4 GB de RAM. Tanto la herramienta como los casos de estudio se encuentran disponibles en un repositorio github~\cite{FairPrism}.
 
-\begin{table}[h]
+\begin{table}[ht]
   \centering\noindent%
   %\vspace{-0.5cm}
   %\vspace{-0.8cm}
-  \scalebox{0.7}{
+  \scalebox{0.72}{
     \small
-    \begin{tabular}{|c|c|c|c|c|c|g|h|c|g|h|c|}
-      \hline
-      \multirow{2}{*}{Versión} & \multicolumn{2}{c|}{Prob.} & \multicolumn{3}{c|}{Tamaño(Estados/Transiciones)} & \multicolumn{3}{c|}{Rec.\ Total.\ Esp. Opt.} & \multicolumn{3}{c|}{Iteraciones} \\ \hhline{|~|-|-|-|-|-|-|-|-|-|-|-|}
-      & $D$ & $S$ &  \cellcolor{white}s.\ 1 & \cellcolor{white}s.\ 2 & \cellcolor{white}s.\ 3 & \cellcolor{white}\makebox[3.4em][c]{s.\ 1} & \cellcolor{white}\makebox[3.4em][c]{s.\ 2} & \cellcolor{white}\makebox[3.4em][c]{s.\ 3} & \cellcolor{white}\makebox[1.8em][c]{s.\ 1} & \cellcolor{white}\makebox[1.8em][c]{s.\ 2} & \cellcolor{white}\makebox[1.8em][c]{s.\ 3} \\  
+    \renewcommand{\arraystretch}{1.5}%
+    \begin{tabular}{c|c|c|c|c|c|c|c|c|c|c|c}
+      
+      \multirow{2}{*}{Versión} & \multicolumn{2}{c|}{Prob.} & \multicolumn{3}{c|}{Tamaño(Estados/Transiciones)} & \multicolumn{3}{c|}{Rec.\ Total.\ Esp. Opt.} & \multicolumn{3}{c}{Iteraciones} \\ \hhline{|~|-|-|-|-|-|-|-|-|-|-|-|}
+      & $D$ & $S$ & s.\ 1 & s.\ 2 & s.\ 3 & {s.\ 1} & {s.\ 2} & {s.\ 3} & {s.\ 1} & {s.\ 2} & {s.\ 3} \\  
       \hline
        \multirow{4}{3em}{\centering UAV \\ $6w.$}
        & \multirow{2}{*}{$0.1$} & $0.05$ & \multirow{4}{*}{\centering $\displaystyle \begin{array}{c} \text{st. }213 \\ \text{tr. }504 \end{array}$} & \multirow{4}{*}{\centering $\displaystyle \begin{array}{c} \text{st. }508 \\ \text{tr. }1368 \end{array}$} & \multirow{4}{*}{\centering $\displaystyle \begin{array}{c} \text{st. }136 \\ \text{tr. }312 \end{array}$} & $16.72$ & $12.47$ & $13.14$ & $142$ & $248$ & $22$ \\ \hhline{|~|~|-|~|~|~|-|-|-|-|-|-|}

@@ -1,20 +1,21 @@
+% DEPRECATED FILE
 \section{MaskD: Una Herramienta para Medir Masking-Tolerancia a Fallas}
 \label{sec:maskD}
 
 En esta sección presentamos {\MaskD}, una herramienta automática diseñada para medir el nivel de tolerancia a fallas entre componentes de software, 
 descritos por medio de un lenguaje de comandos con guardas.
-La herramienta se enfoca en medir componentes masking-tolerantes a fallas, es decir, programas que enmascaran fallas de tal manera que no puedan ser observadas por el ambiente. Usualmente se lo clasifica como el el tipo de tolerancia mas beneficioso y es a su vez una propiedad altamente deseable para sistemas críticos. 
-La herramienta toma como entrada un modelo nominal y un modelo de su implementación tolerante a fallas y computa automáticamente la distancia de masking entre ellos. 
+La herramienta se enfoca en medir componentes tolerantes a fallas de tipo enmascarante, es decir, programas que enmascaran fallas de tal manera que no puedan ser observadas por el ambiente. Usualmente se lo clasifica como el el tipo de tolerancia mas beneficioso y es a su vez una propiedad altamente deseable para sistemas críticos. 
+La herramienta toma como entrada un modelo nominal y un modelo de su implementación tolerante a fallas y computa automáticamente la distancia de enmascaramiento entre ellos. 
 
-La herramienta está diseñada para darle soporte a ingenieros de software para el análisis y diseño de sistemas tolerantes a fallas. Más precisamente, utiliza una función de distancia de masking de tal forma que el ingeniero pueda medir la masking-tolerancia de una implementación tolerante a fallas dada, i.e., la cantidad de fallas que la implementación es capaz de enmascarar en el peor caso posible. 
-Por lo tanto, los ingenieros pueden medir y comparar la distancia de masking-tolerancia a fallas entre distintas implementaciones y el modelo nominal, y así seleccionar la implementación que mejor se adapte a sus preferencias.
+La herramienta está diseñada para darle soporte a ingenieros de software para el análisis y diseño de sistemas tolerantes a fallas. Más precisamente, utiliza una función de distancia de enmascaramiento de tal forma que el ingeniero pueda medir la tolerancia enmascarante de una implementación tolerante a fallas dada, es decir, la cantidad de fallas que la implementación es capaz de enmascarar en el peor caso posible. 
+Por lo tanto, los ingenieros pueden medir y comparar la distancia de tolerancia a fallas enmascarante entre distintas implementaciones y el modelo nominal, y así seleccionar la implementación que mejor se adapte a sus preferencias.
 
 \subsection{La Herramienta} \label{sec:mask_sec}
 
-\MaskD~toma como entrada un modelo nominal y su implementación tolerante a fallas, y produce como salida la distancia de masking entre ellos, la cual es un valor en el intervalo $[0,1]$.
+\MaskD~toma como entrada un modelo nominal y su implementación tolerante a fallas, y produce como salida la distancia de enmascaramiento entre ellos, la cual es un valor en el intervalo $[0,1]$.
 Los modelos de entrada se describen utilizando el lenguaje de comandos con guardas introducido en \cite{AroraGouda93}, un lenguaje de programación simple para describir algoritmos tolerantes a fallas.
 Mas precisamente, un programa descrito en este lenguaje es una colección de procesos, donde cada proceso esta compuesto por una colección de acciones etiquetadas del estilo: $[Label]~Guard \rightarrow Command$, donde $Guard$ es una condición lógica sobre el estado actual del programa, $Command$ es una colección de asignaciones básicas que se ejecutan simultáneamente, y $Label$ es un nombre para la acción.
-Estas construcciones sintácticas se denominan acciones. El lenguaje también permite a los usuarios etiquetar una acción como \emph{internal} (i.e., acciones silenciosas). Esto es importante para abstraerse de los mecanismos internos de el sistema que se modela y permitir construir modelos mas complejos. Además, algunas acciones pueden ser etiquetadas como \emph{faulty} para indicar que representan fallas. 
+Estas construcciones sintácticas se denominan acciones. El lenguaje también permite a los usuarios etiquetar una acción como \emph{internal} (es decir, acciones silenciosas). Esto es importante para abstraerse de los mecanismos internos de el sistema que se modela y permitir construir modelos mas complejos. Además, algunas acciones pueden ser etiquetadas como \emph{faulty} para indicar que representan fallas. 
 
 \begin{figure}[t]
 \centering
@@ -94,20 +95,19 @@ Las figuras \ref{fig:exam_1_mem_cell_nominal} y \ref{fig:exam_1_mem_cell_faulty}
 \begin{description}
     \item[Módulo Parser.] Realiza análisis sintáctico básico sobre los modelos de entrada y produce estructuras de datos que representan a  estas entradas. Para esto se utilizan las bibliotecas \textsf{Cup} y 
     \textsf{JFlex} para generar automáticamente el parser a partir de la gramática que describe el lenguaje de modelado.
-    \item[Traducción a LTS.] Los modelos obtenidos del parser son traducidos a Sistemas de Transición Etiquetados (LTSs), i.e., 
+    \item[Traducción a LTS.] Los modelos obtenidos del parser son traducidos a Sistemas de Transición Etiquetados (LTS), es decir, 
     grafos donde los vértices representan estados del programa y donde las transiciones mantienen información sobre las acciones de los modelos. 
-    \item[Saturación de Transiciones Silenciosas.] Las transiciones internas/silenciosas en los LTSs que representan los modelos de entrada son saturadas utilizando algoritmos estándar que provienen de teoría sobre álgebras de procesos \cite{Milner89}. Como resultado, se generan LTSs saturados, estos son necesarios para verificar la relación de masking cuando existen transiciones internas.
-    \item[Generación del Grafo de Juego.] Utiliza los LTSs saturados para producir un grafo de juego. Los nodos en este grafo codifican la configuración corriente del juego: 
-    el próximo jugador que debe jugar, la ultima acción jugada, y referencias a los estados de los LTSs de los modelos de entrada que se corresponden con la configuración actual del juego. 
-    Las transiciones en este grafo corresponden a las posibles jugadas para los jugadores, i.e.,  transiciones en los LTSs originales.
+    \item[Saturación de Transiciones Silenciosas.] Las transiciones internas/silenciosas en los LTS que representan los modelos de entrada son saturadas utilizando algoritmos estándar que provienen de teoría sobre álgebras de procesos \cite{Milner89}. Como resultado, se generan LTS saturados, estos son necesarios para verificar la relación de enmascaramiento cuando existen transiciones internas.
+    \item[Generación del Grafo de Juego.] Utiliza los LTS saturados para producir un grafo de juego. Los nodos en este grafo codifican la configuración corriente del juego: 
+    el próximo jugador que debe jugar, la ultima acción jugada, y referencias a los estados de los LTS de los modelos de entrada que se corresponden con la configuración actual del juego. 
+    Las transiciones en este grafo corresponden a las posibles jugadas para los jugadores, es decir,  transiciones en los LTS originales.
     \item[Algoritmo de Camino mas Corto.] Si los modelos de entrada son deterministas en las etiquetas de sus acciones, el algoritmo de camino mas corto de Dial es utilizado para obtener el camino mas corto hacia el estado de error, desde el cual se calcula el valor final.
-    \item[Algoritmo de Punto Fijo.] Este es el algoritmo por defecto, funciona tanto para modelos deterministas como no deterministas en las etiquetas de sus acciones, utiliza una búsqueda de estilo bottom-up breadth-first para computar el valor del juego. 
+    \item[Algoritmo de Punto Fijo.] Este es el algoritmo por defecto, funciona tanto para modelos deterministas como no deterministas en las etiquetas de sus acciones, utiliza una búsqueda de estilo \textit{bottom-up breadth-first} para computar el valor del juego. 
     Este algoritmo se basa en algoritmos conocidos para resolver juegos de alcanzabilidad que utilizan conjuntos \emph{atractores} \cite{Jurd11}. 
     %This algorithm is polynomial in the game graph size.
 \end{description}
-Como se ha explicado mas arriba, un punto interesante sobre la herramienta es que, para sistemas deterministas en sus acciones, la distancia de masking entre dos sistemas puede ser computada recurriendo al algoritmo de camino mas corto de Dial \cite{Dial69}, el cual tiene complejidad lineal con respecto al tamaño de los grafos utilizados para representar los sistemas.
-En el caso de los sistemas no deterministas, se necesita un recorrido del estilo 
-breadth-first con punto fijo, lo cual hace que el algoritmo sea menos eficiente. Sin embargo, aun en este caso sigue siendo polinomial. 
+Como se ha explicado mas arriba, un punto interesante sobre la herramienta es que, para sistemas deterministas en sus acciones, la distancia de enmascaramiento entre dos sistemas puede ser computada recurriendo al algoritmo de camino mas corto de Dial \cite{Dial69}, el cual tiene complejidad lineal con respecto al tamaño de los grafos utilizados para representar los sistemas.
+En el caso de los sistemas no deterministas, se necesita un recorrido con punto fijo, lo cual hace que el algoritmo sea menos eficiente. Sin embargo, aun en este caso sigue siendo polinomial. 
 
 %TODO: draw architecture and explain
 
@@ -115,8 +115,8 @@ breadth-first con punto fijo, lo cual hace que el algoritmo sea menos eficiente.
 %we start characterizing masking fault-tolerance via simulation relations between 
 %two systems as defined in \cite{DemasiCMA17}. 
 %The first one acting as a specification 
-%of the intended behavior (i.e., nominal model) and the 
-%second one as the fault-tolerant implementation (i.e., the extended model with 
+%of the intended behavior (es decir, nominal model) and the 
+%second one as the fault-tolerant implementation (es decir, the extended model with 
 %faulty behavior).
 %The existence of a masking relation implies that the implementation masks the faults.
 %Afterwards, we introduce a game characterization of 
@@ -135,9 +135,9 @@ El comando estándar para ejecutar {\MaskD} en un sistema operativo de estilo Un
 \\
 En este caso la herramienta arroja como resultado la distancia de masking entre la especificación y la implementación utilizando el algoritmo por defecto (algoritmo de punto fijo).
 Algunos comandos opcionales incluyen: \verb"-t: print error trace", el cual muestra por salida estándar una traza hasta el estado de error bajo estrategias óptimas; y  \verb"-s: start simulation", el cual comienza una simulación manual desde el estado inicial.  
-Obtener un camino hacia el estado de error es una funcionalidad útil para encontrar defectos en las descripciones de programas, los cuales pueden fallar por razones no intencionales. A su vez la traza sirve para ver como se comportan las estrategias óptimas de los jugadores. Una traza para el ejemplo de la celda de memoria se muestra en la figura~\ref{fig:trace_mem_cell}. Los estados se muestran en el formato \verb"{spec_state, last_action_played, imp_state, player_turn}", donde \verb"spec_state" es el estado corriente del modelo nominal, \verb"last_action_played" es la última acción que se jugó (solo es relevante para estados del Verificador), \verb"imp_state" es el estado del modelo que representa a la implementación y \verb"player_turn" es el jugador cuyo turno corresponde jugar. En este caso, después de dos fallas (bits que cambian de valor sin que haya una escritura), al luego realizar una lectura, nos lleva al estado de error ya que en el modelo nominal el valor de la celda es $0$, mientras que el el modelo tolerante a fallas el valor leído en la mayoría (votación) de bits es $1$. Por otro lado, la funcionalidad de simulación permite al usuario seleccionar manualmente las acciones disponibles en cada punto del juego de masking, lo cual también es útil para verificar que los modelos se comportan como el usuario espera.
-Por defecto, \MaskD~computa la distancia de masking para una entrada dada utilizando el algoritmo para sistemas no deterministas. 
-El usuario puede utilizar la opción \verb"-det" para cambiar al algoritmo de distancia de masking para sistemas deterministas.
+Obtener un camino hacia el estado de error es una funcionalidad útil para encontrar defectos en las descripciones de programas, los cuales pueden fallar por razones no intencionales. A su vez la traza sirve para ver como se comportan las estrategias óptimas de los jugadores. Una traza para el ejemplo de la celda de memoria se muestra en la figura~\ref{fig:trace_mem_cell}. Los estados se muestran en el formato \verb"{spec_state, last_action_played, imp_state, player_turn}", donde \verb"spec_state" es el estado corriente del modelo nominal, \verb"last_action_played" es la última acción que se jugó (solo es relevante para estados del Verificador), \verb"imp_state" es el estado del modelo que representa a la implementación y \verb"player_turn" es el jugador cuyo turno corresponde jugar. En este caso, después de dos fallas (bits que cambian de valor sin que haya una escritura), al luego realizar una lectura, nos lleva al estado de error ya que en el modelo nominal el valor de la celda es $0$, mientras que el el modelo tolerante a fallas el valor leído en la mayoría (votación) de bits es $1$. Por otro lado, la funcionalidad de simulación permite al usuario seleccionar manualmente las acciones disponibles en cada punto del juego de enmascaramiento, lo cual también es útil para verificar que los modelos se comportan como el usuario espera.
+Por defecto, \MaskD~computa la distancia de enmascaramiento para una entrada dada utilizando el algoritmo para sistemas no deterministas. 
+El usuario puede utilizar la opción \verb"-det" para cambiar al algoritmo de distancia de enmascaramiento para sistemas deterministas.
 \begin{figure}[t]
 \centering
 \begin{minipage}[t]{.47\textwidth}
@@ -164,12 +164,12 @@ El usuario puede utilizar la opción \verb"-det" para cambiar al algoritmo de di
 %\MaskD~ toma como entrada un modelo nominal y su implementación tolerante a fallas, 
 %y produce como salida la distancia de masking entre ellos. 
 %Los modelos son especificados utilizando el lenguaje de guardas introducido en \cite{AroraGouda93}, un lenguaje de programación simple comúnmente utilizado para describir algoritmos tolerantes a fallas.
-%Mas precisamente, un programa es una colección de procesos, donde cada proceso está compuesto de una colección de acciones del estilo: $Guard \rightarrow Command$, donde $Guard$ es una condición lógica sobre el estado actual del programa y $Command$ es una colección de asignaciones básicas. Estas construcciones sintácticas se denominan acciones. El lenguaje también permite al usuario etiquetar una acción como interna (i.e., acciones $\tau$). Además, lagunas acciones pueden representar fallas en el sistema.
+%Mas precisamente, un programa es una colección de procesos, donde cada proceso está compuesto de una colección de acciones del estilo: $Guard \rightarrow Command$, donde $Guard$ es una condición lógica sobre el estado actual del programa y $Command$ es una colección de asignaciones básicas. Estas construcciones sintácticas se denominan acciones. El lenguaje también permite al usuario etiquetar una acción como interna (es decir, acciones $\tau$). Además, lagunas acciones pueden representar fallas en el sistema.
 %La herramienta posee varias funcionalidades extra como por ejemplo mostrar trazas hacia el estado de error o iniciar una simulación desde el estado inicial.
 
 En la Tabla~\ref{table:results} reportamos los resultados de la distancia de masking para múltiples instancias de varios casos de estudio. Estos incluyen: una Celda de Memoria Redundante (nuestro ejemplo motivador), Redundancia N-Modular (un ejemplo estándar de sistemas tolerantes a fallas \cite{ShoomanBook}), una variación del problema de los Filósofos Comensales \cite{Dijkstra71}, el problema de los Generales Bizantinos introducido por Lamport et al. \cite{LamportSP82}, una prueba de consistencia de parte del algoritmo de consenso Raft \cite{OngaroO14}, y el Protocolo de Retransmisión Acotada (un ejemplo bien conocido de un protocolo tolerante a fallas \cite{GrooteP96}). Todos los casos de estudio han sido evaluados utilizando los algoritmos para juegos deterministas y no deterministas (columnas ``Tiempo'' y ``Tiempo(Det)'', respectivamente), con la excepción de los modelos netamente no deterministas (por ejemplo, el problema de los Generales Bizantinos y el Protocolo de Retransmisión Acotada). Es de destacar que la complejidad computacional yace principalmente en la construcción explícita del grafo de juego y no del cálculo de la distancia de masking en si.
 
-A continuación se da una interpretación de los resultados experimentales. Para el caso de una memoria redundante de $3$ bits, la distancia de masking es $0.333$. El principal motivo de esto es que el modelo con fallas, en el peor caso, solo es capaz de enmascarar $2$ fallas (en este ejemplo, una falla representa un cambio inesperado en el valor de un bit, posiblemente por una descarga) antes de fracasar al tratar de replicar el comportamiento del modelo nominal (i.e. leer el valor votado por la mayoría). Por lo tanto, el resultado viene de la definición de distancia de masking y de tener en cuenta la ocurrencia de dos fallas. La situación es similar para otras instancias de este problema con mas redundancia de bits.
+A continuación se da una interpretación de los resultados experimentales. Para el caso de una memoria redundante de $3$ bits, la distancia de masking es $0.333$. El principal motivo de esto es que el modelo con fallas, en el peor caso, solo es capaz de enmascarar $2$ fallas (en este ejemplo, una falla representa un cambio inesperado en el valor de un bit, posiblemente por una descarga) antes de fracasar al tratar de replicar el comportamiento del modelo nominal (es decir leer el valor votado por la mayoría). Por lo tanto, el resultado viene de la definición de distancia de masking y de tener en cuenta la ocurrencia de dos fallas. La situación es similar para otras instancias de este problema con mas redundancia de bits.
 
 La Redundancia N-Modular consiste de N sistemas, los cuales desarrollan una tarea o proceso y que los resultados son procesados por un sistema de votación de mayoría para producir una única salida. 
 Asumiendo un único votante perfecto, hemos evaluado este caso de estudio para diferentes cantidades de módulos.

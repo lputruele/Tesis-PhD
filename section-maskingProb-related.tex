@@ -3,19 +3,19 @@
 
 %\section{Related Work} \label{sec:related_work}
 %\paragraph{Related Work.}
-Los juegos introducidos en \cite{Bacci0LM17,BacciBLMTB19,DesharnaisGJP04,DesharnaisLT11}  están basados en la noción de bisimulación probabilista, por lo que son simétricos. Además, en \cite{DesharnaisGJP04,DesharnaisLT11}, los vértices son modelados utilizando subconjuntos de estados de PTS's, 
-observemos que nuestros juegos no utilizan subconjuntos de estados. Los juegos definidos en  \cite{Bacci0LM17,BacciBLMTB19} utilizan los \textit{liftings} de Kantorovich y Hausdorff para lidiar con distribuciones probabilistas y no-determinismo, respectivamente; mientras que los vértices de los politopos de transportación son utilizados como vértices probabilistas. En contraste, introducimos una representación simbólica de juegos para evadir la explosión de estados causada por los vértices del politopo. También notemos que las métricas introducidas en \cite{Bacci0LM17,BacciBLMTB19} miden la distancia de bisimulación (probabilista) entre PTSs, la cual es siempre $1$ para sistemas almost-sure failing.
+Los juegos introducidos en \cite{Bacci0LM17,BacciBLMTB19,DesharnaisGJP04,DesharnaisLT11}  están basados en la noción de bisimulación probabilista, por lo que son simétricos. Además, en \cite{DesharnaisGJP04,DesharnaisLT11}, los vértices son modelados utilizando subconjuntos de estados de sistemas de transición probabilistas, 
+observemos que nuestros juegos no utilizan subconjuntos de estados. Los juegos definidos en  \cite{Bacci0LM17,BacciBLMTB19} utilizan los \textit{liftings} de Kantorovich y Hausdorff para lidiar con distribuciones probabilistas y no-determinismo, respectivamente; mientras que los vértices de los politopos de transportación son utilizados como vértices probabilistas. En contraste, introducimos una representación simbólica de juegos para evadir la explosión de estados causada por los vértices del politopo. También notemos que las métricas introducidas en \cite{Bacci0LM17,BacciBLMTB19} miden la distancia de bisimulación (probabilista) entre sistemas de transición probabilistas, la cual es siempre $1$ para sistemas casi-seguro terminantes.
 		
 %% In \cite{LanotteMT17}, the authors introduce a notion of weak simulation quasimetric tailored for reasoning about the evolution of \emph{gossip protocols} in order to compare network protocols that have similar behaviour up to a certain tolerance; being $0$ and $1$ the minimum and maximum distance, respectively.
 %% Note that using this quasimetric to compare a network protocol with an almost-sure failing implementation will always return $1$, thus that approach cannot be used to quantify the masking fault-tolerance of almost-sure failing systems.
 %
 \cite{LanotteMT17}~introduce una simulación débil quasi-simétrica para razonar sobre la evolución de los \emph{ protocolos gossip} para poder comparar protocolos de comportamiento similar hasta una cierta tolerancia.
-Sin embargo, a la hora de comparar un protocolo de red con una implementación almost-sure failing, esta quasi-métrica siempre retorna $1$ (la máxima distancia) y por lo tanto, no puede cuantificar la masking-tolerancia a fallas de la misma forma que en el trabajo presentado aquí.
+Sin embargo, a la hora de comparar un protocolo de red con una implementación casi-seguro terminante, esta quasi-métrica siempre retorna $1$ (la máxima distancia) y por lo tanto, no puede cuantificar la tolerancia a fallas enmascarante de la misma forma que en el trabajo presentado aquí.
 
 
 Las métricas como \emph{Mean-Time To Failure} (MTTF)~\cite{ReliabilityBook}  pueden aplicar para los ejemplos de la Sección~\ref{sec:experimental_eval_prob}.
 %%Our framework is more general than such metrics. Indeed, we do not necessarily have to count time
-Sin embargo, nuestro framework es más general que tales métricas ya que no se limita a contar unidades de tiempo, otros eventos pueden ser considerados hitos.  Adicionalmente, el cómputo de MTTF normalmente requiere que se identifiquen los estados de falla de manera ad hoc, mientras que las técnicas presentadas aquí nos permiten hacer esto en un nivel de abstracción más alto.
+Sin embargo, nuestro \textit{framework} es más general que tales métricas ya que no se limita a contar unidades de tiempo, otros eventos pueden ser considerados hitos.  Adicionalmente, el cómputo de MTTF normalmente requiere que se identifiquen los estados de falla de manera ad-hoc, mientras que las técnicas presentadas aquí nos permiten hacer esto en un nivel de abstracción más alto.
  %% level of abstraction: the failure situation appears in the game as a
  %% result of comparing the implementation model against the nominal
  %% model.

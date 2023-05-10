@@ -3,62 +3,66 @@
 La Tabla~\ref{table:resultsMEM} reporta los resultados obtenidos para nuestro ejemplo de la memoria.
 $M_{t}$ y $M_{r}$ son los resultados de medir las acciones de tick y refresh, consideradas como hitos respectivamente.
 
-Algunas palabras son útiles para interpretar los resultados. Notemos que, tanto el incremento de la redundancia, como el aumento de la frecuencia de resfresco, tienen efectos positivos sobre las medidas. En la práctica, estos valores se pueden tener en cuenta a la hora de diseñar un componente tolerante a fallas que provea un balance óptimo entre eficiencia y costos de hardware. Por ejemplo, asumiendo una probabilidad de falla de $0.05$, uno podria preferir $3$ bits y un refresco mas frecuente, por sobre $5$ bits con menos refrescado,a pesar del overhead de software.
+Algunas palabras son útiles para interpretar los resultados. Notemos que, tanto el incremento de la redundancia, como el aumento de la frecuencia de resfrescado, tienen efectos positivos sobre las medidas. En la práctica, estos valores se pueden tener en cuenta a la hora de diseñar un componente tolerante a fallas que provea un balance óptimo entre eficiencia y costos de hardware. Por ejemplo, asumiendo una probabilidad de falla de $0.05$, uno podría preferir $3$ bits y un refresco mas frecuente, por sobre $5$ bits con menos refrescado, a pesar del \emph{overhead} de software.
 
 
 \begin{table}
   \centering
   \scalebox{0.7}{
-    \begin{tabular}{c!{\ }c!{\ }|>{\ \,}c!{\ }c!{\ }|!{\ }c!{\ }c!{\ }|!{\ }c!{\ }c}
+    \begin{tabular}{c!{}c!{}|>{\ \,}c!{\ }c!{\ }|!{\ }c!{\ }c!{\ }|!{\ }c!{\ }c}%!{\ }|!{\ }c!{\ }c}
       %% & & \makebox[2.5em][l]{3 bits redund.} & & \makebox[2.5em][l]{5 bits redund.} & & \makebox[2.5em][l]{7 bits redund.} & \\ \hline
       %% Fault & Refresh & \multirow{2}{*}{$M_{t}$} & \multirow{2}{*}{$M_{r}$} & \multirow{2}{*}{$M_{t}$} & \multirow{2}{*}{$M_{r}$} & \multirow{2}{*}{$M_{t}$} & \multirow{2}{*}{$M_{r}$}  \\
       %% Prob. &  Prob.  & & & & & &  \\ \hline
-      Prob. & Prob. & \makebox[2.5em][l]{3 redund. bits} & & \makebox[2.5em][l]{5 redund. bits} & & \makebox[2.5em][l]{7 redund. bits} & \\ \cline{3-8}
-      Falla &  Refresh  & $M_{t}$ & $M_{r}$ & $M_{t}$ & $M_{r}$ & $M_{t}$ & $M_{r}$  \\ \hline
+      Prob. & Prob. & \multicolumn{2}{c|!{\ }}{3 bits de redundancia} & \multicolumn{2}{c|!{\ }}{5 bits de  redundancia} & \multicolumn{2}{c}{7 bits de redundancia} \\ \cline{3-8}
+      Falla. &  Refr.  & $M_{t}$ & $T_{M_{t}}$ & $M_{t}$ & $T_{M_{t}}$ & $M_{t}$ & $T_{M_{t}}$ \\ \hline
                   \multirow{3}{*}{$0.5$} 
-                  & $0.5$ & $6$ & $3$
-                          & $14$ & $7$
-                          & $30$ & $15$\\ 
-                  & $0.1$ & $4.4$ & $0.44$
-                          & $7.28$ & $0.73$
-                          & $10.74$ & $1.07$\\
-                  & $0.05$ & $4.2$  & $0.21$
-                           & $6.62$ & $0.33$
-                           & $9.28$ & $0.46$\\ \hline
+                  &  $0.5$ & $6$    & $30\text{s}$ & $14$   & $1\text{m}43\text{s}$ & $30$    & $4\text{m}48\text{s}$ \\ 
+                  &  $0.1$ & $4.44$ & $13\text{s}$ & $7.28$ & $32\text{s}$   & $10.74$ & $1\text{m}4\text{s}$  \\
+                  & $0.05$ & $4.2$  & $11\text{s}$ & $6.62$ & $26\text{s}$   & $9.28$  & $43\text{s}$   \\ \hline
                   \multirow{3}{*}{$0.1$} 
-                  & $0.5$ & $70.01$ & $35$
-                          & $430.44$ & $215.22$
-                          & $2606.16$ & $1303.08$\\ 
-                  & $0.1$ & $30$ & $3$
-                          & $70.01$ & $7$
-                          & $150.04$ & $15$\\ 
-                  & $0.05$ & $25$  & $1.25$
-                           & $47.5$ & $2.37$
-                           & $81.26$ & $4.06$\\ \hline
-                  \multirow{3}{*}{$0.05$} 
-                  & $0.5$ & $240.13$ & $120.07$
-                          & $2676.52$ & $1338.26$
-                          & $31418.29$ & $15709.16$\\ 
-                  & $0.1$ & $80.01$ & $8$
-                          & $260.11$ & $26.01$
-                          & $801.08$ & $80.11$\\ 
-                  & $0.05$ & $60$  & $3$
-                           & $140.03$ & $7$
-                           & $300.13$ & $15.01$\\ \bottomrule
+                  & $0.5$  & $70$  & $4\text{m}21\text{s}$ & $430$  & $29\text{m}24\text{s}$ & $2590.1$ & $162\text{m}27\text{s}$ \\ 
+                  & $0.1$  & $30$  & $1\text{m}22\text{s}$ & $70$   & $4\text{m}23\text{s}$  & $150$    & $13\text{m}58\text{s}$  \\ 
+                  & $0.05$ & $25$  & $1\text{m}3\text{s}$  & $47.5$ & $2\text{m}41\text{s}$  & $81.25$  & $6\text{m}43\text{s}$   \\ \hline
+                  \multirow{3}{*}{$0.05$}
+                  & $0.5$  & $240.02$ & $12\text{m}10\text{s}$ & $2660.1$ & $128\text{m}37\text{s}$ & $29281$  & $68\text{m}49\text{s}$ \\ 
+                  & $0.1$  & $80$     & $30\text{m}31\text{s}$ & $260.01$ & $13\text{m}29\text{s}$  & $800.03$ & $89\text{m}20\text{s}$ \\ 
+                  & $0.05$ & $60$     & $2\text{m}39\text{s}$  & $140$    & $9\text{m}29\text{s}$   & $300$    & $23\text{m}26\text{s}$ \\ \hline
+      \multicolumn{8}{c}{}\\
+      Prob. & Prob. & \multicolumn{2}{c|!{\ }}{3 bits de redundancia} & \multicolumn{2}{c|!{\ }}{5 bits de redundancia} & \multicolumn{2}{c}{7 bits de redundancia} \\ \cline{3-8}
+      Falla &  Refr.  & $M_{r}$ & $T_{M_{r}}$ & $M_{r}$ & $T_{M_{r}}$ & $M_{r}$  & $T_{M_{r}}$ \\ \hline
+                  \multirow{3}{*}{$0.5$} 
+                  & $0.5$  & $3$    & $35\text{s}$ & $7$    & $2\text{m}13\text{s}$ & $15$   & $4\text{m}54\text{s}$\\ 
+                  & $0.1$  & $0.44$ & $14\text{s}$ & $0.72$ & $35\text{s}$   & $1.07$ & $1\text{m}8\text{s}$ \\
+                  & $0.05$ & $0.21$ & $12\text{s}$ & $0.33$ & $27\text{s}$   & $0.46$ & $58\text{s}$  \\ \hline
+                  \multirow{3}{*}{$0.1$} 
+                  & $0.5$  & $35$   & $4\text{m}19\text{s}$ & $215.02$ & $37\text{m}55\text{s}$ & $1295.05$ & $199\text{m}34\text{s}$\\ 
+                  & $0.1$  & $3$    & $1\text{m}33\text{s}$ & $7$      & $5\text{m}58\text{s}$  & $15$      & $14\text{m}24\text{s}$ \\ 
+                  & $0.05$ & $1.25$ & $1\text{m}19\text{s}$ & $2.38$   & $3\text{m}15\text{s}$  & $4.06$    & $8\text{m}6\text{s}$   \\ \hline
+                  \multirow{3}{*}{$0.05$}
+                  & $0.5$  & $120.01$ & $15\text{m}11\text{s}$ & $1330.06$ & $163\text{m}3\text{s}$ & $14640.5$ & $713\text{m}25\text{s}$\\ 
+                  & $0.1$  & $8$      & $3\text{m}40\text{s}$  & $26.01$   & $16\text{m}54\text{s}$ & $80.03$   & $63\text{m}2\text{s}$  \\ 
+                  & $0.05$ & $3$      & $2\text{m}58\text{s}$  & $7$       & $8\text{m}58\text{s}$  & $15$      & $25m$    \\ \hline
+      \multicolumn{8}{c}{}\\\hline
+      \multirow{3}{*}{\parbox{5.3em}{tamaño \quad (est./ tr.)}}
+      & esp. & \multicolumn{2}{c|!{\ }}{$4 / 12$} & \multicolumn{2}{c|!{\ }}{$4 / 12$} & \multicolumn{2}{c}{$4 / 12$} \\
+      & impl. & \multicolumn{2}{c|!{\ }}{$12 / 56$} & \multicolumn{2}{c|!{\ }}{$18 / 84$} & \multicolumn{2}{c}{$24 / 112$} \\
+      & juego  & \multicolumn{2}{c|!{\ }}{$505 / 2304$} & \multicolumn{2}{c|!{\ }}{$757 / 3688$} &  \multicolumn{2}{c}{$1009 / 5012$} \\ \hline
     \end{tabular}
-  }
-  \vspace{-1.5ex}
+    }
+  \vspace{1.5ex}
 %  \caption{Experimental results on a Redundant Memory Cell.}
-  \caption{Resultados experimentales sobre la Memoria Probabilista}
+  \caption{Resultados sobre la celda de memoria redundante con información del tiempo y tamaño. La tabla de arriba toma la acción de tick como hito mientras que la segunda tabla toma la acción de refresh como hito. La tabla del fondo reporta el tamaño de los modelos.}
   \label{table:resultsMEM}
 \end{table}
 
 
-
+La Tabla~\ref{table:resultsHamming} reporta resultados sobre un caso de estudio de códigos de corrección de Hamming~\cite{LinCostello2004}. Los códigos de corrección de Hamming son utilizados como técnica para encontrar y corregir errores de bits en una transmisión de datos. 
+Un código de Hamming es un código lineal para la detección de hasta dos errores inmediatos de bits. Este código puede a su vez corregir un bit.
+Hemos modelado y analizado este ejemplo como un protocolo simple que envía repetidamente mensajes basados en Hamming(7,4) para diferentes probabilidades de falla (cambio arbitrario del valor de algún bit).
 
 Las Tablas~\ref{table:resultsNMR} y \ref{table:resultsNMR2} reportan resultados sobre dos casos de estudio adicionales: Redundancia N-Modular (NMR), un ejemplo estándar de tolerancia a fallas \cite{ShoomanBook}; y una arquitectura NMR procesador-memoria con N votantes \cite{KrishnaBook}.
 
-Ya introdujimos NMR en el capítulo~\ref{cap:maskingMeasure}, NMR consiste de N módulos, consiste de N módulos que realizan una tarea independientemente, y cuyos resultados son procesados por un votante perfecto para producir una sola salida.
+Ya introdujimos NMR en el Capítulo~\ref{cap:maskingMeasure}, NMR consiste de N módulos, consiste de N módulos que realizan una tarea independientemente, y cuyos resultados son procesados por un votante perfecto para producir una sola salida.
 En este caso, estos módulos pueden exhibir un comportamiento inesperado con una cierta probabilidad, en cuyo caso van a dar una salida incorrecta. Los resultados para este caso de estudio son similares al caso de la celda de memoria cuando hay probabilidad $0$ de refrescado. 
 
 El segundo caso de estudio consiste en N procesadores que dan como salida un valor a un módulo de memoria a través de N votantes. Tanto los votantes como los procesadores pueden dar como salida un valor incorrecto con una cierta probabilidad.
@@ -67,36 +71,55 @@ El experimento da como salida los mismos resultados si la probabilidad de falla 
 Hemos ejecutado nuestros experimentos en una MacBook Air con un procesador 1.3 GHz Intel Core i5 y 
 4 GB de memoria.
 
+\begin{table}
+  \centering\small\vspace{-2.1em}
+  \scalebox{0.8}{
+    \begin{tabular}{c!{\ }|!{\ }c!{\ }|!{\ }c|!{\ }c}
+      \parbox{2.6em}{Prob. Falla\smallskip} & $M_{rcv}$ & Tiempo & Tamaño  \\ \hline
+      $0.01$  & $47.94$ & $35\text{m}32\text{s}$ & \multirow{8}{*}{$\begin{array}{ll}\text{esp.:} & 12/32 \\ \text{impl.:} & 33/304 \\ \text{juego:} & 2754/16832 \end{array}$} \\ 
+      $0.03$ & $14.92$ & $10\text{m}57\text{s}$ \\ 
+      $0.05$ & $8.49$ & $10\text{m}3\text{s}$ \\
+      $0.06$ & $6.933$ & $8\text{m}56\text{s}$ \\ 
+      $0.07$ & $5.83$ & $6\text{m}55\text{s}$ \\ 
+      $0.08$ & $5.028$ & $3\text{m}43\text{s}$ \\ 
+      $0.1$ & $3.92$ & $3\text{m}25\text{s}$ \\
+      $0.15$ & $2.54$ & $2\text{m}19\text{s}$ \\ \hline
+    \end{tabular}\medskip\par
+    }
+    %\vspace{0.3cm}
+    \caption{Resultados experimentales sobre Hamming(7,4).}
+    \label{table:resultsHamming}
+\end{table}
+
 %\vspace*{-0.9cm}
 \begin{table}
 \centering
 \scalebox{0.7}{
-    \begin{tabular}{c!{\ }|!{\ }c|!{\ }c}
-      Redundancia & Prob. Falla & $M_{t}$ \\ \hline
-      \multirow{4}{*}{$3$}  & $0.5$ & $4$ \\ 
-      & $0.3$ & $6.66$ \\
-      & $0.1$ & $20$ \\ 
-      & $0.05$ & $40$ \\ \cline{1-3}
-      \multirow{4}{*}{$5$} & $0.5$ & $6$ \\ 
-      & $0.3$ & $10$ \\
-      & $0.1$ & $30$ \\ 
-      & $0.05$ & $60$ \\ \cline{1-3}
-      \multirow{4}{*}{$7$} & $0.5$ & $8$ \\
-      & $0.3$ & $13.33$ \\
-      & $0.1$ & $40$ \\ 
-      & $0.05$ & $80$ \\ \cline{1-3}
-      \multirow{4}{*}{$9$} & $0.5$ & $10$ \\
-      & $0.3$ & $16.66$ \\
-      & $0.1$ & $50$ \\ 
-      & $0.05$ & $100$ \\ \cline{1-3}
-%      \multirow{4}{*}{$11$} & $0.5$ & $12$ \\
-%      & $0.3$ & $20$ \\
-%      & $0.1$ & $60$ \\ 
-%      & $0.05$ & $120$ \\ \bottomrule
-      \hline
+    \begin{tabular}{c!{\ }|!{\ }c!{\ }|!{\ }c!{\ }|!{\ }c!{\ }|!{\ }c}
+      Redundancia & \parbox{3.6em}{\centering Prob. Falla\smallskip} & $M_{t}$ & Tiempo & Tamaño \\ \hline
+      \multirow{4}{*}{$3$}  & $0.5$ & $4$ & $5\text{s}$ & \multirow{4}{*}{$\begin{array}{ll}\text{esp.:} & 2 / 8 \\ \text{impl.:} & 8/43 \\ \text{juego:} & 289/1164 \end{array}$} \\ 
+      & $0.3$ & $6.66$ & $8\text{s}$ \\
+      & $0.1$ & $20$ & $25\text{s}$ \\ 
+      & $0.05$ & $40$ & $36\text{s}$ \\ \cline{1-5}
+      \multirow{4}{*}{$5$} & $0.5$ & $6$ & $7\text{s}$ & \multirow{4}{*}{$\begin{array}{ll}\text{esp.:} & 2 / 8 \\ \text{impl.:} & 12/65 \\ \text{juego:} & 433/1852 \end{array}$} \\ 
+      & $0.3$ & $10$ & $13\text{s}$ \\
+      & $0.1$ & $30$ & $40\text{s}$ \\ 
+      & $0.05$ & $60$ & $1\text{m}8\text{s}$ \\ \cline{1-5}
+      \multirow{4}{*}{$7$} & $0.5$ & $8$ & $12\text{s}$ & \multirow{4}{*}{$\begin{array}{ll}\text{esp.:} & 2 / 8 \\ \text{impl.:} & 16/87 \\ \text{juego:} & 577/2540 \end{array}$} \\ 
+      & $0.3$ & $13.33$ & $18\text{s}$ \\
+      & $0.1$ & $40$ & $49\text{s}$ \\ 
+      & $0.05$ & $80$ & $1\text{m}29\text{s}$ \\ \cline{1-5}
+      \multirow{4}{*}{$9$} & $0.5$ & $10$ & $15\text{s}$ & \multirow{4}{*}{$\begin{array}{ll}\text{esp.:} & 2 / 8 \\ \text{impl.:} & 20/109 \\ \text{juego:} & 721/3228 \end{array}$} \\ 
+      & $0.3$ & $16.66$ & $29\text{s}$ \\
+      & $0.1$ & $50$ & $1\text{m}11\text{s}$ \\ 
+      & $0.05$ & $100$ & $2\text{m}1\text{s}$ \\ \cline{1-5}
+      \multirow{4}{*}{$11$} & $0.5$ & $12$ & $2\text{m}30\text{s}$ & \multirow{4}{*}{$\begin{array}{ll}\text{esp.:} & 2 / 8 \\ \text{impl.:} & 24/131 \\ \text{juego:} & 865/3916 \end{array}$} \\ 
+      & $0.3$ & $20$ & $3\text{m}59\text{s}$ \\
+      & $0.1$ & $60$ & $12\text{m}43\text{s}$ \\ 
+      & $0.05$ & $120$ & $28\text{m}52\text{s}$ \\ \hline
     \end{tabular}
     }
-    \vspace{0.2cm}
+    %\vspace{0.2cm}
     \caption{Resultados experimentales sobre un Sistema Redundante N-Modular.}
     \label{table:resultsNMR}
     \hfill
@@ -107,33 +130,35 @@ Hemos ejecutado nuestros experimentos en una MacBook Air con un procesador 1.3 G
     \centering
     \vspace{0.6cm}
     \scalebox{0.7}{
-    \begin{tabular}{c!{\ }|!{\ }c|!{\ }c|!{\ }c}
-      Redundancia & P. Falla Proc. & P. Falla Vot. & $M_{t}$ \\ \hline
-      \multirow{5}{*}{$3$}  & $0.09$  & $0.01$ & $21.8$ \\ 
-      & $0.07$ & $0.03$ & $24.2$ \\ 
-      & $0.05$ & $0.05$ & $25$ \\ 
-      & $0.03$ & $0.07$ & $24.2$ \\ 
-      & $0.01$  & $0.09$ & $21.8$ \\ \cline{1-4}
-      \multirow{5}{*}{$5$} & $0.09$ & $0.01$ & $33.19$ \\ 
-      & $0.07$ & $0.03$ & $38.95$ \\ 
-      & $0.05$ & $0.05$ & $41.25$ \\
-      & $0.03$ & $0.07$ & $38.95$ \\
-      & $0.01$ & $0.09$ & $33.19$ \\  \cline{1-4}
-      \multirow{5}{*}{$7$} & $0.09$ & $0.01$ & $44.39$ \\
-      & $0.07$ & $0.03$ & $53.78$ \\ 
-      & $0.05$ & $0.05$ & $58.13$ \\
-      & $0.03$ & $0.07$ & $53.78$ \\
-      & $0.01$ & $0.09$ & $44.39$ \\ \cline{1-4}
-%      \multirow{5}{*}{$9$} & $0.09$ & $0.01$ & $55.54$ \\
-%      & $0.07$ & $0.03$ & $68.59$ \\ 
-%      & $0.05$ & $0.05$ & $75.39$ \\ 
-%      & $0.03$ & $0.07$ & $68.59$ \\ 
-%      & $0.01$ & $0.09$ & $55.54$ \\ \bottomrule
-      \hline
+    \begin{tabular}{c!{\ }|!{\ }c!{\ }|!{\ }c!{\ }|!{\ }c!{\ }|!{\ }c!{\ }|!{\ }c}
+      Redundancia & \parbox{3.6em}{\centering Prob. Falla P.\smallskip} & \parbox{3.6em}{\centering Prob. Falla V.\smallskip} & $M_{t}$ & Tiempo & Tamaño \\ \hline
+      \multirow{5}{*}{$3$}  & $0.09$  & $0.01$ & $21.8$ & $18\text{s}$ & \multirow{5}{*}{$\begin{array}{ll}\text{esp.:} & 1/2 \\ \text{impl.:} & 48/116 \\ \text{juego:} & 373/672 \end{array}$} \\  
+      & $0.07$ & $0.03$ & $24.2$ & $19\text{s}$ \\ 
+      & $0.05$ & $0.05$ & $25$ & $19\text{s}$ \\ 
+      & $0.03$ & $0.07$ & $24.2$ & $19\text{s}$\\ 
+      & $0.01$  & $0.09$ & $21.8$ & $18\text{s}$ \\ \cline{1-6}
+      \multirow{5}{*}{$5$} & $0.09$ & $0.01$ & $33.18$ & $1\text{m}1\text{s}$ & \multirow{5}{*}{$\begin{array}{ll}\text{esp.:} & 1/2 \\ \text{impl.:} & 108/267 \\ \text{juego:} & 840/1548 \end{array}$} \\  
+      & $0.07$ & $0.03$ & $38.94$ & $51\text{s}$ \\ 
+      & $0.05$ & $0.05$ & $41.25$ & $51\text{s}$ \\
+      & $0.03$ & $0.07$ & $38.94$ & $51\text{s}$\\
+      & $0.01$ & $0.09$ & $33.18$ & $1\text{m}1\text{s}$ \\  \cline{1-6}
+      \multirow{5}{*}{$7$} & $0.09$ & $0.01$ & $44.39$ & $2\text{m}6\text{s}$ & \multirow{5}{*}{$\begin{array}{ll}\text{esp.:} & 1/2 \\ \text{impl.:} & 192/480 \\ \text{juego:} & 1521/2784 \end{array}$} \\  
+      & $0.07$ & $0.03$ & $53.78$ & $3\text{m}14\text{s}$ \\ 
+      & $0.05$ & $0.05$ & $58.12$ & $1\text{m}57\text{s}$ \\
+      & $0.03$ & $0.07$ & $53.78$ & $3\text{m}14\text{s}$ \\
+      & $0.01$ & $0.09$ & $44.39$ & $2\text{m}6\text{s}$ \\ \cline{1-6}
+      \multirow{5}{*}{$9$} & $0.09$ & $0.01$ & $55.53$ & $3\text{m}3\text{s}$ & \multirow{5}{*}{$\begin{array}{ll}\text{esp.:} & 1/2 \\ \text{impl.:} & 300/755 \\ \text{juego:} & 2386/4380 \end{array}$} \\  
+      & $0.07$ & $0.03$ & $68.58$ & $4\text{m}23\text{s}$ \\ 
+      & $0.05$ & $0.05$ & $75.39$ & $4\text{m}18\text{s}$ \\ 
+      & $0.03$ & $0.07$ & $68.58$ & $4\text{m}23\text{s}$ \\ 
+      & $0.01$ & $0.09$ & $55.53$ & $3\text{m}3\text{s}$ \\ \hline
     \end{tabular}
     }
-    \vspace{0.2cm}
+    %\vspace{0.2cm}
     \caption{Resultados experimentales sobre una arquitectura NMR procesador/memoria con N votantes.}
     \label{table:resultsNMR2}
     \vspace{-.5cm}
 \end{table}
+
+
+

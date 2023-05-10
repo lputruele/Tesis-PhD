@@ -1,14 +1,14 @@
 \section{Trabajo Relacionado} \label{sec:related_work_fair}
 
-Los juegos estocásticos con funciones de payoff han sido ampliamente investigados en la literatura. En \cite{FilarV96}, se presentan varios resultados sobre \emph{juegos transitorios},
-una versión generalizada de juegos estocásticos terminantes con payoff de recompensa total.
+Los juegos estocásticos con funciones de \textit{payoff} han sido ampliamente investigados en la literatura. En \cite{FilarV96}, se presentan varios resultados sobre \emph{juegos transitorios},
+una versión generalizada de juegos estocásticos terminantes con \textit{payoff} de recompensa total.
 En los juegos transitorios, ambos jugadores poseen estrategias óptimas (sin memoria y deterministas).
 Lo que es más importante, los juegos están determinados y su valor puede calcularse como el mínimo punto fijo de un conjunto de ecuaciones.
 La mayoría de estos resultados se basan en el hecho de que el funcional $\Gamma$ (ver Sección \ref{sec:stopping_fair}) para juegos transitorios tiene un único punto fijo.
-Tengamos en cuenta que en este capítulo hemos tratado con juegos que se detienen solo bajo supuestos de fairness. Por lo tanto, el funcional correspondiente
+Tengamos en cuenta que en este capítulo hemos tratado con juegos que se detienen solo bajo supuestos de \textit{fairness}. Por lo tanto, el funcional correspondiente
 puede tener varios puntos fijos. Por lo tanto, los principales resultados presentados en \cite{FilarV96} no se aplican a nuestro contexto.
 
-\cite{DBLP:journals/fmsd/ChenFKPS13} y \cite{SvorenovaKwiatkowska16} presentan marcos lógicos para la verificación y síntesis de sistemas. Mientras que~\cite{DBLP:journals/fmsd/ChenFKPS13} proporciona una solución para una lógica temporal ramificada probabilística extendida con funciones objetivo de recompensa total, de descuento y de promedio esperado, \cite{SvorenovaKwiatkowska16} hace lo mismo en una extensión similar de una lógica probabilística temporal lineal. Ambos marcos se implementaron en la herramienta \Prism~\cite{DBLP:conf/cav/KwiatkowskaN0S20,DBLP:conf/cav/KwiatkowskaNP11}. Aunque en estos marcos se puede expresar una amplia clase de propiedades, ninguna de ellas se presenta bajo ambientes fair. De hecho, estos trabajos son sobre juegos multijugador estocásticos en los que cada jugador es tratado por igual.
+\cite{DBLP:journals/fmsd/ChenFKPS13} y \cite{SvorenovaKwiatkowska16} presentan marcos lógicos para la verificación y síntesis de sistemas. Mientras que~\cite{DBLP:journals/fmsd/ChenFKPS13} proporciona una solución para una lógica temporal ramificada probabilística extendida con funciones objetivo de recompensa total, de descuento y de promedio esperado, \cite{SvorenovaKwiatkowska16} hace lo mismo en una extensión similar de una lógica probabilística temporal lineal. Ambos marcos se implementaron en la herramienta \Prism~\cite{DBLP:conf/cav/KwiatkowskaN0S20,DBLP:conf/cav/KwiatkowskaNP11}. Aunque en estos marcos se puede expresar una amplia clase de propiedades, ninguna de ellas se presenta bajo ambientes \textit{fair}. De hecho, estos trabajos son sobre juegos multijugador estocásticos en los que cada jugador es tratado por igual.
 
 %% \cite{DBLP:journals/fmsd/ChenFKPS13} and \cite{SvorenovaKwiatkowska16} present logical frameworks for the verification and synthesis of systems.  While~\cite{DBLP:journals/fmsd/ChenFKPS13} presents a framework that combines a probabilistic branching temporal logic with expected total, discounted, and average reward objective functions, \cite{SvorenovaKwiatkowska16} does the same in the context of a probabilistic linear temporal logic. Both frameworks were implemented in the tool \Prism~\cite{DBLP:conf/cav/KwiatkowskaNP11}. Although a vast class of properties can be expressed in these frameworks, none of them are presented under fair environments.  In fact, these works are on stochastic multiplayer games in which each player is treated equally.
 
@@ -16,23 +16,51 @@ Sin embargo, de todos los operadores en ~\cite{DBLP:journals/fmsd/ChenFKPS13,Svo
 {\Prism} aproxima este valor calculando un punto fijo mayor. Utiliza un algoritmo de dos fases para hacerlo:
 \begin{enumerate}[(i)]
 \item%
-  primero reemplaza las recompensas de valor cero con un pequeño valor positivo y aplica value iteration en esta modificación para obtener un límite superior estimado, y
+  primero reemplaza las recompensas de valor cero con un pequeño valor positivo y aplica \textit{value iteration} en esta modificación para obtener un límite superior estimado, y
 \item%
-  este limite superior es usado para comenzar otro proceso de value iteration destinado a computar el máximo punto fijo.
+  este limite superior es usado para comenzar otro proceso de \textit{value iteration} destinado a computar el máximo punto fijo.
 \end{enumerate}
 %
 \begin{figure}
 %\vspace{-4ex}
 %\fontsize{6.6}{6.6}\selectfont\ttfamily
 \centering
-\includegraphics[scale=0.80]{Figs/prism-cex-1-horiz.pdf}%\hspace{1.5em}\mbox{}
+\scalebox{0.9}{
+  \begin{tikzpicture}[on grid,auto,align at top]
+    \node[minvert] (v0)                   {$v_0(0)$};
+    \node[probvert] (v6) [right=2.3 of v0] {$v_6(2)$};
+    \node[probvert] (v8) [right=2.3 of v6] {$v_8(0)$};
+    \node[probvert] (v7) [right=2.3 of v8] {$v_7(1)$};
+    \node[probvert] (v1) [below=2.3 of v6] {$v_1(0)$};
+    \node[probvert] (v2) [right=2.3 of v1] {$v_2(0)$};
+    \node[probvert] (v3) [right=2.3 of v2] {$v_3(0)$};
+    \node[probvert] (v4) [right=2.3 of v3] {$v_4(0)$};
+    \node[maxvert] (v5) [right=2.3 of v4] {$v_5(0)$};
+    
+    \draw[rounded corners,->] (v0) -- (v1);
+    \draw[rounded corners,->] (v0) -- (v6);
+    \draw[rounded corners,->] (v6) -- (v8);
+    \draw[rounded corners,->] (v7) -- (v8);
+    \draw[rounded corners,->] (v1) -- (v2) node[midway] {$p$};
+    \draw[rounded corners,->] (v2) -- (v3) node[midway] {$p$};
+    \draw[rounded corners,->] (v3) -- (v4) node[midway] {$p$};
+    \draw[rounded corners,->] (v4) -- (v5) node[midway] {$p$};
+    \draw[rounded corners,->] (v5.north) -- ++(0,1) |- (v7.east);   
+    \draw[rounded corners,->] (v5.south) -- ++(0,-1) -| (v1.south); 
+    \draw[rounded corners,->] (v4.east) -- ++(0,-1.4) node[pos=0.5] {$1-p$} -| (v1.south) ;
+    \draw[rounded corners,->] (v3.east) -- ++(0,-1.2) node[pos=0.5] {$1-p$} -| (v1.south);
+    \draw[rounded corners,->] (v2.east) -- ++(0,-1) node[pos=0.5] {$1-p$} -| (v1.south);
+    \draw[rounded corners,->] (v1.east) -- ++(0,-0.8) node[pos=0.5] {$1-p$} -| (v1.south);
+  \end{tikzpicture}
+  }
+%\includegraphics[scale=0.80]{Figs/prism-cex-1-horiz.pdf}%\hspace{1.5em}\mbox{}
 \caption{Un simple juego de 2 jugadores: solo se muestran las probabilidades menores a 1.} \label{fig:prism-cex-1}
 \end{figure}
-Esta heurística podría devolver aproximaciones erróneas del mayor punto fijo. Ilustramos esto con un ejemplo sencillo. Considere el juego representado en la Fig.~\ref{fig:prism-cex-1}. Para cualquier $\textsf{p}$, el valor del punto fijo más grande en el vértice $v_0$ es $2$. Sin embargo, al tomar $\textsf{p}=0.99$ y la tolerancia $\epsilon=10^{-6}$, {\Prism} devuelve un valor cercano a $39608$. %el valor $39607.955145476146$.
+Esta heurística podría devolver aproximaciones erróneas del mayor punto fijo. Ilustramos esto con un ejemplo sencillo. Considere el juego representado en la Figura~\ref{fig:prism-cex-1}. Para cualquier $\textsf{p}$, el valor del punto fijo más grande en el vértice $v_0$ es $2$. Sin embargo, al tomar $\textsf{p}=0.99$ y la tolerancia $\epsilon=10^{-6}$, {\Prism} devuelve un valor cercano a $39608$. %el valor $39607.955145476146$.
 Esto ocurre porque {\Prism} cambia $0$ al valor $0.02$, lo que da como resultado un límite superior extremadamente grande.
 %% Además, cada iteración solo produce una pequeña modificación en los valores %lo que arroja un valor final erróneo
 %% lo que conduce a una convergencia incorrecta.
-Obviamente, también devuelve una estrategia incorrecta para el vértice $v_0$. Hemos comprobado este ejemplo con nuestra herramienta y devolvió el valor correcto para el vértice $v_0$ en iteraciones de $2$, independientemente del valor de $\textsf{p}$.
+Obviamente, también devuelve una estrategia incorrecta para el vértice $v_0$. Hemos comprobado este ejemplo con nuestra herramienta y devolvió el valor correcto para el vértice $v_0$ en $2$ iteraciones, independientemente del valor de $\textsf{p}$.
 %
 Hemos elegido un valor grande para $\textsf{p}$ para que la diferencia sea notable. Los valores pequeños también pueden producir valores diferentes en, por ejemplo, $\textsf{v}_1$ solo que podría atribuirse a errores de aproximación.
 %
@@ -87,14 +115,14 @@ También ejecutamos este operador en nuestros casos de estudio y observamos pequ
 
 
 
-Los \emph{Juegos estocásticos de camino mas corto} \cite{PatekBertsekas99} son juegos estocásticos de dos jugadores con recompensas (negativas o positivas) en los que las estrategias del minimizador se clasifican en \emph{adecuadas} e \emph{impropias},
-las estrategias adecuadas son las que aseguran la terminación. Como se demuestra en \cite{PatekBertsekas99}, estos juegos están determinados y ambos jugadores poseen estrategias óptimas sin memoria. Para probar estos resultados, los autores asumen que el valor esperado del juego para estrategias impropias es $\infty$, esto asegura que el funcional correspondiente es una contracción y por lo tanto tiene un punto fijo único. Por el contrario, nos restringimos a recompensas no negativas pero no hacemos suposiciones sobre estrategias infair, como se mencionó anteriormente, la función correspondiente para nuestros juegos puede tener varios puntos fijos. Además, probamos que el valor del juego viene dado por el mayor punto fijo de $\Gamma$. En los últimos años, varios autores han investigado problemas estocásticos de camino más corto para MDPs (es decir, juegos de un solo jugador), donde se relaja la suposición sobre estrategias inadecuadas (por ejemplo, \cite{DBLP:conf/lics/Baier0DGS18}); hasta donde sabemos, estos resultados no se han extendido a los juegos de dos jugadores.
+Los \emph{Juegos estocásticos de camino mas corto} \cite{PatekBertsekas99} son juegos estocásticos de dos jugadores con recompensas (negativas o positivas) en los que las estrategias del minimizador se clasifican en \emph{adecuadas} e \emph{inadecuadas},
+las estrategias adecuadas son las que aseguran la terminación. Como se demuestra en \cite{PatekBertsekas99}, estos juegos están determinados y ambos jugadores poseen estrategias óptimas sin memoria. Para probar estos resultados, los autores asumen que el valor esperado del juego para estrategias inadecuadas es $\infty$, esto asegura que el funcional correspondiente es una contracción y por lo tanto tiene un punto fijo único. Por el contrario, nos restringimos a recompensas no negativas pero no hacemos suposiciones sobre estrategias \textit{unfair}, como se mencionó anteriormente, la función correspondiente para nuestros juegos puede tener varios puntos fijos. Además, probamos que el valor del juego viene dado por el mayor punto fijo de $\Gamma$. En los últimos años, varios autores han investigado problemas estocásticos de camino más corto para MDPs (es decir, juegos de un solo jugador), donde se relaja la suposición sobre estrategias inadecuadas (por ejemplo, \cite{DBLP:conf/lics/Baier0DGS18}); hasta donde sabemos, estos resultados no se han extendido a los juegos de dos jugadores.
 
 %% In \cite{SvorenovaKwiatkowska16}, a logical framework is presented for the verification and synthesis of systems. This framework combines probabilistic linear temporal logic with expected total, discounted, and average reward objective functions. 	The framework is implemented in the tool \Prism~\cite{DBLP:conf/cav/KwiatkowskaNP11}. Although a vast class of properties can be expressed in this framework, fairness assumptions over the environment are not dealt with in this line of research.
 	
-En \cite{DBLP:conf/ifipTCS/BolligC04} los autores abordan el problema de sintetizar un controlador que maximiza la probabilidad de satisfacer una propiedad {\LTL}. Las estrategias de fairness se utilizan para reducir este problema a la síntesis de un controlador que maximiza una propiedad {\PCTL} sobre un juego de productos. Sin embargo, este artículo no aborda las recompensas esperadas y la determinación del juego bajo supuestos de fairness.
+En \cite{DBLP:conf/ifipTCS/BolligC04} los autores abordan el problema de sintetizar un controlador que maximiza la probabilidad de satisfacer una propiedad {\LTL}. Las estrategias de \textit{fairness} se utilizan para reducir este problema a la síntesis de un controlador que maximiza una propiedad {\PCTL} sobre un juego producto. Sin embargo, este artículo no aborda las recompensas esperadas y la determinación del juego bajo supuestos de \textit{fairness}.
 
-Curiosamente, en \cite{DBLP:conf/fossacs/AsarinCV10} los autores consideran el problema de ganar un juego de dos jugadores (no estocástico) con suposiciones de fairness sobre el entorno. El objetivo del sistema es garantizar una propiedad $\omega$-regular. Los autores muestran que ganar en estos juegos es equivalente a ganar casi seguramente en un proceso de decisión de Markov. Cabe señalar que este trabajo solo considera juegos no estocásticos. Además, las funciones de payoff no se consideran allí.
+Curiosamente, en \cite{DBLP:conf/fossacs/AsarinCV10} los autores consideran el problema de ganar un juego de dos jugadores (no estocástico) con suposiciones de \textit{fairness} sobre el entorno. El objetivo del sistema es garantizar una propiedad $\omega$-regular. Los autores muestran que ganar en estos juegos es equivalente a ganar casi-seguramente en un proceso de decisión de Markov. Cabe señalar que este trabajo solo considera juegos no estocásticos. Además, las funciones de \textit{payoff} no se consideran allí.
 %% Interestingly, in \cite{DBLP:conf/fossacs/AsarinCV10} the authors consider the problem of winning a (non-stochastic) two-player games with fairness assumptions over the environment. The objective of the system is to guarantee an $\omega$-regular property. The authors show that winning in these games is equivalent to almost-sure winning in a Markov decision process. It must be noted the aforementioned work only considers non-stochastic two-player games.  Furthermore, payoff functions are not considered therein.
 
 

@@ -4,28 +4,28 @@ La tolerancia a fallas es una característica importante del software crítico, 
 mal funcionamiento del hardware, etc.
 Se pueden encontrar ejemplos de sistemas tolerantes a fallas en casi todas partes:
 protocolos de comunicación, circuitos de hardware, sistemas de aviación,
-criptomonedas, etc
+criptomonedas, etcétera.
 Así, la creciente relevancia del software crítico en
 la vida cotidiana ha llevado a un renovado interés en la verificación automática de propiedades tolerantes a fallas. Sin embargo, una de las principales dificultades a la hora de razonar sobre este tipo de propiedades viene dada por su carácter cuantitativo, presente tanto si se consideran probabilidades como si no.
 
 Uno de los objetivos de esta tesis es desarrollar técnicas y herramientas para hacer frente a estas dificultades.
 Luego introducimos una noción de distancia de tolerancia a fallas entre sistemas de transición etiquetados. Intuitivamente, esta noción de distancia mide el grado de tolerancia a fallas exhibido por un sistema candidato.
-En la práctica, existen diferentes tipos de tolerancia a fallas, aquí nos restringimos al análisis de la masking-tolerancia a fallas porque a menudo es un objetivo muy deseable para los sistemas críticos.
-En términos generales, un sistema es masking-tolerante a fallas cuando es capaz de enmascarar completamente las fallas, sin permitir que estas fallas tengan consecuencias observables para los usuarios.
-Capturamos la masking-tolerancia a fallas a través de una relación de simulación, que se acompaña de una caracterización del juego correspondiente.
+En la práctica, existen diferentes tipos de tolerancia a fallas, aquí nos restringimos al análisis de la tolerancia a fallas enmascarante porque a menudo es un objetivo muy deseable para los sistemas críticos.
+En términos generales, un sistema es tolerante a fallas de forma enmascarante cuando es capaz de enmascarar completamente las fallas, sin permitir que estas fallas tengan consecuencias observables para los usuarios.
+Capturamos la tolerancia a fallas enmascarante a través de una relación de simulación, que se acompaña de una caracterización del juego correspondiente.
 Enriquecemos los juegos resultantes con objetivos cuantitativos para
-definir la noción de distancia de masking-tolerancia a fallas.
-Definimos medidas para enmascarar la tolerancia a fallas en el contexto de sistemas estocásticos y no estocásticos. Además, investigamos las propiedades básicas de estas nociones de distancia de masking.
-Hemos implementado nuestro enfoque en herramientas que calculan automáticamente la distancia de masking entre un sistema nominal y una versión tolerante a fallas del mismo, hemos evaluado su desempeño y efectividad en varios estudios de casos de diferentes complejidades.
+definir la noción de distancia de tolerancia a fallas enmascarante.
+Definimos medidas para enmascarar la tolerancia a fallas en el contexto de sistemas estocásticos y no estocásticos. Además, investigamos las propiedades básicas de estas nociones de distancia de enmascaramiento.
+Hemos implementado nuestro enfoque en herramientas que calculan automáticamente la distancia de enmascaramiento entre un sistema nominal y una versión tolerante a fallas del mismo, hemos evaluado su desempeño y efectividad en varios casos de estudio de diferentes complejidades.
 Estas herramientas pueden ayudar a los ingenieros de software a diseñar, evaluar y comparar diferentes implementaciones tolerantes a fallas y decidir cuál es mejor para sus intereses.
 
 Un segundo objetivo de esta tesis es desarrollar técnicas novedosas para resolver juegos estocásticos entre un sistema y un entorno. Esta vista es particularmente útil para \emph{síntesis de controladores}, es decir, para generar automáticamente políticas de toma de decisiones a partir de especificaciones de alto nivel.
 Investigamos juegos estocásticos de dos jugadores basados en turnos, de suma cero, en los que el objetivo de un jugador es maximizar la cantidad de recompensas obtenidas durante un juego, mientras que el otro apunta a minimizarla. %
 Para este tipo de juegos consideramos que un minimizador juega en un
-manera fair. Creemos que este tipo de juegos gozan de interesantes aplicaciones en la verificación de software, donde el maximizador juega el papel de un sistema que pretende maximizar la
-número de "hitos" alcanzados, y el minimizador representa el comportamiento de un entorno poco cooperativo pero justo.
-Normalmente, para estudiar las propiedades de la recompensa total, se solicita que los juegos se detengan (es decir, alcanzan un estado terminal con probabilidad 1). %
-Relajamos la propiedad para solicitar que el juego se detenga solo bajo un jugador minimizador fair. Además, los resultados de esta investigación fueron necesarios para poder desarrollar la distancia de masking entre sistemas probabilistas. También implementamos estas ideas en una herramienta prototipo y realizamos una evaluación experimental.
+manera \textit{fair}. Creemos que este tipo de juegos gozan de interesantes aplicaciones en la verificación de software, donde el maximizador juega el papel de un sistema que pretende maximizar la
+número de ``hitos'' alcanzados, y el minimizador representa el comportamiento de un entorno poco cooperativo pero justo.
+Normalmente, para estudiar las propiedades de la recompensa total, se solicita que los juegos se detengan (es decir, que alcancen un estado terminal con probabilidad 1). %
+Relajamos la propiedad para solicitar que el juego se detenga solo bajo un jugador minimizador \textit{fair}. Además, los resultados de esta investigación fueron necesarios para poder desarrollar la distancia de enmascaramiento entre sistemas probabilistas. También implementamos estas ideas en una herramienta prototipo y realizamos una evaluación experimental.
 
 \noindent
-\textbf{Palabras clave:} Verificación de Software, Teoría de Juegos, Tolerancia a Fallas, Medida, Distancia, Masking, Síntesis de Controladores, Juegos Estocásticos.
+\textbf{Palabras clave:} Verificación de Software, Teoría de Juegos, Tolerancia a Fallas, Medida, Distancia, Enmascaramiento, Síntesis de Controladores, Juegos Estocásticos.

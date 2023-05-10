@@ -7,12 +7,12 @@
 %\MaskD~ toma como entrada un modelo nominal y su implementación tolerante a fallas, 
 %y produce como salida la distancia de masking entre ellos. 
 %Los modelos son especificados utilizando el lenguaje de guardas introducido en \cite{AroraGouda93}, un lenguaje de programación simple comúnmente utilizado para describir algoritmos tolerantes a fallas.
-%Mas precisamente, un programa es una colección de procesos, donde cada proceso está compuesto de una colección de acciones del estilo: $Guard \rightarrow Command$, donde $Guard$ es una condición lógica sobre el estado actual del programa y $Command$ es una colección de asignaciones básicas. Estas construcciones sintácticas se denominan acciones. El lenguaje también permite al usuario etiquetar una acción como interna (i.e., acciones $\tau$). Además, lagunas acciones pueden representar fallas en el sistema.
+%Mas precisamente, un programa es una colección de procesos, donde cada proceso está compuesto de una colección de acciones del estilo: $Guard \rightarrow Command$, donde $Guard$ es una condición lógica sobre el estado actual del programa y $Command$ es una colección de asignaciones básicas. Estas construcciones sintácticas se denominan acciones. El lenguaje también permite al usuario etiquetar una acción como interna (es decir, acciones $\tau$). Además, lagunas acciones pueden representar fallas en el sistema.
 %La herramienta posee varias funcionalidades extra como por ejemplo mostrar trazas hacia el estado de error o iniciar una simulación desde el estado inicial.
 
-En la Tabla~\ref{table:results} reportamos los resultados de la distancia de masking para múltiples instancias de varios casos de estudio. Estos incluyen: una Celda de Memoria Redundante (nuestro ejemplo motivador), Redundancia N-Modular (un ejemplo estándar de sistemas tolerantes a fallas \cite{ShoomanBook}), una variación del problema de los Filósofos Comensales \cite{Dijkstra71}, el problema de los Generales Bizantinos introducido por Lamport et al. \cite{LamportSP82}, una prueba de consistencia de parte del algoritmo de consenso Raft \cite{OngaroO14}, y el Protocolo de Retransmisión Acotada (un ejemplo bien conocido de un protocolo tolerante a fallas \cite{GrooteP96}). Todos los casos de estudio han sido evaluados utilizando los algoritmos para juegos deterministas y no deterministas (columnas ``Tiempo'' y ``Tiempo(Det)'', respectivamente), con la excepción de los modelos netamente no deterministas (por ejemplo, el problema de los Generales Bizantinos y el Protocolo de Retransmisión Acotada). Es de destacar que la complejidad computacional yace principalmente en la construcción explícita del grafo de juego y no del cálculo de la distancia de masking en si.
+En la Tabla~\ref{table:results} reportamos los resultados de la distancia de enmascaramiento para múltiples instancias de varios casos de estudio. Estos incluyen: una celda de memoria redundante (nuestro ejemplo motivador), redundancia N-Modular (un ejemplo estándar de sistemas tolerantes a fallas \cite{ShoomanBook}), una variación del problema de los Filósofos Comensales \cite{Dijkstra71}, el problema de los Generales Bizantinos introducido por Lamport et al. \cite{LamportSP82}, una prueba de consistencia de parte del algoritmo de consenso Raft \cite{OngaroO14}, y el Protocolo de Retransmisión Acotada o \textit{Bounded Retransmission Protocol} (un ejemplo conocido de un protocolo tolerante a fallas \cite{GrooteP96}). Las columnas ``T. Esp.'', ``T. Imp.'' y ``T. Juego'' corresponden a los tamaños de la especificación, implementación y el juego construido, respectivamente (en términos de estados y transiciones). Todos los casos de estudio han sido evaluados utilizando los algoritmos para juegos deterministas y no deterministas (columnas ``Tiempo'' y ``Tiempo Det.'', respectivamente), con la excepción de los modelos netamente no deterministas (por ejemplo, el problema de los Generales Bizantinos y el Protocolo de Retransmisión Acotada). Es de destacar que la complejidad computacional yace principalmente en la construcción explícita del grafo de juego y no del cálculo de la distancia de enmascaramiento en si.
 
-A continuación se da una interpretación de los resultados experimentales. Para el caso de una memoria redundante de $3$ bits, la distancia de masking es $0.333$. El principal motivo de esto es que el modelo con fallas, en el peor caso, solo es capaz de enmascarar $2$ fallas (en este ejemplo, una falla representa un cambio inesperado en el valor de un bit, posiblemente por una descarga) antes de fracasar al tratar de replicar el comportamiento del modelo nominal (i.e. leer el valor votado por la mayoría). Por lo tanto, el resultado viene de la definición de distancia de masking y de tener en cuenta la ocurrencia de dos fallas. La situación es similar para otras instancias de este problema con mas redundancia de bits.
+A continuación se da una interpretación de los resultados experimentales. Para el caso de una memoria redundante de $3$ bits, la distancia de enmascaramiento es $0.333$. La principal causa de esto es que el modelo con fallas, en el peor caso, solo es capaz de enmascarar $2$ fallas (en este ejemplo, una falla representa un cambio inesperado en el valor de un bit, posiblemente por una descarga) antes de fracasar al tratar de replicar el comportamiento del modelo nominal (es decir leer el valor votado por la mayoría). Por lo tanto, el resultado viene de la definición de distancia de enmascaramiento y de tener en cuenta la ocurrencia de dos fallas. La situación es similar para otras instancias de este problema con mas redundancia de bits.
 
 La Redundancia N-Modular consiste de N sistemas, los cuales desarrollan una tarea o proceso y que los resultados son procesados por un sistema de votación de mayoría para producir una única salida. 
 Asumiendo un único votante perfecto, hemos evaluado este caso de estudio para diferentes cantidades de módulos.
@@ -22,54 +22,63 @@ Note que las medidas de distancia para este caso son similares al de la memoria 
 \begin{table} [ht!]
 \centering
 \setlength{\tabcolsep}{7pt}
-    \scalebox{0.85}{
-  \begin{tabular}{c c c c c} \toprule
-    Case de Estudio      & Redundancia & D.Masking & Tiempo & Tiempo(Det)  \\ \midrule
-    \multirow{5}{*}{Celda de Memoria}          & $3$ bits & $0.333$ & $0.7$\text{s} & $0.6$\text{s}\\
-                & $5$ bits & $0.25$ & $2.5$\text{s} & $1.9$\text{s}\\
-                & $7$ bits & $0.2$ & $7.2$\text{s}  & $5.7$\text{s}\\
-                & $9$ bits & $0.167$ & $1m.4s$ & $1$\text{m}$11$\text{s}\\
- 		 	    & $11$ bits & $0.143$ & $28m27s$ & $26$\text{m}$10$\text{s}\\ \midrule
-    \multirow{5}{*}{Redundancia N-Modular}           & $3$ módulos & $0.333$ & $0.6$\text{s} & $0.5$\text{s} \\
-                & $5$ módulos & $0.25$ & $1.2$\text{s} & $0.7$\text{s}\\
-                & $7$ módulos & $0.2$ & $5.6$\text{s}  & $3.8$\text{s}\\ 
-                & $9$ módulos & $0.167$ & $2$\text{m}$55$\text{s}  & $2$\text{m}$32$\text{s}\\
- 		 	    & $11$ módulos & $0.143$ & $75$\text{m}$17$\text{s}  & $72$\text{m}$48$\text{s}\\ \midrule
-    \multirow{5}{*}{Filósofos Comensales}    & $2$ filósofos & $0.5$ & $0.6$\text{s} & $0.6$\text{s}\\
-	            & $3$ filósofos & $0.333$ & $1.9$\text{s} & $0.9$\text{s}\\
-	            & $4$ filósofos & $0.25$ & $5.9$\text{s} & $2.6$\text{s}\\ 
-				& $5$ filósofos & $0.2$ & $25.3$\text{s} & $24.1$\text{s}\\ 
-				& $6$ filósofos & $0.167$ & $19$\text{m}$23$\text{s} & $11$\text{m}$39$\text{s}\\ \midrule
-    \multirow{3}{*}{Generales Bizantinos}    
-                & $3$ generales & $0.5$ & $0.9$\text{s} & $-$ \\
-            	& $4$ generales & $0.333$ & $17.1$\text{s} & $-$\\ 
-            	& $5$ generales & $0.333$ & $429$\text{m}$54$\text{s} & $-$\\ \midrule
-    \multirow{3}{*}{Raft LRCC (5)}        & $1$ seguidor & $0$ & $0.7$\text{s} & $0.8$\text{s}\\
-            & $2$ seguidores & $0$ & $5.6$\text{s} & $3.6$\text{s} \\ 
-            & $3$ seguidores & $0$ & $49$\text{m}$50$\text{s} & $37$\text{m}$53$\text{s} \\ \midrule
-    \multirow{5}{*}{BRP(1)}       	& $1$ retransm. & $0.333$ & $0.7$\text{s} & $-$\\ 
- 						& $5$ retransm. & $0.143$ & $0.8$\text{s}  & $-$\\ 
- 						& $10$ retransm. & $0.083$ & $1.3$\text{s}  & $-$\\ 
- 						& $20$ retransm. & $0.045$ & $3.9$\text{s}  & $-$\\ 
- 						& $40$ retransm. & $0.024$ & $4.8$\text{s} & $-$ \\ \midrule
-	\multirow{5}{*}{BRP(5)}       	& $1$ retransm. & $0.333$ & $4.2$\text{s} & $-$\\
-					& $5$ retransm. & $0.143$ & $4.8$\text{s}  & $-$\\ 
-					& $10$ retransm. & $0.083$ & $6.1$\text{s}  & $-$\\ 
-					& $20$ retransm. & $0.045$ & $8.7$\text{s}  & $-$\\ 
-					& $40$ retransm. & $0.024$ & $18.6$\text{s} & $-$ \\ \midrule
-	\multirow{5}{*}{BRP(10)}       	& $1$ retransm. & $0.333$ & $4.7$\text{s} & $-$\\ 
-					& $5$ retransm. & $0.143$ & $6.4$\text{s} & $-$ \\ 
-					& $10$ retransm. & $0.083$ & $10.1$\text{s} & $-$ \\
-					& $20$ retransm. & $0.045$ & $20.5$\text{s} & $-$ \\ 
-					& $40$ retransm. & $0.024$ & $1$\text{m}$9$\text{s} & $-$ \\ \bottomrule
+    \scalebox{0.59}{
+  \begin{tabular}{c!{\ }|c!{\ }|c!{\ }|c!{\ }|c!{\ }|c!{\ }|c!{\ }|c!{\ }} 
+    \multirow{2}{*}{C. de Estudio} & \multirow{2}{*}{Redundancia} & {T.Esp.} & {T.Imp.} & {T.Juego} & \multirow{2}{*}{Distancia} & \multirow{2}{*}{Tiempo} & \multirow{2}{*}{Tiempo Det.}  \\
+    &   & est./tr. & est./tr. & est./tr. &   &   &        \\ \hline
+    \multirow{5}{*}{Memoria}
+                & $3$ bits & $2/6$ & $8/48$ & $117/244$ & $0.333$ & $0.5$\text{s} & $0.4$\text{s}\\
+                & $5$ bits & $2/6$ & $32/256$ & $581/1220$ & $0.25$ & $1$\text{s} & $0.8$\text{s}\\
+                & $7$ bits & $2/6$ & $128/1280$ & $2821/5892$ & $0.2$ & $2.6$\text{s}  & $1.5$\text{s}\\
+                & $9$ bits & $2/6$ & $512/6144$ & $13317/27652$ & $0.167$ & $24$\text{s} & $1$\text{m}$22.8$\text{s}\\
+                & $11$ bits & $2/6$ & $2048/28672$ & $61445/126980$ & $0.143$ & $16$\text{m}$19$\text{s} & $14$\text{m}$29$\text{s}\\ \hline
+    \multirow{5}{*}{NMR}
+                & $3$ módulos & $2/11$ & $8/68$ & $197/404$ & $0.333$ & $0.5$\text{s} & $0.4$\text{s} \\
+                & $5$ módulos & $2/15$ & $32/400$ & $1157/2372$ & $0.25$ & $1.2$\text{s} & $0.7$\text{s}\\
+                & $7$ módulos & $2/19$ & $128/2112$ & $6149/12548$ & $0.2$ & $4.4$\text{s}  & $3.8$\text{s}\\ 
+                & $9$ módulos & $2/23$ & $512/10496$ & $30725/62468$ & $0.167$ & $2$\text{m}$8$\text{s}  & $1$\text{m}$6$\text{s}\\
+                & $11$ módulos & $2/27$ & $2048/50176$ & $147461/299012$ & $0.143$ & $76$\text{m}$17$\text{s}  & $69$\text{m}$44$\text{s}\\ \hline
+    \multirow{5}{*}{Filósofos}
+                & $2$ fil. & $16/26$ & $19/31$ & $52/64$ & $0.5$ & $0.4$\text{s} & $0.3$\text{s}\\
+                & $3$ fil. & $60/142$ & $85/205$ & $292/412$ & $0.333$ & $1$\text{s} & $0.6$\text{s}\\
+                & $4$ fil. & $244/778$ & $397/1282$ & $1681/2566$ & $0.25$ & $4$\text{s} & $1.8$\text{s}\\ 
+                & $5$ fil. & $972/3870$ & $1843/7444$ & $9289/14890$ & $0.2$ & $13$\text{s} & $9.7$\text{s}\\ 
+                & $6$ fil. & $3892/18618$ & $8563/41533$ & $50098/83068$ & $0.167$ & $10$\text{m}$50$\text{s} & $9$\text{m}$29$\text{s}\\ \hline
+    \multirow{3}{*}{Bizantinos}
+                & $3$ generales & $9/11$ & $57/86$ & $214/322$ & $0.5$ & $0.5$\text{s} & $-$ \\
+                & $4$ generales & $17/27$ & $1239/2428$ & $5608/9177$ & $0.333$ & $6.7$\text{s} & $-$\\ 
+                & $5$ generales & $33/67$ & $59758/136878$ & $293562/523268$ & $0.333$ & $324$\text{m}$9$\text{s} & $-$\\ \hline
+    \multirow{3}{*}{Raft}
+                & $1$ seguidor & $39/38$ & $113/165$ & $354/516$ & $0$ & $0.9$\text{s} & $0.5$\text{s}\\
+                & $2$ seguidores & $81/144$ & $529/1380$ & $2600/4416$ & $0$ & $3.8$\text{s} & $2.6$\text{s} \\ 
+                & $3$ seguidores & $729/1944$ & $12167/47610$ & $83583/152352$ & $0$ & $22$\text{m}$23$\text{s} & $23$\text{m}$21$\text{s} \\ \hline
+    \multirow{5}{*}{BRP(1)}
+                & $1$ retransm. & $5/9$ & $14/33$ & $60/103$ & $0.333$ & $0.7$\text{s} & $-$\\ 
+                & $5$ retransm. & $5/9$ & $30/73$ & $136/235$ & $0.143$ & $0.8$\text{s}  & $-$\\ 
+                & $10$ retransm. & $5/9$ & $50/123$ & $231/400$ & $0.083$ & $1.3$\text{s}  & $-$\\ 
+                & $20$ retransm. & $5/9$ & $90/223$ & $421/730$ & $0.045$ & $2.6$\text{s}  & $-$\\ 
+                & $40$ retransm. & $5/9$ & $170/423$ & $801/1390$ & $0.024$ & $2.8$\text{s} & $-$ \\ \hline
+    \multirow{5}{*}{BRP(5)}
+                & $1$ retransm. & $33/65$ & $94/221$ & $428/735$ & $0.333$ & $2.4$\text{s} & $-$\\
+                & $5$ retransm. & $33/65$ & $238/565$ & $1144/1955$ & $0.143$ & $2.7$\text{s}  & $-$\\ 
+                & $10$ retransm. & $33/65$ & $418/995$ & $2039/3480$ & $0.083$ & $3.6$\text{s}  & $-$\\ 
+                & $20$ retransm. & $33/65$ & $778/1855$ & $3829/6530$ & $0.045$ & $6.5$\text{s}  & $-$\\ 
+                & $40$ retransm. & $33/65$ & $1498/3575$ & $7409/12630$ & $0.024$ & $13.5$\text{s} & $-$ \\ \hline
+    \multirow{5}{*}{BRP(10)}
+                & $1$ retransm. & $63/125$ & $184/436$ & $838/1445$ & $0.333$ & $2.6$\text{s} & $-$\\ 
+                & $5$ retransm. & $63/125$ & $468/1120$ & $2254/3865$ & $0.143$ & $4.4$\text{s} & $-$ \\ 
+                & $10$ retransm. & $63/125$ & $823/1975$ & $4024/6890$ & $0.083$ & $7.1$\text{s} & $-$ \\
+                & $20$ retransm. & $63/125$ & $1533/3685$ & $7564/12940$ & $0.045$ & $15.6$\text{s} & $-$ \\ 
+                & $40$ retransm. & $63/125$ & $2953/7105$ & $14644/25040$ & $0.024$ & $1$\text{m}$1$\text{s} & $-$ \\ \hline
   \end{tabular}}
 \vspace{0.2cm}
-\caption{Resultados de la distancia de masking para los casos de estudio.}
+\caption{Resultados de la distancia de enmascaramiento para los casos de estudio.}
 \vspace{0.1cm}
 \label{table:results}
 \end{table} 
 
-Para el problema de los filósofos comensales, adaptamos la implementación par/impar en la cuál algunos filósofos obtienen primero el tenedor derecho y otros obtienen primero el izquierdo. Específicamente tenemos $n-1$ filósofos \emph{impares} que obtienen el tenedor derecho primero, y $1$ filósofo \emph{impar} que obtiene primero el izquierdo. En este caso, consideramos que ocurre una falla cuando un filósofo impar actúa como uno par, esto se puede entender como una falla bizantina. Para dos filósofos la distancia de masking es $0{.}5$ ya que basta con una falla para alcanzar un estado de deadlock. Mientras mas filósofos la distancia de masking se vuelve mas pequeña. 
+
+Para el problema de los filósofos comensales, adaptamos la implementación par/impar en la cuál algunos filósofos obtienen primero el tenedor derecho y otros obtienen primero el izquierdo. Específicamente tenemos $n-1$ filósofos \emph{impares} que obtienen el tenedor derecho primero, y $1$ filósofo \emph{impar} que obtiene primero el izquierdo. En este caso, consideramos que ocurre una falla cuando un filósofo impar actúa como uno par, esto se puede entender como una falla bizantina. Para dos filósofos la distancia de enmascaramiento es $0{.}5$ ya que basta con una falla para alcanzar un estado de \textit{deadlock}. Mientras mas filósofos la distancia de enmascaramiento se vuelve mas pequeña. 
 %We have evaluated this problem on four instances with $2, 3, 4,$ and $5$ philosophers, respectively.
 
 %\hrmkPRD{Explicar el de los Generales Bizantinos!!}
@@ -78,11 +87,11 @@ Asumimos que los mensajes son entregados sin problemas y que todos los tenientes
 
 %The algorithm can ensure correct operation only if fewer than one third of the lieutenants are traitors.
 
-Raft \cite{OngaroO14} es un algoritmo de consenso que se ha vuelto popular en años recientes. En Raft, un líder es elegido de un conjunto de servidores disponibles, una vez electo, el líder recibe peticiones de clientes y las reenvía a sus seguidores (los demás servidores), así pueden replicar la información nueva en sus estados respectivos. Cada servidor mantiene un historial de las entradas recibidas. Un seguidor puede rechazar una entrada si existe alguna inconsistencia entre su historial y el historial del líder, esto se considera una falla en nuestro contexto. Cuando esto ocurre, el líder intenta nuevamente con la entrada anterior de su historial, esto se repite hasta que sea congruente con la entrada mas reciente del seguidor en conflicto. Aquí modelamos solo una de las etapas del algoritmo Raft, la etapa de Replicación de Historial. Específicamente, adaptamos el control de consistencia que realiza el protocolo para asegurar consistencia entre los historiales de los seguidores y el historial del líder. Computamos la distancia de masking para este modelo con $1$, $2$ y $3$ seguidores, y considerando un historial del líder de $5$ entradas. Notemos que esta distancia es siempre $0$. Intuitivamente, esto ocurre porque, a pesar de que puede haber rechazos, eventualmente todos los historiales van a estar de acuerdo (en el peor caso, el protocolo va a descartar todas las entradas de los seguidores hasta alcanzar un historial vacío, y luego copiarán todas las entradas del historial del líder en sus respectivos historiales). 
+Raft \cite{OngaroO14} es un algoritmo de consenso que se ha vuelto popular en años recientes. En Raft, un líder es elegido de un conjunto de servidores disponibles, una vez electo, el líder recibe peticiones de clientes y las reenvía a sus seguidores (los demás servidores), así pueden replicar la información nueva en sus estados respectivos. Cada servidor mantiene un historial de las entradas recibidas. Un seguidor puede rechazar una entrada si existe alguna inconsistencia entre su historial y el historial del líder, esto se considera una falla en nuestro contexto. Cuando esto ocurre, el líder intenta nuevamente con la entrada anterior de su historial, esto se repite hasta que sea congruente con la entrada mas reciente del seguidor en conflicto. Aquí modelamos solo una de las etapas del algoritmo Raft, la etapa de Replicación de Historial. Específicamente, adaptamos el control de consistencia que realiza el protocolo para asegurar consistencia entre los historiales de los seguidores y el historial del líder. Computamos la distancia de enmascaramiento para este modelo con $1$, $2$ y $3$ seguidores, y considerando un historial del líder de $5$ entradas. Notemos que esta distancia es siempre $0$. Intuitivamente, esto ocurre porque, a pesar de que puede haber rechazos, eventualmente todos los historiales van a estar de acuerdo (en el peor caso, el protocolo va a descartar todas las entradas de los seguidores hasta alcanzar un historial vacío, y luego copiarán todas las entradas del historial del líder en sus respectivos historiales). 
 
-El Protocolo de Retransmisión Acotada o Bounded Retransmission Protocol (BRP) es un caso de estudio sobre verificación de software conocido en el ámbito industrial. Mientras los demás casos de estudio han sido tratados como "ejemplos de juguete" y analizados con $\DeltaMask$, el BRP fue modelado de forma mas cercana a una implementación siguiendo~\cite{GrooteP96}, considerando diferentes componentes (emisor, receptor, y canales). Para analizar tal modelo utilizamos la distancia de masking débil $\DeltaMask^W$.
-Hemos calculado la distancia de masking para el protocolo con $1$, $5$ y $10$ trozos de mensaje a enviar, denotados BRP(1), BRP(5) y BRP(10), respectivamente. 
+El Protocolo de Retransmisión Acotada o \textit{Bounded Retransmission Protocol} (BRP) es un caso de estudio sobre verificación de software conocido en el ámbito industrial. Mientras los demás casos de estudio han sido tratados más como ''ejemplos de juguete'' y analizados con $\DeltaMask$, el BRP fue modelado de forma mas cercana a una implementación siguiendo~\cite{GrooteP96}, considerando diferentes componentes (emisor, receptor, y canales). Para analizar tal modelo utilizamos la distancia de enmascaramiento débil $\DeltaMask^W$.
+Hemos calculado la distancia de enmascaramiento para el protocolo con $1$, $5$ y $10$ trozos de mensaje a enviar, denotados BRP(1), BRP(5) y BRP(10), respectivamente. 
 
-Podemos observar que los valores de la distancia no son afectados por la cantidad de trozos a enviar por el protocolo. Esto es de esperar, debido a que la distancia de masking depende de la redundancia agregada para enmascarar fallas, en este caso, depende de la cantidad de retransmisiones permitidas.
+Podemos observar que los valores de la distancia no son afectados por la cantidad de trozos a enviar por el protocolo. Esto es de esperar, debido a que la distancia de enmascaramiento depende de la redundancia agregada para enmascarar fallas, en este caso, depende de la cantidad de retransmisiones permitidas.
 
-Los experimentos fueron realizados en una MacBook Air con un procesador Intel Core i5 de 1.3 GHz y una memoria RAM de 4GB. El código fuente y los archivos ejecutables de la herramienta así como los casos de estudio para reproducir los resultados se encuentran disponibles en un repositorio Github \cite{MaskD}.
+Los experimentos fueron realizados en una MacBook Air con un procesador Intel Core i5 de 1.3 GHz y una memoria RAM de 4GB. El código fuente y los archivos ejecutables de la herramienta así como los casos de estudio para reproducir los resultados se encuentran disponibles en un repositorio Github \cite{MaskD}. En el Capítulo~\ref{cap:tool} se entra en los detalles de la herramienta.

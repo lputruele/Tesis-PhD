@@ -1,0 +1,116 @@
+\section{Tolerange} \label{sec:tolerangeGrammar}
+
+\begin{lstlisting}[
+    basicstyle=\scriptsize, %or \small or \footnotesize etc.
+]
+<specification> ::= <enums> ; <globals> ; <process_list>  <main_program> ;
+
+<enums> ::= <enum_decl>
+            | <enums> ; <enum_decl>
+
+<enum_decl> ::= Enum <identifier> = { <ids> }
+
+<globals> ::= <global_decl>
+            | <globals>  ; <global_decl>
+
+<global_decl> ::=  Global <decl>
+
+
+<process_list> ::=  <process>
+                |  <process_list> <process>
+
+
+<process>  ::= Process <identifier> <params> ` {  <decl_list> ; <initial_cond> ;   <branch_list> ; `}
+
+<initial_cond> ::= Initial `: <expression>
+
+<params> ::= <param> 
+| <params>  `, <param>
+
+<param> ::= <identifier> : <type>
+
+<decl_list> ::= <decl> 
+| <decl_list>  `; <decl>
+
+<decl> ::=  <ids> `: <type> 
+
+<type> ::= BOOL 
+        | INT 
+        | <identifier>
+
+<branch_list> ::=  <branch> 
+                |  <branch_list> ; <branch>
+
+<branch>  ::=  <label> <reward> <mode> <expression> -> <assign_list>
+            | <label> <reward> <mode> <expression> -> <p_assign_list>
+
+<label> ::= [ <identifier> ] 
+
+<reward> ::= < <integer_constant> > |
+
+<mode> ::= faulty |
+
+<p_assign_list> ::= <p_assign>
+                | <p_assign_list> ++ <p_assign>
+
+<p_assign> ::= <integer_constant>.<integer_constant> : <assign_list>
+
+<assign_list> ::=  <assign>
+                | <assign_list> , <assign>
+
+<assign> ::= <identifier> = <expression>
+            
+<expression> ::= <disjunction>
+
+<disjunction> ::= <conjunction> 
+                | <disjunction> || <conjunction>
+                
+<conjunction> ::= <equality> 
+                | <conjunction> && <equality>
+
+<equality> ::= <relational> 
+                | <equality> == <relational>
+
+<relational> ::= <addition>
+                | <relational> < <addition>
+                | <relational> > <addition>
+                | <relational> <= <addition>
+                | <relational> >= <addition>
+
+<addition> ::= <multiplication>
+            | <addition> + <multiplication>
+            | <addition> - <multiplication>
+
+<multiplication> ::= <unary>
+                    | <multiplication> * <unary>
+                    | <multiplication> / <unary>
+
+                
+<unary> ::= <primary>
+        | ! <negation> 
+        | - <negation> 
+
+<primary> ::= <identifier>
+           | <integer-constant>
+           | ( <expression> )
+
+<main_program> ::= main (  )  {  <body_main> } 
+
+<body_main> ::= <process_decl> <process_inv> ;
+
+
+<process_decl> ::= <proc> 
+                | <process_decl>  ; <proc>
+
+<proc> ::=  <ids> `: <identifier> 
+              
+<process_inv> ::= <inv> 
+                | <process_inv>  `; <inv>
+
+
+<inv> ::= run <identifier> ( `)
+        | run <identifier> ( <ids> )
+
+<ids> ::= <identifier> 
+        | <ids>  , <identifier>
+\end{lstlisting}

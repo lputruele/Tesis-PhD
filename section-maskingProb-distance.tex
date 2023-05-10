@@ -1,19 +1,20 @@
-\section{Simulación de Masking Probabilista} \label{sec:mask_dist_prob}
+\section{Simulación de Enmascaramiento Probabilista} \label{sec:mask_dist_prob}
 
-En esta sección introducimos la simulacion de masking probabilista, la cual es una extensión probabilista de la relación introducida en el capítulo~\ref{cap:maskingMeasure}. Además proporcionamos una versión simbólica de la caracterización de juego de la relación, y proveemos un algoritmo para resolverlo.
+En esta sección introducimos la simulación de enmascaramiento probabilista, la cual es una extensión probabilista de la relación introducida en el Capítulo~\ref{cap:maskingMeasure}. Esta relación nos permite capturar la noción de enmascaramiento de fallas sobre sistemas probabilistas. Una dificultad que se presenta en este caso, es que la simulación cuando es representada como un juego infinito. Es por esto, que  proporcionamos una versión simbólica de la caracterización de juego de la relación. Esto nos permite proveer un algoritmo para resolver el juego, y por consiguiente razonar sobre las relaciones de simulación
 
 %\subsection{The relation.}%
-\subsection{La relación.}%
+\subsection{La Relación de Enmascaramiento Probabilista}%
 %
-A grandes rasgos, una simulación de masking probabilista es una relación entre PTSs que extiende a la bisimulación probabilista~\cite{Larsen91}
-para además tener en cuenta el enmascaramiento de fallas.  Intuitivamente, uno de los PTSs
-cumple el rol de modelo nominal (o especificación), mientras que el otro PTS modela una implmentación del sistema bajo la ocurrencia de fallas. El modelo nominal describe el comportamiento del sistema cuando no se consideran fallas, mientras que la implementación describe una versión de la misma que es tolerante a fallas, donde la ocurrencia de fallas se toma en cuenta a través de un mecanismo de tolerancia a fallas que actúa sobre ellas.  La simulación de masking probabilista le permite a uno analizar si la implementación es capaz de enmascarar las fallas mientras se preserva el comportamiento de la especificación. Más especificamente, para transiciones no defectuosas, la relación de comporta como una bisimulación probabilista~\cite{Larsen91}, la cuál es capturada por medio de couplings y relaciones que respetan estos couplings. % (as done for instance in \cite{Larsen91}).
-La parte novedosa está dada por la ocurrencia de fallas: si la implementación realiza una falla, el modelo nominal copia el movimiento haciendo nada.
+A grandes rasgos, una simulación de enmascaramiento probabilista es una relación entre PTS (\emph{Probabilistic Transition Systems}) que extiende a la bisimulación probabilista~\cite{Larsen91}
+con el objetivo  de modelar el enmascaramiento de fallas.  Intuitivamente, uno de los PTS
+cumple el rol de modelo nominal (o especificación), mientras que el otro PTS modela una implementación del sistema bajo la ocurrencia de fallas. El modelo nominal describe el comportamiento del sistema cuando no se consideran fallas, mientras que la implementación describe una versión de la misma que es tolerante a fallas, donde la ocurrencia de fallas se toma en cuenta a través de un mecanismo de tolerancia a fallas que actúa sobre ellas.  La simulación de enmascaramiento probabilista le permite a uno analizar sí la implementación es capaz de enmascarar las fallas mientras se preserva el comportamiento de la especificación. Más específicamente, para transiciones no defectuosas, la relación de comporta como una bisimulación probabilista~\cite{Larsen91}, la cuál es capturada por medio de \emph{couplings} y relaciones que respetan estos \emph{couplings}. % (as done for instance in \cite{Larsen91}).
+La parte novedosa está dada por la ocurrencia de fallas: si la implementación realiza una falla, el modelo nominal copia el movimiento manteniéndose en el mismo estado (desde el punto de vista del usuario).
 %% then this step must be matched with a
 %% Dirac self-transition by the specification, this represents a masking
 %% step.  The formal definition is as follows.
 
 %Before providing the formal definition, we fix some notation.
+Primero, definimos notación que será útil en las próximas definiciones.
 Para un conjunto de acciones $\Sigma$, y un conjunto (finito) de \emph{etiquetas de falla} $\faults$, con $\faults\cap\Sigma=\emptyset$, definimos $\SigmaF
 = \Sigma \cup \faults$.  Intuitivamente, los elementos de $\faults$
 indican la ocurrencia de una falla en una implementación defectuosa.
@@ -24,9 +25,9 @@ Además, consideramos el conjunto $\Sigma^i = \{ e^i
 
 \begin{definition} \label{def:masking_rel_prob}
   Sean $A =( S, \Sigma, {\rightarrow}, s_0 )$ y
-  $A' =( S', \SigmaF, {\rightarrow'}, s_0' )$ dos PTSs que representan al modelo nominal y el modelo de implementación, respectivamente.
+  $A' =( S', \SigmaF, {\rightarrow'}, s_0' )$ dos PTS que representan al modelo nominal y el modelo de implementación, respectivamente.
   %, where $\faults=\{F_0,\dots,F_n\}$ is a set of fresh labels.
-  $A'$ es \emph{probabilisticamente masking-tolerante a fallas (fuerte)} con respecto a $A$ si y solo si existe una relación $\M \subseteq S \times S'$
+  $A'$ es \emph{probabilísticamente tolerante a fallas con enmascaramiento (fuerte)} con respecto a $A$ si y solo si existe una relación $\M \subseteq S \times S'$
   tal que:
   \begin{enumerate}[(a)]
   \item%
@@ -39,16 +40,16 @@ Además, consideramos el conjunto $\Sigma^i = \{ e^i
  %\begin{inparaenum}[(1)]
   \item%
     si $s \xrightarrow{e} \mu$, entonces $s' \xrightarrowprime{e} \mu'$ y
-    $\mu \MaskCoup \mu'$ for some $\mu'$;
+    $\mu \MaskCoup \mu'$ para algún $\mu'$;
   \item%
     si $s' \xrightarrowprime{e} \mu'$, entonces $s \xrightarrow{e} \mu$ y
-    $\mu \MaskCoup \mu'$ for some $\mu$;
+    $\mu \MaskCoup \mu'$ para algún $\mu$;
   \item%
     si $s' \xrightarrowprime{F} \mu'$, entonces $\Dirac_s \MaskCoup \mu'$.
   \end{enumerate}
    %\end{inparaenum}
   %
-  Si tal relación existe decimos que $A'$ es una \emph{implementación probabilisticamente masking-tolerante a fallas (fuerte)} de $A$, 
+  Si tal relación existe decimos que $A'$ es una \emph{implementación probabilísticamente tolerante a fallas con enmascaramiento (fuerte)} de $A$, 
     denotado por $A \Masking A'$.
 \end{definition}
 
@@ -154,7 +155,7 @@ indica si el sistema está operando en modo lectura/escritura o realizando un re
 
 Una potencial falla en este escenario ocurre cuando la celda cambia de valor inesperadamente. % (e.g.,  as a consequence of some electromagnetic interference).
 En la práctica, la ocurrencia de tal falla ocurre con una determinada probabilidad. Una técnica típica para lidiar con esta situación es a través de \emph{redundancia}, %for instance
-e.g., utilizando tres bits en lugar de uno. Entonces, las operaciones de escritura se realizan simultaneamete sobre todos los bits mientras que una lectura devuelve el valor de la mayoría (o \emph{votación}).
+e.g., utilizando tres bits en lugar de uno. Entonces, las operaciones de escritura se realizan simultáneamente sobre todos los bits mientras que una lectura devuelve el valor de la mayoría (o \emph{votación}).
 \begin{figure}[t]
 \centering
 \begin{minipage}[t]{.47\textwidth}
@@ -209,35 +210,35 @@ El texto de color rojo en la Figura~\ref{fig:exam_1_mem_cell:ft} es un artefacto
 %
 $\M = $ $\{{\langle(b,m),(v,s,f)\rangle} \mid {{2b\leq v\leq 2b{+}1} \wedge (m=1 \Leftrightarrow s=2)}\}$
 %
-es una simulación de masking probabilista ($b$, $m$, $v$, $s$, y
+es una simulación de enmascaramiento probabilista ($b$, $m$, $v$, $s$, y
 $f$ representan los valores de las variables \texttt{b}, \texttt{m},
 \texttt{v}, \texttt{s}, y \texttt{f}, respectivamente.)
 %
 Debería ser evidente que, si la parte roja del texto no estuviera presente, entonces
-\texttt{FAULTY} no seria una implementación masking-tolerante a fallas de \texttt{NOMINAL}. 
+\texttt{FAULTY} no seria una implementación tolerante a fallas enmascarante de \texttt{NOMINAL}. 
 
 
 
 %\subsection{A characterization in terms of a stochastic game.}
-\subsection{Una caracterización en términos de juegos estocásticos.}
+\subsection{Una Caracterización en Términos de Juegos Estocásticos.}
 
 %In the following, we
-Definimos un juego estocástico de simulación de masking para cualquier modelo nominal
+Definimos un juego estocástico de simulación de enmascaramiento para cualquier modelo nominal
 $A = ( S, \Sigma, {\rightarrow}, s_0 )$ y modelo de implementación $A' = ( S', \Sigma_{\mathcal{F}}, {\rightarrow'}, s'_0 )$ dados. 
 El juego es similar a un juego de bisimulación \cite{Stirling98}, y es jugado por dos jugadores, 
-denominados por conveniencia, el Refutador ($\Refuter$) y el Verificador ($\Verifier$). El Verificador quiere probar que $s \in S$ y $s' \in S'$ son probabilisticamente masking-similares, 
+denominados por conveniencia, el Refutador ($\Refuter$) y el Verificador ($\Verifier$). El Verificador quiere probar que $s \in S$ y $s' \in S'$ son probabilísticamente similares en enmascaramiento, 
 y la intención del Refutador es la de refutar esto.
 El juego comienza desde el par de estados $(s,s')$ y se cicla sobre los siguientes pasos:
 \begin{enumerate}
 \item[1)]
   $\Refuter$ elige una transición $s \xrightarrow{a} \mu$ del modelo nominal o una transición $s' \xrightarrow{a} \mu'$ de la implementación;
 \item[2a)]
-  Si $a \notin \faults$, $\Verifier$ elige una transición que empareje la acción $a$ del modelo opuesto, i.e., una transición $s'
-  \xrightarrow{a} \mu'$ si la elección del $\Refuter$ fué en el modelo nominal,
+  Si $a \notin \faults$, $\Verifier$ elige una transición que empareje la acción $a$ del modelo opuesto, es decir, una transición $s'
+  \xrightarrow{a} \mu'$ si la elección del $\Refuter$ fue en el modelo nominal,
   o una transición $s \xrightarrow{a} \mu$ en caso contrario.  Además,
-  $\Verifier$ elige un coupling $w$ para $(\mu, \mu')$;
+  $\Verifier$ elige un \textit{coupling} $w$ para $(\mu, \mu')$;
 \item[2b)]
-  Si $a \in \faults$, el $\Verifier$ solo puede seleccionar la distribución Dirac $\Dirac_{s}$ y el único coupling posible $w$ para
+  Si $a \in \faults$, el $\Verifier$ solo puede seleccionar la distribución Dirac $\Dirac_{s}$ y el único \textit{coupling} posible $w$ para
   $(\Dirac_{s}, \mu')$;
 \item[3)]
   El par de estados sucesores $(t, t')$ se elige probabilísticamente de acuerdo a $w$.
@@ -250,19 +251,19 @@ El juego comienza desde el par de estados $(s,s')$ y se cicla sobre los siguient
 %% \item[3)] The successor pair of states $(t, t')$ is chosen probabilistically according to $w$.
 \end{enumerate}
 %
-Si la jugada continua eternamente, entonces gana el Verificador; en caso contrario, el Refutador gana. (Observemos, particularmente, que el Verificador pierde si no puede emparejar la etiqueta de una transición, ya que siempre es posible la elección de un coupling arbitrario.)  El paso 2b es el único que difiere del juego de bisimulación típico.  Esto es necesario por la asimetría causada por las transiciones etiquetadas como fallas. Intuitivamente,  si el Refutador elige jugar con una falla en la implementación, entonces el Verificador debe enmascarar la falla, y no puede moverse libremente en el modelo nominal.  Resumiendo, el paso probabilista de una falla solo puede ser emparejado por una distribución Dirac sobre el estado correspondiente de la especificación.
+Si la jugada continua eternamente, entonces gana el Verificador; en caso contrario, el Refutador gana. (Observemos, particularmente, que el Verificador pierde si no puede emparejar la etiqueta de una transición, ya que siempre es posible la elección de un \textit{coupling} arbitrario.)  El paso 2b es el único que difiere del juego de bisimulación típico.  Esto es necesario por la asimetría causada por las transiciones etiquetadas como fallas. Intuitivamente,  si el Refutador elige jugar con una falla en la implementación, entonces el Verificador debe enmascarar la falla, y no puede moverse libremente en el modelo nominal.  Resumiendo, el paso probabilista de una falla solo puede ser emparejado por una distribución Dirac sobre el estado correspondiente de la especificación.
 
-A continuación definimos el grafo de juego de masking estocástico que formaliza esta idea.
+A continuación definimos el grafo de juego de enmascaramiento estocástico que formaliza esta idea.
 
 \begin{definition} \label{def:strong_masking_game_graphi}
   Sean $A =( S, \Sigma, {\rightarrow}, s_0 )$ y
-  $A' = ( S', \Sigma_\faults , {\rightarrow'}, s'_0 )$ dos PTSs.
-  El \emph{grafo de juego de masking estocástico} de dos jugadores
+  $A' = ( S', \Sigma_\faults , {\rightarrow'}, s'_0 )$ dos PTS.
+  El \emph{grafo de juego de enmascaramiento estocástico} de dos jugadores
   $\StochG_{A,A'} = (V^\StochG, E^\StochG, V^\StochG_\Refuter, V^\StochG_\Verifier, V^\StochG_\Probabilistic, \InitVertex, \delta^\StochG)$,
   %with initial state $\InitVertex$,
    se define de la siguiente manera:
 %
-  {\footnotesize%
+  {\small%
   \begin{align*}
     V^\StochG = \
     & V^\StochG_\Refuter \cup V^\StochG_\Verifier \cup V^\StochG_\Probabilistic, \text{donde: }\\
@@ -300,7 +301,7 @@ A continuación definimos el grafo de juego de masking estocástico que formaliz
 %
   y $E^\StochG$ es el conjunto mínimo que satisface las siguientes reglas:
 %
-  {\footnotesize%
+  {\small%
   \begin{align*}
     s \xrightarrow{\sigma} \mu
     & \Rightarrow \tuple{(s, \mhyphen, s', \mhyphen, \mhyphen, \mhyphen, \Refuter), (s, \sigma^{1}, s', \mu, \mhyphen, \mhyphen, \Verifier)}\in E^\StochG
@@ -311,13 +312,14 @@ A continuación definimos el grafo de juego de masking estocástico que formaliz
     {s' \xrightarrowprime{\sigma} \mu'} \wedge {w \in \couplings{\mu}{\mu'}}
     & \Rightarrow \tuple{(s, \sigma^1, s', \mu, \mhyphen, \mhyphen, \Verifier),(s, \mhyphen, s', \mu, \mu', w, \Probabilistic)}\in E^\StochG
     \tag{2a$_1$}\label{play:v:1}\\
-    \!\!\!{\sigma \notin \faults} \wedge {s \xrightarrow{\sigma} \mu} \wedge {w \in \couplings{\mu}{\mu'}}
+    \!\!\!{\sigma \notin \faults} \wedge {s \xrightarrow{\sigma} \mu}\ \wedge & \\
+    {w \in \couplings{\mu}{\mu'}}
     & \Rightarrow \tuple{(s, \sigma^2, s', \mhyphen, \mu', \mhyphen, \Verifier), (s, \mhyphen, s', \mu, \mu', w, \Probabilistic)}\in E^\StochG
     \tag{2a$_2$}\label{play:v:2a}\\
     {F \in \faults} \wedge {w \in \couplings{\Dirac_s}{\mu'}}
     & \Rightarrow \tuple{(s, F^2, s', \mhyphen, \mu', \mhyphen, \Verifier), (s, \mhyphen, s', \Dirac_s, \mu', w, \Probabilistic)}\in E^\StochG
     \tag{2b}\label{play:v:2b}\\
-    (s, \mhyphen, s', \mu, \mu', w, \Probabilistic) \in V^\StochG_\Probabilistic \wedge & \\ 
+    (s, \mhyphen, s', \mu, \mu', w, \Probabilistic) \in V^\StochG_\Probabilistic\ \wedge & \\ 
     (t,t') \in \support{w} 
     & \Rightarrow \tuple{(s, \mhyphen, s', \mu, \mu', w, \Probabilistic), (t, \mhyphen, t', \mhyphen, \mhyphen, \mhyphen, \Refuter)}\in E^\StochG
     \tag{3}\label{play:p}\\
@@ -328,26 +330,23 @@ A continuación definimos el grafo de juego de masking estocástico que formaliz
   }%
 \end{definition}
 
-
-
 La definición sigue la idea de juego previamente descrita. Una ronda del juego comienza en el estado del Refutador $\InitVertex$.  Observemos que, en este punto, solo los estados corrientes del modelo nominal y el modelo de implementación son relevantes (la información restante está aún indefinida en esta ronda y por lo tanto se marca con ``$\mhyphen$'').  El Paso 1 de este juego se codifica en las reglas
 (\ref{play:r:1}) y (\ref{play:r:2}), donde el Refutador elige una transición, por lo tanto definiendo la acción y la distribución que necesita ser emparejada,  esto mueve el juego a un estado del Verificador. Un estado del Verificador en $V^\StochG_\Verifier$ es una tupla que contiene la acción y la distribución a emparejar, y que modelo movilizó el Refutador. El Paso 2a del juego está dado por las reglas (\ref{play:v:1}) y
-(\ref{play:v:2a}) en las cuales el Verificador elige un movimiento emparejador del modelo opuesto (y asi definiendo la otra distribución) y un coupling apropiado, lo que nos lleva a un estado probabilista.  El Paso 2b
+(\ref{play:v:2a}) en las cuales el Verificador elige un movimiento emparejador del modelo opuesto (y así definiendo la otra distribución) y un \textit{coupling} apropiado, lo que nos lleva a un estado probabilista.  El Paso 2b
 del juego está codificado en la regla (\ref{play:v:2b}).  Aquí, el Verificador no tiene alternativa ya que está obligado a elegir la distribución Dirac
-$\Dirac_s$ y el único coupling disponible en
+$\Dirac_s$ y el único \textit{coupling} disponible en
 $\couplings{\Dirac_s}{\mu'}$.  Un estado probabilista en
-$V^\StochG_\Probabilistic$ contiene la información necesaria para resolver probabilisticamente el próximo paso a través de la función $\delta^\StochG$ (rule
+$V^\StochG_\Probabilistic$ contiene la información necesaria para resolver probabilísticamente el próximo paso a través de la función $\delta^\StochG$ (la regla
 (\ref{play:p})).
 %% For completness, the corresponding edges are added in the sixth rule.
-Finalmente, si un jugador no tiene movimientos disponibles, solo se puede mover al estado de error $\ErrorSt$ (regla (\ref{play:err})). Esto solo puede ocurrir en un estado del Verificador o en
+Finalmente, si un jugador no tiene movimientos disponibles, solo se puede mover al estado de error $\ErrorSt$ (la regla (\ref{play:err})). Esto solo puede ocurrir en un estado del Verificador o en
 $\ErrorSt$.
 
-
-La noción de simulación de masking probabilista se puede capturar por el juego de masking estocástico correspondiente con el objetivo Booleano apropiado.
+La noción de simulación de enmascaramiento probabilista se puede capturar por el juego de enmascaramiento estocástico correspondiente con el objetivo Booleano apropiado.
 
 \begin{figure}
 \begin{center}
-  \scalebox{0.7}{
+  \scalebox{1.2}{
     \begin{tikzpicture}[on grid,auto,align at top,,
         hvh path/.style={to path={-- ++(#1,0) |- (\tikztotarget)},rounded corners}]
 
@@ -413,50 +412,49 @@ La noción de simulación de masking probabilista se puede capturar por el juego
     \end{tikzpicture}
   }
   
-  \caption{Fragmento de un grafo de juego de masking}\label{fig:masking:game:graph}
+  \caption{Fragmento de un grafo de juego de enmascaramiento probabilista}\label{fig:masking:game:graph}
 \end{center}
 \end{figure}
 
-
 \begin{theorem} \label{thm:wingame_strat_prob}
-  Sean $A= ( S, \Sigma, {\rightarrow}, s_0 )$ y $A'=( S', \SigmaF, {\rightarrow'}, s_0' )$ dos PTSs.
-  Tenemos que $A \Masking A'$ si y solo si el Verificador posee una estrategia \textit{sure-ganadora (o almost-sure-ganadora)} para el grafo de juego de masking estocástico
+  Sean $A= ( S, \Sigma, {\rightarrow}, s_0 )$ y $A'=( S', \SigmaF, {\rightarrow'}, s_0' )$ dos PTS.
+  Tenemos que $A \Masking A'$ si y solo si el Verificador posee una estrategia \textit{seguramente-ganadora (o casi-seguramente-ganadora)} para el grafo de juego de enmascaramiento estocástico
   $\mathcal{G}_{A,A'}$ con el objetivo Booleano $\neg \Diamond \ErrorSt$.
 %$\Phi = \{ \omega = \omega_0,\omega_1, \dots  \in \Omega \mid \forall {i \geq 0} : \omega_i \neq \ErrorSt \}$.
 \end{theorem}
-
-\noindent
 %\textbf{Proof of Theorem \ref{thm:wingame_strat_prob}.}
 %  Sean $A= ( S, \Sigma, \rightarrow, s_0 )$ y $A'=( S', \SigmaF, \rightarrow', s_0' )$ dos PTSs.
-%  Tenemos que $A \Masking A'$ si y solo si el Verificador posee una estrategia ganadora sure (o almost-sure) para el grafo de juego de masking estocástico
+%  Tenemos que $A \Masking A'$ si y solo si el Verificador posee una estrategia ganadora sure (o casi-sure) para el grafo de juego de masking estocástico
 %  $\mathcal{G}_{A,A'}$ con el objetivo Booleano
 %$\Phi = \{ \omega_0,\omega_1, \dots  \in \Omega \mid \forall {i \geq 0} : \omega_i \neq \ErrorSt \}$. \\
+% PRUEBA PASADA AL APENDICE
+\iffalse
 \noindent
 \begin{proof} 
- Vale la pena destacar que para objetivos de safety (e.g., $\neg \Diamond \ErrorSt$) las estrategias sure-ganadoras y almost-sure-ganadoras son equivalentes. Por lo que solo probamos el teorema para las estrategias sure-ganadoras.
+ Vale la pena destacar que para objetivos de \textit{safety} (e.g., $\neg \Diamond \ErrorSt$) las estrategias seguramente-ganadoras y casi-seguramente-ganadoras son equivalentes. Por lo que solo probamos el teorema para las estrategias seguramente-ganadoras.
   
-\noindent ``Solo Si'': Asumamos $A \Masking A'$, por lo tanto existe una simulación de masking probabilista $\M \subseteq S \times S'$.
-Definamos una estrategia sure-ganadora  $\strat{\Verifier}$ para el Verificador de la siguiente manera.
+\noindent ``Solo Si'': Asumamos $A \Masking A'$, por lo tanto existe una simulación de enmascaramiento probabilista $\M \subseteq S \times S'$.
+Definamos una estrategia seguramente-ganadora  $\strat{\Verifier}$ para el Verificador de la siguiente manera.
 Dado un estado $(s, \sigma^1, s', \mu, \mhyphen, \mhyphen, \Verifier)$ (resp. $(s, \sigma^2, s', \mhyphen, \mu', \mhyphen, \Verifier)$), si $s \M  s'$, $\strat{\Verifier}$ selecciona una transición
-$\langle (s, \sigma^1, s', \mu, \mhyphen, \mhyphen, \Verifier), (s, \sigma^1, s', \mu, \mu', w, \Probabilistic)\rangle$ (resp. $\langle (s, \sigma^2, s', \mhyphen, \mu', \mhyphen, \Verifier),(s, \sigma^2, s', \mu, \mu', w, \Probabilistic)\rangle$) tal que $w$ es un coupling $\M$-respetuoso para ($\mu,\mu'$) 
-(cuya existencia está garantizada por la Def.~\ref{def:masking_rel_prob}). En caso contrario, $\strat{\Verifier}$ selecciona un vértice arbitrario. 
-Vamos a demostrar que esta estrategia es sure-ganadora para el verificador en el estado inicial.
+$\langle (s, \sigma^1, s', \mu, \mhyphen, \mhyphen, \Verifier), (s, \sigma^1, s', \mu, \mu', w, \Probabilistic)\rangle$ (resp. $\langle (s, \sigma^2, s', \mhyphen, \mu', \mhyphen, \Verifier),(s, \sigma^2, s', \mu, \mu', w, \Probabilistic)\rangle$) tal que $w$ es un \textit{coupling} $\M$-respetuoso para ($\mu,\mu'$) 
+(cuya existencia está garantizada por la Definición~\ref{def:masking_rel_prob}). En caso contrario, $\strat{\Verifier}$ selecciona un vértice arbitrario. 
+Vamos a demostrar que esta estrategia es seguramente-ganadora para el verificador en el estado inicial.
 Tenemos que probar que, para cualquier estrategia del Refutador $\strat{\Refuter}$, tenemos $\out(\strat{\Verifier}, \strat{\Refuter}) \subseteq\Omega \setminus \Phi$, donde $\out(\strat{\Verifier}, \strat{\Refuter})$ denota el conjunto de caminos generados cuando las estrategias $\strat{\Refuter}$ y $\strat{\Verifier}$ son utilizadas.  Sea $\strat{\Refuter}$ una estrategia para el Refutador, y $\omega = \omega_0, \omega_1,  \dots$ una jugada en $\text{out}(\strat{\Verifier}, \strat{\Refuter})$. 
 Demostramos por inducción sobre $i$ que:
 \begin{align} 
 \forall i \geq 0: & \omega_i \neq \ErrorSt \wedge (\pr{6}{\omega_i} = \Verifier \Rightarrow \pr{0}{\omega_i} \M  \pr{2}{\omega_i}) \nonumber \\ 
-&\wedge (\pr{6}{\omega_i} = \Probabilistic \Rightarrow \text{ $\pr{5}{\omega_i}$ es un coupling $\M$-respetuoso para $(\pr{3}{\omega_i},  \pr{4}{\omega_i})$}). \label{eq1:thm:wingame_strat_prob}
+&\wedge (\pr{6}{\omega_i} = \Probabilistic \Rightarrow \text{ $\pr{5}{\omega_i}$ es un \textit{coupling} $\M$-respetuoso para $(\pr{3}{\omega_i},  \pr{4}{\omega_i})$}). \label{eq1:thm:wingame_strat_prob}
 \end{align}
 Para $i=0$, la prueba es directa. Asumamos que la propiedad vale para $\omega_i$, si $\omega_i$ es un vértice del Verificador y 
-$\pr{1}{\omega} = \sigma^1$ (resp. $\sigma^2$) con $\sigma \notin \faults$, entonces por definición de $\strat{\Verifier}$, Def.~\ref{def:masking_rel_prob} e hipótesis inductiva, 
+$\pr{1}{\omega} = \sigma^1$ (resp. $\sigma^2$) con $\sigma \notin \faults$, entonces por definición de $\strat{\Verifier}$, Definición~\ref{def:masking_rel_prob} e hipótesis inductiva, 
 tenemos que $\omega_{i+1} =  (s, \sigma^1, s', \mu, \mu', w,  \Probabilistic)$
-(resp. $\omega_{i+1} =  (s, \sigma^2, s', \mu, \mu', w, \Probabilistic)$) donde $w$ es un coupling
+(resp. $\omega_{i+1} =  (s, \sigma^2, s', \mu, \mu', w, \Probabilistic)$) donde $w$ es un \textit{coupling}
 $\M$-respetuoso para $(\pr{3}{\omega_i},  \pr{4}{\omega_i})$ y también que  
 $\omega_{i+1} \neq \ErrorSt$. Si $\pr{1}{\omega_i} \in \faults$,
 entonces la prueba es similar, pero tomando en cuenta que $\mu = \Dirac_s$.
 Si $\omega_i$ es un vértice del Refutador, entonces $\omega_{i+1}$ es un vértice del Verificador, y no puede ser $\ErrorSt$ porque, por construcción, solo los nodos del Verificador son adyacentes a $\ErrorSt$.
 Si $\omega_i$ es un vértice probabilista, entonces por hipótesis inductiva, tenemos que $\support{\pr{5}{\omega_i}} \neq \emptyset$ y por lo tanto $\ErrorSt \neq \omega_{i+1}$,
-y además como $\pr{5}{\omega_i}$ es un coupling $\M$-respetuoso para $(\pr{3}{\omega_i},  \pr{4}{\omega_i})$, también obtenemos  
+y además como $\pr{5}{\omega_i}$ es un \textit{coupling} $\M$-respetuoso para $(\pr{3}{\omega_i},  \pr{4}{\omega_i})$, también obtenemos  
 $ \pr{0}{\omega_{i+1}}  \M \pr{2}{\omega_{i+1}}$. Por lo tanto la propiedad (\ref{eq1:thm:wingame_strat_prob}) queda demostrada,  eso implica que:
 $\forall i \geq 0 : \omega_i \neq \ErrorSt$. Por lo tanto, $\omega \in \Omega \setminus \Phi$.
 
@@ -464,50 +462,49 @@ $\forall i \geq 0 : \omega_i \neq \ErrorSt$. Por lo tanto, $\omega \in \Omega \s
 consideramos el conjunto $f(S)= \{ b \in B \mid \exists a \in S: f(a)(b) > 0 \}$.
 De forma similar, para $T \subseteq B$, definimos $f^{-1}(T) = \{ a \in A \mid \exists b \in T : f(a)(b) > 0\}$
 
-Ahora bien,  supongamos que el Verificador posee una estrategia sure-ganadora $\strat{\Verifier}$
-desde el estado inicial. Entonces, definimos una relación de masking probabilista de la siguiente manera: 
+Ahora bien,  supongamos que el Verificador posee una estrategia seguramente-ganadora $\strat{\Verifier}$
+desde el estado inicial. Entonces, definimos una relación de enmascaramiento probabilista de la siguiente manera: 
 \[
-\M =\{(s,s') \mid \post((s, \mhyphen, s', \mhyphen, \mhyphen, \mhyphen, \Refuter)) \subseteq \strat{\Verifier}^{-1}(V^{\StochG}_\Probabilistic) \text{ para alguna estrategia sure-ganadora} \strat{\Verifier} \}
+\M =\{(s,s') \mid \post((s, \mhyphen, s', \mhyphen, \mhyphen, \mhyphen, \Refuter)) \subseteq \strat{\Verifier}^{-1}(V^{\StochG}_\Probabilistic) \text{ para alguna estrategia seguramente-ganadora} \strat{\Verifier} \}
 \]
 %$\M =\{(s,s') \mid (s, \mhyphen, s', \mu, \mu', w, \Probabilistic) \in \strat{\Verifier}(V^{\StochG}_\Verifier)$ for some sure winning strategy $\strat{\Verifier} \}$. 
 Sabemos, por nuestro supuesto, que este conjunto no es vacío y que es directo de ver que $(s_0,s'_0) \in \M$. 
-Primero, vamos a demostrar que para cualquier $(s, \mhyphen, s', \mu, \mu', w, \Probabilistic) \in \strat{\Verifier}(V^{\StochG}_\Verifier)$,  tal que   $\strat{\Verifier}$ es una estrategia sure-ganadora,  
+Primero, vamos a demostrar que para cualquier $(s, \mhyphen, s', \mu, \mu', w, \Probabilistic) \in \strat{\Verifier}(V^{\StochG}_\Verifier)$,  tal que   $\strat{\Verifier}$ es una estrategia seguramente-ganadora,  
 tenemos que  $\mu \MaskCoup \mu'$. 
-Asumamos $(s, \mhyphen, s', \mu, \mu', w, \Probabilistic) \in \strat{\Verifier}(V^{\StochG}_\Verifier)$ para alguna estrategia sure-ganadora $\strat{\Verifier}$, y no es el caso que $\mu \MaskCoup \mu'$, o equivalentemente 
+Asumamos $(s, \mhyphen, s', \mu, \mu', w, \Probabilistic) \in \strat{\Verifier}(V^{\StochG}_\Verifier)$ para alguna estrategia seguramente-ganadora $\strat{\Verifier}$, y no es el caso que $\mu \MaskCoup \mu'$, o equivalentemente 
 $\exists t,t' : w(t,t') > 0 \wedge \neg (t \M t')$. 
 Por lo tanto, tenemos un sucesor $(t, \mhyphen,t', \mhyphen,\mhyphen,\mhyphen, \Refuter)$ de
 $(s, \mhyphen, s', \mu, \mu', w, \Probabilistic)$ el cual puede ser escogido con probabilidad mayor a $0$ y  $(t,t') \notin \M$. 
 Además, existe un $t \xrightarrow{\sigma} \mu$ 
 (o $t' \xrightarrowprime{\sigma} \mu'$)tal que $(t, \sigma^1, t', \mu, \mhyphen, \mhyphen, \Verifier) \in \post((t, \mhyphen,t', \mhyphen,\mhyphen,\mhyphen, \Refuter))$ 
 (resp. $(t, \sigma^2, t', \mhyphen,  \mu', \mhyphen, \Verifier) \in \post((t, \mhyphen,t', \mhyphen,\mhyphen,\mhyphen, \Refuter))$). 
-Este estado no es el estado $\ErrorSt$, y el Verificador no posee una estrategia sure-ganadora desde el mismo, ya que $(t,t') \notin \M$.  Por lo tanto,  desde 
+Este estado no es el estado $\ErrorSt$, y el Verificador no posee una estrategia seguramente-ganadora desde el mismo, ya que $(t,t') \notin \M$.  Por lo tanto,  desde 
 $(t, \mhyphen,t', \mhyphen,\mhyphen,\mhyphen, \Refuter)$, el Refutador siempre posee una forma de jugar de tal manera que la probabilidad de alcanzar el estado de error sea mayor que $0$.  Entonces, 
 $(s, \mhyphen, s', \mu, \mu', w, \Probabilistic) \notin \strat{\Verifier}(V^{\StochG}_\Verifier)$ lo cual contradice nuestro supuesto inicial. 
 Por lo tanto, $\mu \MaskCoup \mu'$.
 
-Ahora vamos a probar que $\M$ es una simulación de masking probabilista. Demostramos esto para cualquier $(s,\mhyphen,s',\mhyphen, \mhyphen,  \mhyphen, \Refuter)$ alcanzable desde el estado inicial que satisfaga $s \M s'$, valen las condiciones (b) de la Def.~\ref{def:masking_rel_prob}.  Para la condición (b)(1), sea $(s,\mhyphen,s',\mhyphen, \mhyphen,  \mhyphen, \Refuter) \in V^{\StochG}_\Refuter$ tal que 
+Ahora vamos a probar que $\M$ es una simulación de enmascaramiento probabilista. Demostramos esto para cualquier $(s,\mhyphen,s',\mhyphen, \mhyphen,  \mhyphen, \Refuter)$ alcanzable desde el estado inicial que satisfaga $s \M s'$, valen las condiciones (b) de la Definición~\ref{def:masking_rel_prob}.  Para la condición (b)(1), sea $(s,\mhyphen,s',\mhyphen, \mhyphen,  \mhyphen, \Refuter) \in V^{\StochG}_\Refuter$ tal que 
 $s \M s'$ y $s \xrightarrow{\sigma} \mu$ (resp. $s \xrightarrowprime{\sigma} \mu'$). Además, consideremos el estado correspondiente 
-$(s,\sigma^1,s', \mu, \mhyphen, \mhyphen, \Verifier)$ (resp.  $(s,\sigma^2,s',  \mhyphen, \mu', \mhyphen, \Verifier)$),  como tenemos que $s \M s'$, existe una estrategia sure-ganadora para este vértice, por lo tanto existe algún 
+$(s,\sigma^1,s', \mu, \mhyphen, \mhyphen, \Verifier)$ (resp.  $(s,\sigma^2,s',  \mhyphen, \mu', \mhyphen, \Verifier)$),  como tenemos que $s \M s'$, existe una estrategia seguramente-ganadora para este vértice, por lo tanto existe algún 
 $(s,\mhyphen,s', \mu,  \mu', w,\Probabilistic) \in \post((s,\mhyphen,s', \mu, \mhyphen, \mhyphen, \Verifier))$, y por la propiedad demostrada arriba tenemos que 
 $\mu \MaskCoup \mu'$. Los casos (b)(2) y (b)(3) son similares.  Ahora, como esto se cumple para todos los estados alcanzables, y 
 $\Verifier$ tiene una estrategia ganadora desde $(s_0, \mhyphen, s'_0, \mhyphen, \mhyphen,  \mhyphen, \Refuter)$, en particular, tenemos que $s_0 \M s'_0$. 
-Por lo tanto, todos los requisitos de la Def.~\ref{def:masking_rel_prob} valen, y entonces $\M$ es una relación de masking probabilista. 
+Por lo tanto, todos los requisitos de la Definición~\ref{def:masking_rel_prob} valen, y entonces $\M$ es una relación de enmascaramiento probabilista. 
 \end{proof} \\
-
-
+\fi 
 
 % BE AWARE OF THE HACKING FOR WRAPFIGURE TO WORK PROPERLY
 %\begin{example}
 \medskip\par\noindent\textit{Ejemplo~\refstepcounter{example}\theexample.}
 %
   Consideremos el grafo de la Figura~\ref{fig:masking:game:graph}. 
-  Este representa un fragmento de grafo de juego de masking entre
+  Este representa un fragmento de grafo de juego de enmascaramiento entre
   \texttt{NOMINAL} y \texttt{FAULTY} del  Ejemplo~\ref{example:memory}.
   Los vértices representan los valores de las variables en el siguiente orden
   $((\texttt{b},\texttt{m}),\_,(\texttt{v},\texttt{s},\textcolor{red}{\texttt{f}}),\_,\_,\_,\_)$.
   Las distribuciones allí son las siguientes:\vspace{-2ex}%
   
-  {\scriptsize
+  {
   \begin{align*}
     \mu   &= \texttt{p}\cdot(0,1)+(1{-}\texttt{p})\cdot(0,0)\\
     \mu'  &= \texttt{p}\cdot(0,2,\textcolor{red}{0})+\texttt{q}\cdot(0,1,\textcolor{red}{0})+(1{-}\texttt{p}{-}\texttt{q})\cdot(0,0,\textcolor{red}{0})\\
@@ -531,15 +528,15 @@ Por lo tanto, todos los requisitos de la Def.~\ref{def:masking_rel_prob} valen, 
   $\left((0,0),\mhyphen,(0,0,\textcolor{red}{0}),\mhyphen,\mhyphen,\mhyphen,\Refuter\right)$
   debería ser considerado como
   $\left((0,0),\mhyphen,(0,0),\mhyphen,\mhyphen,\mhyphen,\Refuter\right)$.
-  En este caso obtenemos el grafo de juego de masking cuando la parte roja en
+  En este caso obtenemos el grafo de juego de enmascaramiento cuando la parte roja en
   \texttt{FAULTY} está ausente.
   %
   Observemos que en la mayoría de los vértices, se omiten muchos arcos salientes. En particular, el vértice del Verificador $\left((0,0),\texttt{tick},(0,0),\mu,\mhyphen,\mhyphen,\Verifier\right)$
   (recordemos que estamos ignorando el dígito rojo) tiene infinitos arcos salientes que llevan a estados probabilistas de la forma
   $\left((0,0),\texttt{tick},(0,0),\mu,\mu',w,\Probabilistic\right)$,
-  donde $w$ es un coupling para $(\mu,\mu')$.
+  donde $w$ es un \textit{coupling} para $(\mu,\mu')$.
   %
-  En el grafo, elegimos distinguir el coupling $w_0$, el cual es óptimo para el Verificador (similarmente luego para $w_2$).
+  En el grafo, elegimos distinguir el \textit{coupling} $w_0$, el cual es óptimo para el Verificador (similarmente luego para $w_2$).
   %
   El grafo destaca el camino que lleva al estado de error $\ErrorSt$.
   Notemos que esto ocurre como consecuencia de la elección del Refutador de ejecutar una segunda falla en el vértice
@@ -549,9 +546,9 @@ Por lo tanto, todos los requisitos de la Def.~\ref{def:masking_rel_prob} valen, 
   movimiento que el Verificador es incapaz de emparejar.
   
 
-  Ahora bien, consideremos el grafo de juego de masking entre \texttt{NOMINAL} y
-  el modelo con fallas limitadas \texttt{FAULTY} (i.e., el modelo incluyendo la parte en rojo).  Este grafo incluye los valores en rojo correspondientes a la variable $\textcolor{red}{\texttt{f}}$.  Observemos aqui que, el Refutador no es capaz de producir una transición de \texttt{fault} desde el vértice
-  $\left((0,0),\mhyphen,(1,1,\textcolor{red}{\texttt{1}}),\mhyphen,\mhyphen,\mhyphen,\Refuter\right)$.
+  Ahora bien, consideremos el grafo de juego de enmascaramiento entre \texttt{NOMINAL} y
+  el modelo con fallas limitadas \texttt{FAULTY} (es decir, el modelo incluyendo la parte en rojo).  Este grafo incluye los valores en rojo correspondientes a la variable $\textcolor{red}{\texttt{f}}$.  Observemos aquí que, el Refutador no es capaz de producir una transición de \texttt{fault} desde el vértice
+  $\left((0,0),\mhyphen,(1,1,\textcolor{red}{1}),\mhyphen,\mhyphen,\mhyphen,\Refuter\right)$.
   Por lo tanto el Verificador logra evitar alcanzar el estado de error
   $\ErrorSt$.
 %\end{example}
@@ -559,8 +556,7 @@ Por lo tanto, todos los requisitos de la Def.~\ref{def:masking_rel_prob} valen, 
 %%%%%
 
 
-
-Observemos que el grafo para el juego de masking estocástico podria ser infinito ya que cada vértice probabilista incluye un coupling entre dos distribuciones, y puede haber una cantidad innumerable de ellos.
+Observemos que el grafo para el juego de enmascaramiento estocástico podría ser infinito ya que cada vértice probabilista incluye un \textit{coupling} entre dos distribuciones, y puede haber una cantidad innumerable de ellos.
 %The stochastic masking game, though infinite, induces an algorithm as
 Aun así, induce el algoritmo a continuación.
 %
@@ -570,15 +566,15 @@ Aun así, induce el algoritmo a continuación.
 %% greater than $0$ of reaching the error state in at most $i$ steps
 %% (these sets can be thought of as a probabilistic version of
 %% \emph{attractors} \cite{Jurd11}).
-Para $i\in \mathbb{N}$, definimos regiones $W^i$ que contienen la colección de vértices desde los cuales el Refutador tiene una estrategia (en el juego infinito) con probabilidad mayor a $0$ de alcanzar el estado de error en a lo sumo $i$ pasos (estos conjuntos se pueden pensar como una versión probabilista de los \emph{atractores} \cite{Jurd11}).
+Para $i\in \mathbb{N}$, definimos regiones $W^i$ que contienen la colección de vértices desde los cuales el Refutador posee una estrategia (en el juego infinito) con probabilidad mayor a $0$ de alcanzar el estado de error en a lo sumo $i$ pasos (estos conjuntos se pueden pensar como una versión probabilista de los \emph{atractores} \cite{Jurd11}).
 
 
 \begin{definition}\label{def:W}
   Sea
   $\StochG_{A,A'} = (V^\StochG, E^\StochG, V^\StochG_\Refuter, V^\StochG_\Verifier, V^\StochG_\Probabilistic, \InitVertex, \delta^\StochG)$
-  un grafo de juego de masking estocástico para los PTSs $A$ y $A'$.
+  un grafo de juego de \emph{enmascaramiento} estocástico para los PTS $A$ y $A'$.
   Definimos los conjuntos $W^i$ (para $i \geq 0$) de la siguiente manera:
-  {\footnotesize%
+  {%\footnotesize%
   \begin{align*}
  %   W^0 = {} & \emptyset,  \\
     W^0= {} & \{\ErrorSt\}, \\
@@ -598,46 +594,48 @@ Para $i\in \mathbb{N}$, definimos regiones $W^i$ que contienen la colección de 
 \end{definition}
 %
 Los conjuntos $W^i$ pueden ser utilizados para resolver el juego $\StochG_{A,A'}$.
-Observemos, en particular, que no tenemos en cuenta todos los couplings posibles, solo aquellos que son vértices del politopo
-$\couplings{\pr{3}{v}}{\pr{4}{v}}$. ($\pr{i}{(x_0,\dots,x_n)}$ es la $(i+1)$-ésima proyección, i.e., \ $x_i$.)
+Observemos, en particular, que no tenemos en cuenta todos los \emph{couplings} posibles, solo aquellos que son vértices del politopo
+$\couplings{\pr{3}{v}}{\pr{4}{v}}$. ($\pr{i}{(x_0,\dots,x_n)}$ es la $(i+1)$-ésima proyección, es decir, \ $x_i$.)
 %% This makes the set set of graph
 %% vertices finite and hence $W$ can be computed with a fix point
 %% algorithm.
 %
-Esto es suficiente para determinar el ganador del juego ya que todos los couplings en $\couplings{\pr{3}{v}}{\pr{4}{v}}$ pueden ser expresados como una combinación convexa de sus vértices.  Por lo tanto, si existe una probabilidad positiva de alcanzar el estado de error con algún coupling, entonces también existe una probabilidad positiva de alcanzarlo a través del coupling de un vértice del politopo.
+Esto es suficiente para determinar el ganador del juego ya que todos los \emph{couplings} en $\couplings{\pr{3}{v}}{\pr{4}{v}}$ pueden ser expresados como una combinación convexa de sus vértices.  Por lo tanto, si existe una probabilidad positiva de alcanzar el estado de error con algún \emph{coupling}, entonces también existe una probabilidad positiva de alcanzarlo a través del \emph{coupling} de un vértice del politopo.
 %
-Al tomar solo los couplings vértices, solo una cantidad finita de vértices del grafo son compilados en cada $W_i$ y entonces $W$ puede ser computado efectivamente a través de un algoritmo de punto fijo.
+Al tomar solo los \emph{couplings} vértices, solo una cantidad finita de vértices del grafo son compilados en cada $W_i$ y entonces $W$ puede ser computado efectivamente a través de un algoritmo de punto fijo.
 
 El siguiente resultado es una adaptación directa de los resultados para juegos de alcanzabilidad sobre grafos finitos \cite{ChatterjeeH12}.
 	
 \begin{theorem}\label{th:strat-W} 
   Sea
   $\StochG_{A,A'} = (V^\StochG, E^\StochG, V^\StochG_\Refuter, V^\StochG_\Verifier, V^\StochG_\Probabilistic, \InitVertex, \delta^\StochG)$
-  un grafo de juego de masking estocástico para los PTSs $A$ y $A'$.  Entonces, el
-  Verificador posee una estrategia sure-ganadora (o almost-sure-ganadora) desde el vértice $v$ si y solo si
+  un grafo de juego de enmascaramiento estocástico para los PTS $A$ y $A'$.  Entonces, el
+  Verificador posee una estrategia seguramente-ganadora (o casi-seguramente-ganadora) desde el vértice $v$ si y solo si
   $v \notin W$.
 \end{theorem}
 
 %\textbf{Proof of Theorem \ref{th:strat-W}.}
 %Let $\StochG_{A,A'} = (V^\StochG, E^\StochG, V^\StochG_\Refuter, V^\StochG_\Verifier, V^\StochG_\Probabilistic, \InitVertex, \delta^\StochG)$ 
-%be a stochastic masking game graph for some PTSs $A$ and $A'$, we have that the Verifier has a sure (or almost-sure) winning strategy from vertex 
+%be a stochastic masking game graph for some PTSs $A$ and $A'$, we have that the Verifier has a sure (or casi-sure) winning strategy from vertex 
 %$v$ iff $v \notin W$. \\
 \noindent
+% PRUEBA PASADA AL APENDICE
+\iffalse
 \begin{proof} Primero, podemos definir un juego de alcanzabilidad de $2$ jugadores a partir de  $\StochG_{A,A'}$ al considerar a los nodos probabilistas como estados del Refutador, e ignorando la distribución de probabilidad, denotemos a este nuevo juego por $\mathcal{H}^\StochG_{A,A'}$. 
-Está claro que una estrategia del Verificador es sure-ganadora en $\StochG_{A,A'}$ si y solo si esta estrategia es ganadora en $\mathcal{H}^\StochG_{A,A'}$. 
+Está claro que una estrategia del Verificador es seguramente-ganadora en $\StochG_{A,A'}$ si y solo si esta estrategia es ganadora en $\mathcal{H}^\StochG_{A,A'}$. 
 Entonces, la demostración se reduce a probar que los conjuntos $W^i$ determinan las estrategias ganadoras del Verificador en $\mathcal{H}^\StochG_{A, A'}$ (recordemos que solo los vértices de los politopos se tienen en cuenta para definir los conjuntos $W^i$). 
 
 ``Solo si'': Si el Verificador posee una estrategia ganadora desde el vértice $v$ veamos que $v \notin W^k$ para todo $k$ por inducción. 
 Para $k=1$ es directo. Ahora bien, asumamos que la propiedad se cumple para $W^k$, sea $v$ un vértice arbitrario tal que el Verificador posee una estrategia ganadora $\strat{\Verifier}$ desde $v$.  Procedemos por casos:
 
 Si $v$ es un nodo del Verificador, supongamos por contradicción que $v \in W^{k+1}$, entonces $\vertices{\post(v))}  \subseteq W^k$. 
-Por lo tanto, por hipótesis inductiva $\strat{\Verifier}(v) \notin \vertices{\post(v)}$, es decir, $\strat{\Verifier}(v)$ es un vértice probabilista cuyo coupling no es un vértice del politopo. Además, es un nodo del Refutador en $\mathcal{H}^\StochG_{A,A'}$. Para este nodo tenemos $v' \in \post(\strat{\Verifier}(v))$ si y solo si $\pr{5}{\strat{\Verifier}(v)}(\pr{0}{v'}, \pr{2}{v'})>0$. 
+Por lo tanto, por hipótesis inductiva $\strat{\Verifier}(v) \notin \vertices{\post(v)}$, es decir, $\strat{\Verifier}(v)$ es un vértice probabilista cuyo \textit{coupling} no es un vértice del politopo. Además, es un nodo del Refutador en $\mathcal{H}^\StochG_{A,A'}$. Para este nodo tenemos $v' \in \post(\strat{\Verifier}(v))$ si y solo si $\pr{5}{\strat{\Verifier}(v)}(\pr{0}{v'}, \pr{2}{v'})>0$. 
 Observemos que $\pr{5}{\strat{\Verifier}(v)}$ es un punto en el politopo definido por $\couplings{\pr{3}{\strat{\Verifier}(v)}}{\pr{4}{\strat{\Verifier}(v)}}$, 
-como los politopos no contienen lineas polytopes do not contain lines, o bien $\pr{5}{\strat{\Verifier}(v)}$ es un vértice o existe un vértice del politopo $w'$ tal que   $w'(\pr{3}{\strat{\Verifier}(v)}, \pr{4}{\strat{\Verifier}(v)})>0$ si y solo si $\pr{5}{\strat{\Verifier}(v)}(\pr{3}{\strat{\Verifier}(v)}, \pr{4}{\strat{\Verifier}(v)})>0$. 
+como los politopos no contienen lineas, o bien $\pr{5}{\strat{\Verifier}(v)}$ es un vértice o existe un vértice del politopo $w'$ tal que   $w'(\pr{3}{\strat{\Verifier}(v)}, \pr{4}{\strat{\Verifier}(v)})>0$ si y solo si $\pr{5}{\strat{\Verifier}(v)}(\pr{3}{\strat{\Verifier}(v)}, \pr{4}{\strat{\Verifier}(v)})>0$. 
 Por lo tanto, existe un $v'' \in \vertices{\post(v)}$ tal que $\post(v'') = \post(\strat{\Verifier}(v))$, es decir, $v'' \in W^k$ implica que $\strat{\Verifier}(v) \in W^{k}$ lo cual es una contradicción, entonces $v \notin W^{k+1}$. 
 
 Si $v$ es un nodo del Refutador, por contradicción asumamos $v \in W^{k+1}$, es decir, existe un vértice del Verificador $v' \in \post(v)$ tal que 
-$v' \in W^k$, por inducción no existe una estrategia sure-ganadora desde $v'$, pero entonces el Verificador no tiene una estrategia sure-ganadora desde $v$, ya que
+$v' \in W^k$, por inducción no existe una estrategia seguramente-ganadora desde $v'$, pero entonces el Verificador no tiene una estrategia seguramente-ganadora desde $v$, ya que
 el Refutador puede jugar a $v'$ desde $v$, esto es una contradicción, y el resultado se deduce.
 
 ``Si'':  Definamos una estrategia $\strat{\Verifier}$ la cual es una estrategia ganadora en $\mathcal{H}^\StochG_{A,A'}$ para cualquier nodo del Verificador $v \notin W$. 
@@ -645,16 +643,17 @@ Si $v \notin W$, entonces $\strat{\Verifier}(v) = v'$ para algún $v' \in \post(
 además, si $v \in W$, entonces $\strat{\Verifier}(v) = v'$ para un nodo arbitrario $v'$. 
 Probemos que para cualquier jugada generada por $\strat{\Verifier}$: $v_0, v_1, \dots$ tenemos $v_i \notin W$, la prueba es por inducción sobre $i$.
 Para $i=0$ esto es directo, asumiendo que $v_i \notin W$ vamos a probar que $v_{i+1} \notin W$. 
-Si $v_i$ es un nodo del Refutador, por Def.~\ref{def:W}  
+Si $v_i$ es un nodo del Refutador, por Definición~\ref{def:W}  
 $\post(v_i) \cap W = \emptyset$, y entonces, $v_{i+1} \notin W$. 
 Si $v_i$ es un nodo del Verificador, por definición de $\strat{\Verifier}$: $v_{i+1} = \strat{\Verifier}(v_i) \notin W$ y por lo tanto el resultado se deduce.  
 \end{proof} \\
+\fi
 
 
 %
 Es de destacar que, para un vértice probabilista
 $(s, \mhyphen, s', \mu, \mu', w, \Probabilistic) \in V^\StochG_\Probabilistic$,
-el politopo \textit{two-way transportation} $\couplings{\mu}{\mu'}$ tiene al menos $\frac{\max\{m,n\}!}{(\max\{m, n\}-\min\{m,n\}+1)!}$ vértices
+el politopo de transportación ida y vuelta $\couplings{\mu}{\mu'}$ tiene al menos $\frac{\max\{m,n\}!}{(\max\{m, n\}-\min\{m,n\}+1)!}$ vértices
 (y a lo sumo $m^{n-1}n^{m-1}$ vértices)~\cite{KleeWitzgall}, donde
 $m=|\support{\mu}|$ y $n=|\support{\mu'}|$.  Por lo tanto, no seria práctico computar estos conjuntos.
 
@@ -663,29 +662,29 @@ $m=|\support{\mu}|$ y $n=|\support{\mu'}|$.  Por lo tanto, no seria práctico co
 
 
 %\subsection{A symbolic game graph.}
-\subsection{Un grafo de juego simbólico.}
+\subsection{Un Grafo de Juego Simbólico.}
 
 %% Notice that the graph for a stochastic masking game could be infinite.
 %% Indeed, each probabilistic node of the graph include a coupling
 %% between the two contending distributions, and there can be uncountably
 %% many of them.
 
-A continuación, vamos a introducir una descripción finita de los juegos de masking estocásticos a través de una representación simbólica, la cual permite un algoritmo mas eficiente.
+A continuación, vamos a introducir una descripción finita de los juegos de enmascaramiento estocásticos a través de una representación simbólica, la cual permite realizar un algoritmo más eficiente.
 %
-La definición del grafo de juego simbólico tiene dos partes.  La primera captura el comportamiento no estocástico del juego al remover la elección estocástica ($\delta^\StochG$) del grafo de juego, asi como los couplings en la información de los vértices. La segunda parte anexa un sistema de ecuaciones a cada vértice probabilista, cuyo espacio de soluciones es el politopo definido por el conjunto de todos los couplings entre las distribuciones contendientes.
+La definición del grafo de juego simbólico tiene dos partes.  La primera captura el comportamiento no estocástico del juego al remover la elección estocástica ($\delta^\StochG$) del grafo de juego, así como los \emph{couplings} en la información de los vértices. La segunda parte anexa un sistema de ecuaciones a cada vértice probabilista, cuyo espacio de soluciones es el politopo definido por el conjunto de todos los \emph{couplings} entre las distribuciones contendientes.
 
 
 \begin{definition} \label{def:symbolic_game_graph}
   Sean $A = ( S, \Sigma, {\rightarrow}, s_0 )$
   y $A' = ( S', \Sigma_\faults, {\rightarrow'}, s'_0 )$
-  dos PTSs.
-  El \emph{grafo de juego simbólico} para el juego de masking estocástico
+  dos PTS.
+  El \emph{grafo de juego simbólico} para el juego de enmascaramiento estocástico
   $\mathcal{G}_{A,A'}$ está definido por la estructura
   $\SymbG_{A,A'} = ( V^{\SymbG}, E^{\SymbG}, V^{\SymbG}_\Refuter, V^{\SymbG}_\Verifier, V^{\SymbG}_\Probabilistic, v_0^{\SymbG} )$,
   %with initial state $v_0^{\SymbG}$,  
   donde:
 %  \remarkPRD{Modifiqu\'e la definici\'on de $V^\SymbG_\Probabilistic$ para que sea finito y no venga otro (o el mismo) referee cornudo a romper las bolas}
-  {\footnotesize%
+  {\small%
   \begin{align*}
     V^\SymbG = \
     & V^\SymbG_\Refuter \cup V^\SymbG_\Verifier \cup V^\SymbG_\Probabilistic, \text{ donde: }\\
@@ -716,7 +715,7 @@ La definición del grafo de juego simbólico tiene dos partes.  La primera captu
 %
   y $E^\SymbG$ es el conjunto mínimo que satisface las siguientes reglas:
 %
-  {\footnotesize%
+  {\small%
   \begin{align*}
     s \xrightarrow{\sigma} \mu
     & \Rightarrow \tuple{(s, \mhyphen, s', \mhyphen, \mhyphen, \Refuter), (s, \sigma^{1}, s', \mu, \mhyphen, \Verifier)}\in E^\SymbG \\
@@ -774,7 +773,7 @@ La definición del grafo de juego simbólico tiene dos partes.  La primera captu
   $X(v)=\{x_{s_i,s_j} \mid s_i \in \text{Supp}(\mu) \wedge s_j \in \text{Supp}(\mu')\}$,
   y el sistema de ecuaciones 
   %
-  {\footnotesize%
+  {%\footnotesize%
   \begin{align*}
     \Eq(v) = {}
     & \textstyle
@@ -797,14 +796,14 @@ La definición del grafo de juego simbólico tiene dos partes.  La primera captu
 
 
 Observemos que $\{\bar{x}_{s_k,s_j}\}_{s_k,s_j}$ es una solución de 
-$\Eq(v)$ si y solo si existe un coupling
+$\Eq(v)$ si y solo si existe un \emph{coupling}
 $w\in\couplings{\mu}{\mu'}$ tal que  $w(s_k,s_j)=\bar{x}_{s_k,s_j}$
 para todo $s_k \in \support{\mu}$ y $s_j \in \support{\mu'}$.
 
 Adicionalmente, dado un conjunto de vértices de juego
 $V' \subseteq V^\SymbG_\Refuter$,
-definimos $\Eq(v, V')$ al extender $\Eq(v)$ con una ecuación que limita los couplings de tal forma que los vértices en $V'$ \emph{no} son alcanzados.
-Formally,
+definimos $\Eq(v, V')$ al extender $\Eq(v)$ con una ecuación que limita los \emph{couplings} de tal forma que los vértices en $V'$ \emph{no} son alcanzados.
+Formalmente,
 %
 $\Eq(v, V') = \Eq(v) \cup \big\{\sum_{(s, \mhyphen, s', \mhyphen, \mhyphen, \Refuter) \in V'} x_{s,s'} = 0\big\}$.
 %% Formally:
@@ -813,7 +812,7 @@ $\Eq(v, V') = \Eq(v) \cup \big\{\sum_{(s, \mhyphen, s', \mhyphen, \mhyphen, \Ref
 %% \Eq(v, V') = \Eq(v) \cup \big\{\sum_{(s, \mhyphen, s', \mhyphen, \mhyphen, \Refuter) \in V'} x_{s,s'} = 0\big\}.
 %% \]
 %
-Al definir apropiadamente una familia de conjuntos $V'$, mostraremos que la simulación de masking probabilista puede ser verificada en tiempo polinomial a través del grafo de juego simbólico.
+Al definir apropiadamente una familia de conjuntos $V'$, mostraremos que la simulación de enmascaramiento probabilista puede ser verificada en tiempo polinomial a través del grafo de juego simbólico.
 
 
 
@@ -823,9 +822,9 @@ Similarmente a la Definición~\ref{def:W}, proporcionamos una construcción indu
 \begin{definition}\label{def:U_prob}
   Sea
   $\SymbG_{A,A'} = ( V^{\SymbG},  E^{\SymbG}, V^{\SymbG}_\Refuter, V^{\SymbG}_\Verifier, V^{\SymbG}_\Probabilistic, v_0^{\SymbG} )$
-  un grafo de juego simbólico para los PTSs $A$ y $A'$.
+  un grafo de juego simbólico para los PTS $A$ y $A'$.
   Los conjuntos $U^i$ (para $i \geq 0$) se definen de la siguiente manera:
-  {\footnotesize%
+  {\small%
   \begin{align*}
     %U^0 = {} & \emptyset,  \label{def:U_probji} \\
     U^0 = {} & \{\ErrorSt\},  \label{def:U_probji}\\
@@ -852,8 +851,8 @@ no puede ser satisfecha.
 Existe una fuerte conexión entre los conjuntos  $W^i$ y $U^i$: un vértice está en $W^i$ si y solo si su versión abstracta está en $U^i$.  Esto se formaliza en el siguiente teorema.
 	
 \begin{theorem}\label{th:U-and-W}
-  Sea $\mathcal{G}_{A,A'}$ un grafo de juego de masking estocástico
-  para los PTSs $A$ y $A'$ y sea $\SymbG_{A,A'}$
+  Sea $\mathcal{G}_{A,A'}$ un grafo de juego de enmascaramiento estocástico
+  para los PTS $A$ y $A'$ y sea $\SymbG_{A,A'}$
   el grafo de juego simbólico correspondiente.
 %
   Para cada $v \in V^\StochG$, $u \in V^\SymbG$ tal que 
@@ -866,8 +865,8 @@ El siguiente teorema es una consecuencia directa de los Teoremas
 \ref{th:strat-W} y \ref{th:U-and-W}.
 
 \begin{theorem}
-  Sea $\StochG_{A,A'}$ un grafo de juego estocástico para los PTSs $A$
-  y $A'$, y sea $\SymbG_{A,A'}$ el grafo de juego simbólico correspondiente.  Entonces, el Verificador posee una estrategia sure-ganadora (o almost-sure-ganadora) en
+  Sea $\StochG_{A,A'}$ un grafo de juego estocástico para los PTS $A$
+  y $A'$, y sea $\SymbG_{A,A'}$ el grafo de juego simbólico correspondiente.  Entonces, el Verificador posee una estrategia seguramente-ganadora (o casi-seguramente-ganadora) en
   $\StochG_{A,A'}$ si y solo si $v^\SymbG_0 \notin U$.
 \end{theorem}
 
@@ -881,15 +880,15 @@ El siguiente teorema es una consecuencia directa de los Teoremas
 La prueba es por inducción sobre $k$. Para k=0, tenemos que $W^0 = \{ \ErrorSt \} = U^0$. Para el caso inductivo, consideremos los nodos arbitrarios $u \in V^\SymbG$ y $v \in V^{G}$,
 tales que $\pr{i}{v} = \pr{i}{u}$ para $0 \leq i \leq 4$. Observemos que estos nodos también coinciden en sus últimas componentes, es decir, ambos son nodos del Refutador, del Verificador o probabilistas. 
 Asumamos que son del Refutador, si $u \in U^{k}$ entonces $\post(u) \cap U^{k-1} \neq \emptyset$. 
-Por lo tanto, existe algún $u' \in \post(u) \cap U^{k-1}$ que es un nodo del Verificador.  Por Def.~\ref{def:symbolic_game_graph}, tenemos un $v' \in \post(v)$ tal que $\pr{i}{v'}=\pr{i}{u'}$ (para $0\leq i \leq 4$), por inducción tenemos que $v' \in W^{k-1}$ 
+Por lo tanto, existe algún $u' \in \post(u) \cap U^{k-1}$ que es un nodo del Verificador.  Por Definición~\ref{def:symbolic_game_graph}, tenemos un $v' \in \post(v)$ tal que $\pr{i}{v'}=\pr{i}{u'}$ (para $0\leq i \leq 4$), por inducción tenemos que $v' \in W^{k-1}$ 
 y entonces $v \in W^k$. 
 De manera similar, si $v \in W^k$ tenemos que $\post(v) \cap W^{k-1} \neq \emptyset$, y procedemos como se hizo anteriormente. 
 Si $v$ y $u$ son nodos del Verificador la prueba es similar.
 Ahora bien, asumamos que $v$ y $u$ son nodos probabilistas. 
 Si $u \in U^k$, entonces $\post(u) \cap U^{k-1} \neq \emptyset$. Como se probó mas arriba, también tenemos que  $\post(v) \cap W^{k-1} \neq \emptyset$. 
-Además, si $\Eq(v, \post(u) \cap U^{k-1})$ no tiene solución, entonces tenemos al menos un coupling (llamemosle $w$) para las distribuciones
+Además, si $\Eq(v, \post(u) \cap U^{k-1})$ no tiene solución, entonces tenemos al menos un \emph{coupling} (llamémosle $w$) para las distribuciones
 $\pr{3}{u}$ y $\pr{4}{u}$ que satisface las ecuaciones y también $w(\pr{0}{u'},\pr{2}{u'})>0$ para algún $u' \in \post(u) \cap U^{k-1}$. 
-Por Def.~\ref{def:strong_masking_game_graphi}, tenemos un vértice $v' \in \post(v)$ tal que $\pr{5}{v'}=w$, y por lo tanto $\sum_{v' \in \post(v) \cap W^{j-1}} \delta^\StochG(v)(v') >0$, lo que significa que $v' \in W^k$. 
+Por Definición~\ref{def:strong_masking_game_graphi}, tenemos un vértice $v' \in \post(v)$ tal que $\pr{5}{v'}=w$, y por lo tanto $\sum_{v' \in \post(v) \cap W^{j-1}} \delta^\StochG(v)(v') >0$, lo que significa que $v' \in W^k$. 
 Similarmente, si $\sum_{v' \in \post(v) \cap W^{j-1}} \delta^\StochG(v)(v') >0$  entonces $\Eq(u, \post(u) \cap U^{k-1})$ no tiene solución, y entonces
 $v\in W^k$ implica $u \in U^k$.
 \end{proof} \\
@@ -898,13 +897,13 @@ $v\in W^k$ implica $u \in U^k$.
 %% between two PTSs $A$ and $A'$, we can calculate set $U$ over
 %% $\SymbG_{A,A'}$, and check whether its initial state belongs to $U$.
 Como consecuencia de este último teorema y el Teorema~\ref{thm:wingame_strat_prob}, basta con calcular el conjunto $U$
-sobre $\SymbG_{A,A'}$ para decidir si existe una simulación de masking probabilista
+sobre $\SymbG_{A,A'}$ para decidir si existe una simulación de enmascaramiento probabilista
 entre $A$ y $A'$.
 %
-Esto se puede hacer en tiempo polinomial, ya que $\Eq(v,C)$ puede ser resuelto en tiempo polinomial (e.g, utilizando programación lineal) y el número de iteraciones para construir $U$ está acotado por $|V^\SymbG|$.  Como $V^\SymbG$ depende linearmente de las transiciones de los PTSs involucrados, tenemos el siguiente teorema.
+Esto se puede hacer en tiempo polinomial, ya que $\Eq(v,C)$ puede ser resuelto en tiempo polinomial (e.g, utilizando programación lineal) y el número de iteraciones para construir $U$ está acotado por $|V^\SymbG|$.  Como $V^\SymbG$ depende linealmente de las transiciones de los PTS involucrados, tenemos el siguiente teorema.
 
 \begin{theorem}
-  Sean $A$ y $A'$ dos PTSs.  $A \Masking A'$ se puede decidir en tiempo 
+  Sean $A$ y $A'$ dos PTS.  $A \Masking A'$ se puede decidir en tiempo 
   $O(\textit{Poly}(m\cdot m'))$, donde $m$ y $m'$ son 
   los tamaños de las transiciones de $A$ y $A'$, respectivamente.
   %% Let $A$ and $A'$ be PTSs.  $A \Masking A'$ can be decided in time
